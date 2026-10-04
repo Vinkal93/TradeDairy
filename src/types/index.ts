@@ -5,6 +5,26 @@ export type MarketCondition = 'Trending' | 'Ranging' | 'Volatile' | 'Unclear';
 export type EmotionalState = 'Calm' | 'Confident' | 'Fear' | 'FOMO' | 'Greedy' | 'Revenge';
 export type SetupType = 'Breakout' | 'Pullback' | 'Support Demand' | 'Reversal' | 'Momentum' | 'ORB' | 'Mean Reversion' | 'Custom';
 
+export type ChargeSegment = 'equity-intraday' | 'equity-delivery' | 'futures' | 'options' | 'manual';
+export interface ChargeRates { sttBuy: number; sttSell: number; exchange: number; stamp: number }
+export interface ChargeConfig {
+  brokeragePerOrder: number;
+  brokerageMode: 'flat' | 'capped';
+  brokeragePercent: number;
+  deliveryBrokeragePerOrder: number;
+  exchange: 'NSE' | 'BSE';
+  gstPercent: number;
+  dpCharge: number;
+  otherCharges: number;
+  overrides?: Partial<Record<ChargeSegment, ChargeRates>>;
+}
+export interface ChargeBreakdown {
+  brokerage: number; stt: number; exchange: number; sebi: number;
+  stamp: number; gst: number; dp: number; other: number; total: number;
+  buyTurnover: number; sellTurnover: number;
+}
+export interface EncryptedCredential { salt: string; iv: string; ciphertext: string }
+
 export interface Trade {
   id: string;
   instrument: string;
@@ -37,6 +57,12 @@ export interface Trade {
   expiryDate?: string;
   optionType?: 'CE' | 'PE';
   createdAt: string;
+  segment?: ChargeSegment;
+  chargeBreakdown?: ChargeBreakdown;
+  chargeConfig?: ChargeConfig;
+  buyOrders?: number;
+  sellOrders?: number;
+  chargeMode?: 'auto' | 'manual';
 }
 
 export interface TradingAccount {
@@ -50,6 +76,9 @@ export interface TradingAccount {
   isActive: boolean;
   color: string;
   logoInitial: string;
+  chargeConfig?: ChargeConfig;
+  brokerLoginId?: string;
+  encryptedPassword?: EncryptedCredential;
 }
 
 export interface DailyJournal {
