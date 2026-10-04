@@ -10,7 +10,7 @@ import { QrScannerModal } from '../common/QrScannerModal';
 export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, logout } = useTrades();
+  const { user, logout, cloudSyncStatus, lastCloudSync } = useTrades();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [isCompact, setIsCompact] = useState(false);
@@ -103,6 +103,37 @@ export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void
 
         {/* Right Action Icons & Profile */}
         <div className="flex items-center gap-1.5 sm:gap-2 ml-auto shrink-0">
+          {/* Realtime Cloud Sync Status Badge */}
+          {user.isLoggedIn && (
+            <div
+              title={
+                cloudSyncStatus === 'syncing'
+                  ? 'Syncing trades across devices...'
+                  : cloudSyncStatus === 'offline'
+                  ? 'Cloud sync offline. Changes stored locally.'
+                  : `Realtime cloud synced ${lastCloudSync ? `at ${lastCloudSync}` : ''}`
+              }
+              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-surface-container-low border border-surface-container/80"
+            >
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  cloudSyncStatus === 'syncing'
+                    ? 'bg-amber-500 animate-ping'
+                    : cloudSyncStatus === 'offline'
+                    ? 'bg-rose-500'
+                    : 'bg-primary'
+                }`}
+              />
+              <span className="text-on-surface-variant font-semibold">
+                {cloudSyncStatus === 'syncing'
+                  ? 'Syncing...'
+                  : cloudSyncStatus === 'offline'
+                  ? 'Offline'
+                  : 'Cloud Live'}
+              </span>
+            </div>
+          )}
+
           {/* Scan to Log In PC Button (Phone to Desktop Auth) */}
           <button
             type="button"

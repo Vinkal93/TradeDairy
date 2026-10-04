@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import fs from 'fs/promises';
+import path from 'path';
 import { Trade, TradingAccount, DailyJournal, UserProfile } from '@/types';
 
 interface CloudUserData {
@@ -21,6 +23,42 @@ if (!globalStore.__tdUserCloudSync) {
 
 const userSyncStore = globalStore.__tdUserCloudSync;
 
+// Directory for persistent storage
+const SYNC_DIR = path.join(process.cwd(), 'data', 'user_sync');
+
+function getSafeFilePath(email: string): string {
+  const safeFilename = email.toLowerCase().replace(/[^a-z0-9_.-]/g, '_') + '.json';
+  return path.join(SYNC_DIR, safeFilename);
+}
+
+// Helper to load user data from memory or disk
+async function loadUserData(email: string): Promise<CloudUserData | null> {
+  const cached = userSyncStore.get(email);
+  if (cached) return cached;
+
+  try {
+    const filePath = getSafeFilePath(email);
+    const content = await fs.readFile(filePath, 'utf-8');
+    const parsed = JSON.parse(content) as CloudUserData;
+    userSyncStore.set(email, parsed);
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+// Helper to save user data to memory and disk
+async function saveUserData(data: CloudUserData): Promise<void> {
+  userSyncStore.set(data.email, data);
+  try {
+    await fs.mkdir(SYNC_DIR, { recursive: true });
+    const filePath = getSafeFilePath(data.email);
+    await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (err) {
+    console.warn('Failed to persist user sync data to disk:', err);
+  }
+}
+
 // 1. GET: Fetch user's synchronized data for cross-device access
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -31,7 +69,7 @@ export async function GET(request: NextRequest) {
   }
 
   const email = rawEmail.trim().toLowerCase();
-  const userData = userSyncStore.get(email);
+  const userData = await loadUserData(email);
 
   if (!userData) {
     return NextResponse.json(
@@ -79,7 +117,7 @@ export async function POST(request: NextRequest) {
       updatedAt,
     };
 
-    userSyncStore.set(email, dataToSave);
+    await saveUserData(dataToSave);
 
     return NextResponse.json(
       {

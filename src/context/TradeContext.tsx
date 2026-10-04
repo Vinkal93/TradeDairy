@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   Trade,
   TradingAccount,
@@ -65,6 +65,8 @@ interface TradeContextType {
   deviceSessions: DeviceSession[];
   revokeSession: (sessionId: string) => void;
   logoutAllOtherSessions: () => void;
+  cloudSyncStatus: 'synced' | 'syncing' | 'offline';
+  lastCloudSync: string | null;
 
   // Loading state
   isLoaded: boolean;
@@ -167,6 +169,9 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isLoaded, setIsLoaded] = useState(false);
   const [storageError, setStorageError] = useState('');
   const [deviceSessions, setDeviceSessions] = useState<DeviceSession[]>([]);
+  const [cloudSyncStatus, setCloudSyncStatus] = useState<'synced' | 'syncing' | 'offline'>('synced');
+  const [lastCloudSync, setLastCloudSync] = useState<string | null>(null);
+  const lastSyncTimestampRef = useRef<string | null>(null);
 
   // Realtime Broadcast Channel across browser tabs / devices
   const broadcastSync = useCallback((actionType: string) => {
@@ -183,25 +188,45 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const fetchCloudSync = useCallback(async (email?: string) => {
     if (!email || !email.trim()) return;
     try {
+      setCloudSyncStatus('syncing');
       const res = await fetch(`/api/user/sync?email=${encodeURIComponent(email.trim().toLowerCase())}`);
-      if (!res.ok) return;
+      if (!res.ok) {
+        setCloudSyncStatus('offline');
+        return;
+      }
       const data = await res.json();
       if (data.exists) {
-        if (Array.isArray(data.trades) && data.trades.length > 0) {
-          setTrades(data.trades);
-          localStorage.setItem(getUserKey(STORAGE_KEYS.TRADES, email), JSON.stringify(data.trades));
+        if (!lastSyncTimestampRef.current || data.updatedAt !== lastSyncTimestampRef.current) {
+          lastSyncTimestampRef.current = data.updatedAt;
+          if (Array.isArray(data.trades)) {
+            setTrades(data.trades);
+            localStorage.setItem(getUserKey(STORAGE_KEYS.TRADES, email), JSON.stringify(data.trades));
+          }
+          if (Array.isArray(data.accounts)) {
+            setAccounts(data.accounts);
+            localStorage.setItem(getUserKey(STORAGE_KEYS.ACCOUNTS, email), JSON.stringify(data.accounts));
+          }
+          if (data.journals && typeof data.journals === 'object') {
+            setJournals(data.journals);
+            localStorage.setItem(getUserKey(STORAGE_KEYS.JOURNALS, email), JSON.stringify(data.journals));
+          }
+          if (data.user && typeof data.user === 'object') {
+            setUser((prev) => ({
+              ...prev,
+              ...data.user,
+              isLoggedIn: true,
+              isOnboarded: true,
+            }));
+          }
         }
-        if (Array.isArray(data.accounts) && data.accounts.length > 0) {
-          setAccounts(data.accounts);
-          localStorage.setItem(getUserKey(STORAGE_KEYS.ACCOUNTS, email), JSON.stringify(data.accounts));
-        }
-        if (data.journals && typeof data.journals === 'object' && Object.keys(data.journals).length > 0) {
-          setJournals(data.journals);
-          localStorage.setItem(getUserKey(STORAGE_KEYS.JOURNALS, email), JSON.stringify(data.journals));
-        }
+        setLastCloudSync(new Date().toLocaleTimeString());
+        setCloudSyncStatus('synced');
+      } else {
+        setCloudSyncStatus('synced');
       }
     } catch (err) {
       console.warn('Cloud sync fetch offline fallback', err);
+      setCloudSyncStatus('offline');
     }
   }, []);
 
@@ -217,7 +242,8 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     ) => {
       if (!email || !email.trim()) return;
       try {
-        await fetch('/api/user/sync', {
+        setCloudSyncStatus('syncing');
+        const res = await fetch('/api/user/sync', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -228,8 +254,17 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             journals: payload.journals || journals,
           }),
         });
+        if (res.ok) {
+          const resData = await res.json();
+          lastSyncTimestampRef.current = resData.updatedAt;
+          setLastCloudSync(new Date().toLocaleTimeString());
+          setCloudSyncStatus('synced');
+        } else {
+          setCloudSyncStatus('offline');
+        }
       } catch (err) {
         console.warn('Cloud sync push offline fallback', err);
+        setCloudSyncStatus('offline');
       }
     },
     [user, accounts, trades, journals]
@@ -376,10 +411,41 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }));
         // Load this user's data
         loadScopedData(email);
+        fetchCloudSync(email);
       }
     });
     return () => unsubscribe();
-  }, [loadScopedData]);
+  }, [loadScopedData, fetchCloudSync]);
+
+  // Realtime cross-device sync interval & window focus revalidation
+  useEffect(() => {
+    if (!isLoaded || !user.isLoggedIn || !user.email) return;
+
+    fetchCloudSync(user.email);
+
+    const onFocus = () => {
+      fetchCloudSync(user.email);
+    };
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchCloudSync(user.email);
+      }
+    };
+
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    const pollTimer = setInterval(() => {
+      fetchCloudSync(user.email);
+    }, 10000);
+
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      clearInterval(pollTimer);
+    };
+  }, [isLoaded, user.isLoggedIn, user.email, fetchCloudSync]);
 
   // Save changes to localStorage
   useEffect(() => {
@@ -672,18 +738,28 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const login = (name: string, email: string) => {
-    setUser((prev) => ({
-      ...prev,
-      fullName: name || prev.fullName,
-      email: email,
+    const cleanEmail = email.trim().toLowerCase();
+    const updatedUser: UserProfile = {
+      ...user,
+      fullName: name || user.fullName || 'Active Trader',
+      email: cleanEmail,
       isLoggedIn: true,
       isOnboarded: true,
-    }));
+    };
+    setUser(updatedUser);
+    try {
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
+      localStorage.setItem(getUserKey(STORAGE_KEYS.USER, cleanEmail), JSON.stringify(updatedUser));
+    } catch {}
+
     // Record device session
     const currentDevice = detectDevice();
     setDeviceSessions((prev) => [currentDevice, ...prev.filter((s) => !s.isCurrent)]);
-    // Load this specific user's scoped data
-    loadScopedData(email);
+
+    // Load this specific user's scoped data and fetch cloud data
+    loadScopedData(cleanEmail);
+    fetchCloudSync(cleanEmail);
+    broadcastSync('PERSIST_CHANGE');
   };
 
   const logout = async () => {
@@ -692,17 +768,28 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } catch (e) {
       console.error('Firebase signout error', e);
     }
-    setUser({ ...EMPTY_USER, isLoggedIn: false, isOnboarded: false });
+    const emptyUser = { ...EMPTY_USER, isLoggedIn: false, isOnboarded: false };
+    setUser(emptyUser);
+    setTrades([]);
+    setAccounts([]);
+    setJournals({});
     try {
+      localStorage.removeItem(STORAGE_KEYS.USER);
+      localStorage.removeItem(STORAGE_KEYS.TRADES);
+      localStorage.removeItem(STORAGE_KEYS.ACCOUNTS);
+      localStorage.removeItem(STORAGE_KEYS.JOURNALS);
       localStorage.removeItem('tradedairy_super_admin_session');
     } catch {}
+    broadcastSync('PERSIST_CHANGE');
   };
 
   const resetDemoData = () => {
-    setUser({ ...DEMO_USER, isLoggedIn: true, isOnboarded: true });
+    const demo = { ...DEMO_USER, isLoggedIn: true, isOnboarded: true };
+    setUser(demo);
     setAccounts(DEMO_ACCOUNTS);
     setTrades(DEMO_TRADES);
     setJournals({ [DEMO_JOURNAL.date]: DEMO_JOURNAL });
+    persist(STORAGE_KEYS.USER, demo);
     persist(STORAGE_KEYS.TRADES, DEMO_TRADES);
     persist(STORAGE_KEYS.ACCOUNTS, DEMO_ACCOUNTS);
     persist(STORAGE_KEYS.JOURNALS, { [DEMO_JOURNAL.date]: DEMO_JOURNAL });
@@ -713,6 +800,9 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     persist(STORAGE_KEYS.JOURNALS, {});
     setTrades([]);
     setJournals({});
+    if (user.email) {
+      pushCloudSync(user.email, { trades: [], journals: {} });
+    }
   };
 
   // Device Sessions Management
@@ -891,6 +981,8 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         deviceSessions,
         revokeSession,
         logoutAllOtherSessions,
+        cloudSyncStatus,
+        lastCloudSync,
         isLoaded,
         storageError,
         exportTradesCSV,

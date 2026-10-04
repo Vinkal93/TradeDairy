@@ -2,10 +2,11 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { BrandLogo } from '../common/BrandLogo';
+import { LoadingWorkspace } from '../common/LoadingWorkspace';
 import { useTrades } from '../../context/TradeContext';
 
 interface AppShellProps {
@@ -25,9 +26,30 @@ const MOBILE_NAV_ITEMS = [
 
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const pathname = usePathname();
-  const { storageError } = useTrades();
+  const router = useRouter();
+  const { user, isLoaded, storageError } = useTrades();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
+
+  // If on login, onboarding, or super admin portal, don't show trader shell
+  const isAuthOrOnboarding =
+    pathname === '/login' ||
+    pathname === '/signup' ||
+    pathname === '/onboarding' ||
+    (pathname === '/su' || pathname?.startsWith('/su/'));
+
+  // Global Route Guard: Enforce Onboarding -> Login -> Dashboard flow
+  useEffect(() => {
+    if (!isLoaded || isAuthOrOnboarding) return;
+    if (!user.isLoggedIn) {
+      if (!user.isOnboarded) {
+        router.replace('/onboarding');
+      } else {
+        router.replace('/login');
+      }
+    }
+  }, [isLoaded, user.isLoggedIn, user.isOnboarded, isAuthOrOnboarding, router]);
+
   useEffect(() => { setMobileMenuOpen(false); }, [pathname]);
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -53,15 +75,17 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     };
   }, [mobileMenuOpen]);
 
-  // If on login, onboarding, or super admin portal, don't show trader shell
-  const isAuthOrOnboarding =
-    pathname === '/login' ||
-    pathname === '/signup' ||
-    pathname === '/onboarding' ||
-    (pathname === '/su' || pathname?.startsWith('/su/'));
-
   if (isAuthOrOnboarding) {
     return <>{children}</>;
+  }
+
+  // Prevent rendering protected UI if unauthenticated or still loading
+  if (!isLoaded || !user.isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <LoadingWorkspace isReady={false} />
+      </div>
+    );
   }
 
   const isActive = (path: string) => {

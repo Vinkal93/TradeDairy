@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import QRCode from 'qrcode';
 import confetti from 'canvas-confetti';
 import { useTrades } from '../../context/TradeContext';
@@ -15,14 +15,31 @@ import {
 } from '../../lib/firebase';
 
 export default function LoginPage() {
-  const router = useRouter();
-  const { login } = useTrades();
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background flex items-center justify-center p-6 text-sm text-outline">
+          Loading authentication terminal…
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
+  );
+}
 
-  const [authType, setAuthType] = useState<'qr' | 'credentials'>('qr');
+function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { user, login, resetDemoData } = useTrades();
+
+  const [authType, setAuthType] = useState<'credentials' | 'qr'>('credentials');
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [notice, setNotice] = useState('');
@@ -34,6 +51,29 @@ export default function LoginPage() {
   const [qrLoading, setQrLoading] = useState(true);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // If already logged in, redirect to Dashboard
+  useEffect(() => {
+    if (user.isLoggedIn) {
+      router.replace('/');
+    }
+  }, [user.isLoggedIn, router]);
+
+  // Check if arriving from onboarding wizard
+  useEffect(() => {
+    const fromParam = searchParams.get('from');
+    if (typeof window !== 'undefined') {
+      const storedName = sessionStorage.getItem('tradedairy_onboarding_name');
+      if (storedName) {
+        setName(storedName);
+      }
+      if (fromParam === 'onboarding' || storedName) {
+        setMode('signup');
+        setAuthType('credentials');
+        setNotice('Profile configured! Create your account or sign in to activate real-time cloud sync.');
+      }
+    }
+  }, [searchParams]);
 
   // Initialize or Refresh QR Session
   const initQrSession = useCallback(async () => {
@@ -49,7 +89,6 @@ export default function LoginPage() {
       setQrToken(data.token);
       setQrPin(data.pin);
 
-      // Render QR code to canvas
       if (canvasRef.current) {
         const qrUrl = `${window.location.origin}/auth/qr?token=${encodeURIComponent(
           data.token
@@ -65,7 +104,7 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       console.warn('QR generation error', err);
-      setError('Could not generate QR code. You can sign in using credentials below.');
+      setError('Could not generate QR code. You can sign in using email & password.');
     } finally {
       setQrLoading(false);
     }
@@ -114,7 +153,6 @@ export default function LoginPage() {
     };
   }, [authType, qrToken, qrStatus, login, router]);
 
-  // Load QR on mount if in QR mode
   useEffect(() => {
     if (authType === 'qr') {
       initQrSession();
@@ -123,7 +161,7 @@ export default function LoginPage() {
 
   const handlePasswordReset = async () => {
     if (!email.trim()) {
-      setError('Enter your email address first.');
+      setError('Enter your email address in the field above first.');
       return;
     }
     setLoading(true);
@@ -131,9 +169,9 @@ export default function LoginPage() {
     setNotice('');
     try {
       await resetPassword(email.trim());
-      setNotice('Password reset requested. Check your email for instructions.');
+      setNotice('Password reset link sent! Check your inbox to set a new password.');
     } catch {
-      setError('Could not request password reset. Check email address and network.');
+      setError('Could not send password reset email. Check email address and network.');
     } finally {
       setLoading(false);
     }
@@ -141,22 +179,56 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError('Please fill in both email and password.');
+    if (!email.trim() || !password) {
+      setError('Please provide your email and password.');
       return;
+    }
+
+    if (mode === 'signup') {
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters.');
+        return;
+      }
+      if (confirmPassword && password !== confirmPassword) {
+        setError('Passwords do not match. Please re-enter your password.');
+        return;
+      }
     }
 
     setLoading(true);
     setError('');
+    setNotice('');
 
     try {
       if (mode === 'signup') {
-        const user = await signupWithEmail(email, password, name || email.split('@')[0]);
-        login(user.displayName || name || email.split('@')[0], user.email || email);
+        const cleanName = name.trim() || email.split('@')[0] || 'Active Trader';
+        const userCredential = await signupWithEmail(email.trim(), password, cleanName);
+        try {
+          confetti({
+            particleCount: 70,
+            spread: 60,
+            origin: { y: 0.6 },
+            colors: ['#006948', '#85f8c4', '#10B981'],
+          });
+        } catch {}
+
+        login(userCredential.displayName || cleanName, userCredential.email || email.trim());
         router.push('/');
       } else {
-        const user = await loginWithEmail(email, password);
-        login(user.displayName || email.split('@')[0], user.email || email);
+        const userCredential = await loginWithEmail(email.trim(), password);
+        try {
+          confetti({
+            particleCount: 50,
+            spread: 50,
+            origin: { y: 0.6 },
+            colors: ['#006948', '#85f8c4', '#10B981'],
+          });
+        } catch {}
+
+        login(
+          userCredential.displayName || email.split('@')[0] || 'Active Trader',
+          userCredential.email || email.trim()
+        );
         router.push('/');
       }
     } catch (err: any) {
@@ -167,15 +239,15 @@ export default function LoginPage() {
         err.code === 'auth/user-not-found' ||
         err.code === 'auth/wrong-password'
       ) {
-        msg = 'Invalid email or password. You can also sign up or use 1-Click Demo Login below.';
+        msg = 'Invalid email or password. Please verify your details or create an account.';
       } else if (err.code === 'auth/email-already-in-use') {
-        msg = 'An account with this email already exists. Please switch to Sign In.';
+        msg = 'An account with this email already exists. Please switch to "Sign In" above.';
       } else if (err.code === 'auth/weak-password') {
         msg = 'Password should be at least 6 characters.';
       } else if (err.code === 'auth/unauthorized-domain') {
         const currentDomain =
           typeof window !== 'undefined' ? window.location.hostname : 'your domain';
-        msg = `Domain "${currentDomain}" is not in Firebase Authorized Domains. Add it in Firebase Console > Authentication > Settings > Authorized domains.`;
+        msg = `Domain "${currentDomain}" is not in Firebase Authorized Domains. Add it in Firebase Console > Authentication > Settings.`;
       }
       setError(msg);
     } finally {
@@ -187,16 +259,19 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     try {
-      const user = await loginWithGoogle();
-      login(user.displayName || 'Google Trader', user.email || 'trader@google.com');
+      const userCredential = await loginWithGoogle();
+      login(
+        userCredential.displayName || 'Google Trader',
+        userCredential.email || 'trader@google.com'
+      );
       router.push('/');
     } catch (err: any) {
       console.warn('Google sign-in error:', err);
       if (err.code === 'auth/unauthorized-domain') {
         const currentDomain =
-          typeof window !== 'undefined' ? window.location.hostname : 'your-app.vercel.app';
+          typeof window !== 'undefined' ? window.location.hostname : 'localhost';
         setError(
-          `Domain "${currentDomain}" is not authorized for Google Sign-In. Please add "${currentDomain}" to Firebase Console -> Authentication -> Settings -> Authorized domains. You can also use 1-Click Demo Login or Email/Password below!`
+          `Domain "${currentDomain}" is not authorized for Google Sign-In. Add "${currentDomain}" to Firebase Console -> Authentication -> Settings -> Authorized domains.`
         );
       } else if (err.code !== 'auth/popup-closed-by-user') {
         setError(err.message || 'Google sign-in cancelled or not enabled.');
@@ -207,14 +282,14 @@ export default function LoginPage() {
   };
 
   const handleDemoLogin = () => {
-    login('Vinkal Prajapati', 'vinkal@tradedairy.online');
+    resetDemoData();
     router.push('/');
   };
 
   return (
     <div className="min-h-screen bg-background text-on-surface flex flex-col justify-between antialiased">
       {/* Top Header */}
-      <header className="h-14 sm:h-15 px-4 sm:px-8 lg:px-12 flex items-center justify-between border-b border-surface-container/60 bg-white/90 backdrop-blur-md">
+      <header className="h-16 px-4 sm:px-8 max-w-5xl mx-auto w-full flex items-center justify-between border-b border-surface-container/60 bg-white/90 backdrop-blur-md">
         <Link href="/" prefetch={true}>
           <BrandLogo />
         </Link>
@@ -222,63 +297,36 @@ export default function LoginPage() {
           <Link
             href="/onboarding"
             prefetch={true}
-            className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg text-on-surface-variant bg-surface-container-low hover:bg-surface-container transition-colors"
+            className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg text-on-surface-variant bg-surface-container-low hover:bg-surface-container transition-colors"
           >
             <span className="material-symbols-outlined text-[16px]">tune</span>
-            <span className="hidden sm:inline">Setup Wizard</span>
-          </Link>
-
-          <Link
-            href="/"
-            prefetch={true}
-            className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-hover shadow-xs transition-colors"
-          >
-            <span className="material-symbols-outlined text-[16px]">grid_view</span>
-            <span>Dashboard</span>
+            <span>Onboarding Setup</span>
           </Link>
         </div>
       </header>
 
-      {/* Main Form Center */}
-      <main className="flex-1 flex items-center justify-center p-3.5 sm:p-6">
-        <div className="w-full max-w-md bg-white rounded-2xl p-5 sm:p-7 shadow-sm border border-surface-container/80 flex flex-col gap-4 relative overflow-hidden">
-          <div className="absolute -top-16 -right-16 w-36 h-36 rounded-full bg-primary/10 blur-2xl pointer-events-none"></div>
-
-          {/* Title */}
-          <div className="text-center">
-            <h1 className="text-xl sm:text-2xl font-bold text-on-surface tracking-tight">
-              Sign In to TradeDairy
+      {/* Main Authentication Card */}
+      <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
+        <div className="w-full max-w-md bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-surface-container flex flex-col gap-5 relative overflow-hidden">
+          {/* Header Title */}
+          <div className="text-center space-y-1">
+            <h1 className="text-2xl font-extrabold text-on-surface tracking-tight">
+              {mode === 'signup' ? 'Create Your Account' : 'Sign In to TradeDairy'}
             </h1>
-            <p className="text-xs text-on-surface-variant mt-0.5">
-              Live multi-device trading journal, risk ledger &amp; performance ecosystem.
+            <p className="text-xs text-on-surface-variant">
+              Live multi-device trading journal, risk ledger &amp; real-time cloud sync.
             </p>
           </div>
 
-          {/* Primary Auth Method Switcher: QR Code vs Credentials */}
+          {/* Primary Auth Method Switcher: Email/Password vs QR Code */}
           <div className="flex p-1 rounded-xl bg-surface-container-low border border-surface-container text-xs font-semibold">
-            <button
-              type="button"
-              onClick={() => {
-                setAuthType('qr');
-                setError('');
-              }}
-              className={`flex-1 py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                authType === 'qr'
-                  ? 'bg-white text-primary shadow-xs font-bold'
-                  : 'text-on-surface-variant hover:text-on-surface'
-              }`}
-            >
-              <span className="material-symbols-outlined text-[16px]">qr_code_2</span>
-              <span>QR Code Instant Login</span>
-            </button>
-
             <button
               type="button"
               onClick={() => {
                 setAuthType('credentials');
                 setError('');
               }}
-              className={`flex-1 py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              className={`flex-1 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                 authType === 'credentials'
                   ? 'bg-white text-primary shadow-xs font-bold'
                   : 'text-on-surface-variant hover:text-on-surface'
@@ -287,110 +335,80 @@ export default function LoginPage() {
               <span className="material-symbols-outlined text-[16px]">mail</span>
               <span>Email &amp; Password</span>
             </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setAuthType('qr');
+                setError('');
+              }}
+              className={`flex-1 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                authType === 'qr'
+                  ? 'bg-white text-primary shadow-xs font-bold'
+                  : 'text-on-surface-variant hover:text-on-surface'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[16px]">qr_code_2</span>
+              <span>Mobile QR Scan</span>
+            </button>
           </div>
 
+          {/* Alert Messages */}
+          {notice && (
+            <div className="p-3 rounded-xl bg-primary/10 border border-primary/20 text-xs text-primary font-medium flex items-start gap-2">
+              <span className="material-symbols-outlined text-[16px] shrink-0 mt-0.5">info</span>
+              <span className="leading-relaxed">{notice}</span>
+            </div>
+          )}
+
           {error && (
-            <div className="p-3 rounded-lg bg-error-container/30 border border-error/40 text-xs text-error font-medium flex items-start gap-2">
-              <span className="material-symbols-outlined text-[16px] flex-shrink-0 mt-0.5">error</span>
+            <div className="p-3 rounded-xl bg-error/10 border border-error/20 text-xs text-error font-medium flex items-start gap-2">
+              <span className="material-symbols-outlined text-[16px] shrink-0 mt-0.5">error</span>
               <span className="leading-relaxed">{error}</span>
             </div>
           )}
 
-          {/* VIEW 1: QR CODE INSTANT PC LOGIN (WhatsApp Web Style) */}
-          {authType === 'qr' && (
-            <div className="flex flex-col items-center gap-3.5 py-1">
-              {qrStatus === 'AUTHORIZED' ? (
-                <div className="py-6 text-center space-y-2 animate-in zoom-in-95 duration-200">
-                  <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto text-2xl font-bold">
-                    ✓
-                  </div>
-                  <h3 className="text-base font-bold text-on-surface">Authenticated via Mobile!</h3>
-                  <p className="text-xs text-on-surface-variant">Entering TradeDairy Terminal...</p>
-                </div>
-              ) : (
-                <>
-                  <div className="p-3 bg-white rounded-xl border border-surface-container shadow-xs relative flex items-center justify-center min-h-[210px] min-w-[210px]">
-                    {qrLoading && (
-                      <div className="absolute inset-0 bg-white/90 backdrop-blur-xs flex flex-col items-center justify-center gap-2">
-                        <span className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
-                        <span className="text-[11px] text-outline">Generating Secure QR...</span>
-                      </div>
-                    )}
-
-                    {qrStatus === 'EXPIRED' && (
-                      <div className="absolute inset-0 bg-white/95 flex flex-col items-center justify-center gap-2 p-4 text-center">
-                        <span className="material-symbols-outlined text-outline text-[28px]">timer_off</span>
-                        <p className="text-xs font-semibold text-on-surface">QR Code Expired</p>
-                        <button
-                          type="button"
-                          onClick={initQrSession}
-                          className="btn-primary text-xs py-1.5 px-3"
-                        >
-                          Refresh Code
-                        </button>
-                      </div>
-                    )}
-
-                    <canvas ref={canvasRef} className="rounded-lg" />
-                  </div>
-
-                  {/* 6-character Instant PIN Backup */}
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-low text-xs border border-surface-container">
-                    <span className="text-outline">Or enter PIN:</span>
-                    <span className="font-mono font-bold text-primary tracking-widest text-sm">
-                      {qrPin || 'TD-••••'}
-                    </span>
-                  </div>
-
-                  {/* Step Instructions */}
-                  <div className="w-full p-3 rounded-xl bg-surface-container-low/70 border border-surface-container/60 space-y-1.5 text-xs text-on-surface-variant">
-                    <div className="flex items-center gap-2 font-semibold text-on-surface text-[11px]">
-                      <span className="material-symbols-outlined text-primary text-[16px]">smartphone</span>
-                      <span>How to Log In with your Phone:</span>
-                    </div>
-                    <ol className="list-decimal list-inside space-y-0.5 text-[11px] text-on-surface-variant/90 pl-1">
-                      <li>Open TradeDairy on your logged-in phone</li>
-                      <li>
-                        Tap <span className="font-semibold text-on-surface">&quot;Scan PC Login&quot;</span> in the
-                        top menu
-                      </li>
-                      <li>Point camera at this screen or enter the PIN</li>
-                    </ol>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={initQrSession}
-                    disabled={qrLoading}
-                    className="text-xs text-outline hover:text-primary transition-colors flex items-center gap-1 cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[15px]">refresh</span>
-                    <span>Regenerate QR Code</span>
-                  </button>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* VIEW 2: TRADITIONAL CREDENTIALS / GOOGLE / 1-CLICK DEMO */}
+          {/* TAB 1: EMAIL & PASSWORD (SIGN IN / SIGN UP) */}
           {authType === 'credentials' && (
-            <div className="flex flex-col gap-3">
-              {/* Quick 1-Click Demo */}
-              <button
-                type="button"
-                onClick={handleDemoLogin}
-                className="w-full py-2 px-3 rounded-xl bg-primary-fixed/40 hover:bg-primary-fixed/60 border border-primary/20 text-on-primary-fixed font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
-              >
-                <span className="material-symbols-outlined text-[17px] text-primary">bolt</span>
-                <span>1-Click Demo Login (Vinkal Prajapati)</span>
-              </button>
+            <div className="flex flex-col gap-4">
+              {/* Sign In vs Sign Up Toggle */}
+              <div className="flex p-0.5 rounded-lg bg-surface-container-low border border-surface-container text-xs font-semibold">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode('login');
+                    setError('');
+                  }}
+                  className={`flex-1 py-1.5 rounded-md transition-all cursor-pointer ${
+                    mode === 'login'
+                      ? 'bg-white text-primary shadow-xs font-bold'
+                      : 'text-on-surface-variant hover:text-on-surface'
+                  }`}
+                >
+                  Sign In
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode('signup');
+                    setError('');
+                  }}
+                  className={`flex-1 py-1.5 rounded-md transition-all cursor-pointer ${
+                    mode === 'signup'
+                      ? 'bg-white text-primary shadow-xs font-bold'
+                      : 'text-on-surface-variant hover:text-on-surface'
+                  }`}
+                >
+                  Create Account (Sign Up)
+                </button>
+              </div>
 
-              {/* Google Sign-In */}
+              {/* Google Sign In Button */}
               <button
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="w-full py-2 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container border border-surface-container text-on-surface font-semibold text-xs flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-60"
+                className="w-full py-2.5 px-4 rounded-xl bg-surface-container-low hover:bg-surface-container border border-surface-container text-on-surface font-semibold text-xs flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-60 shadow-xs"
               >
                 <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                   <path
@@ -415,136 +433,193 @@ export default function LoginPage() {
 
               <div className="flex items-center gap-3 text-xs text-outline my-0.5">
                 <div className="flex-1 h-px bg-surface-container"></div>
-                <span>or email password</span>
+                <span>or use email</span>
                 <div className="flex-1 h-px bg-surface-container"></div>
               </div>
 
-              {/* Sub Mode: Sign In vs Sign Up */}
-              <div className="flex p-0.5 rounded-lg bg-surface-container-low border border-surface-container text-xs font-semibold">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMode('login');
-                    setError('');
-                  }}
-                  className={`flex-1 py-1 rounded-md transition-all cursor-pointer ${
-                    mode === 'login'
-                      ? 'bg-white text-primary shadow-xs font-bold'
-                      : 'text-on-surface-variant hover:text-on-surface'
-                  }`}
-                >
-                  Sign In
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMode('signup');
-                    setError('');
-                  }}
-                  className={`flex-1 py-1 rounded-md transition-all cursor-pointer ${
-                    mode === 'signup'
-                      ? 'bg-white text-primary shadow-xs font-bold'
-                      : 'text-on-surface-variant hover:text-on-surface'
-                  }`}
-                >
-                  Sign Up (New)
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                {notice && (
-                  <p role="status" className="p-2.5 rounded-lg bg-primary/10 text-primary text-xs">
-                    {notice}
-                  </p>
-                )}
-
+              {/* Email / Password Form */}
+              <form onSubmit={handleSubmit} className="space-y-3.5">
                 {mode === 'signup' && (
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs font-semibold text-on-surface">Your Full Name</label>
+                  <div>
+                    <label className="block text-xs font-bold text-on-surface mb-1">
+                      Full Name *
+                    </label>
                     <input
                       type="text"
+                      required
+                      placeholder="e.g. Rahul Sharma"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="e.g. Vinkal Prajapati"
-                      className="h-9 px-3 rounded-lg bg-surface-container-low text-xs text-on-surface border border-surface-container focus:bg-white outline-none focus:ring-1 focus:ring-primary"
-                      required={mode === 'signup'}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-surface-container bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary text-xs sm:text-sm font-medium"
                     />
                   </div>
                 )}
 
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-semibold text-on-surface">Email Address</label>
+                <div>
+                  <label className="block text-xs font-bold text-on-surface mb-1">
+                    Email Address *
+                  </label>
                   <input
                     type="email"
+                    required
+                    placeholder="trader@domain.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@example.com"
-                    className="h-9 px-3 rounded-lg bg-surface-container-low text-xs text-on-surface border border-surface-container focus:bg-white outline-none focus:ring-1 focus:ring-primary"
-                    required
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-surface-container bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary text-xs sm:text-sm font-medium"
                   />
                 </div>
 
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-on-surface">Password</label>
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold text-on-surface">
+                      Password *
+                    </label>
                     {mode === 'login' && (
                       <button
                         type="button"
                         onClick={handlePasswordReset}
-                        disabled={loading}
-                        className="text-[11px] text-primary hover:underline"
+                        className="text-[11px] text-primary hover:underline font-semibold"
                       >
                         Forgot password?
                       </button>
                     )}
                   </div>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="h-9 px-3 rounded-lg bg-surface-container-low text-xs text-on-surface border border-surface-container focus:bg-white outline-none focus:ring-1 focus:ring-primary"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full px-3.5 py-2.5 pr-10 rounded-xl border border-surface-container bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary text-xs sm:text-sm font-medium"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface p-1"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">
+                        {showPassword ? 'visibility_off' : 'visibility'}
+                      </span>
+                    </button>
+                  </div>
                 </div>
+
+                {mode === 'signup' && (
+                  <div>
+                    <label className="block text-xs font-bold text-on-surface mb-1">
+                      Confirm Password *
+                    </label>
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-surface-container bg-surface-container-lowest text-on-surface focus:outline-none focus:ring-2 focus:ring-primary text-xs sm:text-sm font-medium"
+                    />
+                  </div>
+                )}
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2.5 rounded-lg bg-primary hover:bg-primary-hover text-white font-bold text-xs shadow-xs transition-all cursor-pointer mt-1 disabled:opacity-60 flex items-center justify-center gap-1.5"
+                  className="btn-primary w-full py-3 text-sm font-bold shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
                 >
-                  {loading && (
-                    <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  {loading ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                      <span>Authenticating...</span>
+                    </>
+                  ) : mode === 'signup' ? (
+                    <>
+                      <span>Create Account &amp; Sync Data</span>
+                      <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Sign In to Terminal</span>
+                      <span className="material-symbols-outlined text-[18px]">login</span>
+                    </>
                   )}
-                  <span>{mode === 'login' ? 'Sign In to Journal' : 'Create Trader Account'}</span>
                 </button>
               </form>
             </div>
           )}
 
-          {/* Super Admin Direct Link */}
-          <div className="p-2 rounded-xl bg-surface-container-low border border-surface-container flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-secondary text-[18px]">security</span>
-              <span className="text-[11px] font-bold text-on-surface">Super Admin Portal</span>
-            </div>
-            <Link
-              href="/su"
-              className="px-2 py-0.5 rounded bg-secondary text-white text-[10px] font-bold hover:bg-secondary/90 transition-colors"
-            >
-              Open /su
-            </Link>
-          </div>
+          {/* TAB 2: QR CODE INSTANT MOBILE AUTH */}
+          {authType === 'qr' && (
+            <div className="flex flex-col items-center gap-3.5 py-2">
+              {qrStatus === 'AUTHORIZED' ? (
+                <div className="py-6 text-center space-y-2 animate-in zoom-in-95 duration-200">
+                  <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto text-2xl font-bold">
+                    ✓
+                  </div>
+                  <h3 className="text-base font-bold text-on-surface">Authenticated via Mobile!</h3>
+                  <p className="text-xs text-on-surface-variant">Entering TradeDairy Terminal...</p>
+                </div>
+              ) : (
+                <>
+                  <div className="p-3 bg-white rounded-xl border border-surface-container shadow-xs relative flex items-center justify-center min-h-[210px] min-w-[210px]">
+                    {qrLoading && (
+                      <div className="absolute inset-0 bg-white/90 backdrop-blur-xs flex flex-col items-center justify-center gap-2">
+                        <span className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
+                        <span className="text-[11px] text-outline">Generating Secure QR...</span>
+                      </div>
+                    )}
 
-          <p className="text-center text-[10px] text-on-surface-variant">
-            By signing in, you agree to TradeDairy&apos;s Zero-Knowledge Data Privacy policy.
-          </p>
+                    {qrStatus === 'EXPIRED' && (
+                      <div className="absolute inset-0 bg-white/95 flex flex-col items-center justify-center p-3 text-center gap-2">
+                        <p className="text-xs text-error font-semibold">QR Code Expired</p>
+                        <button
+                          type="button"
+                          onClick={initQrSession}
+                          className="px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-semibold cursor-pointer"
+                        >
+                          Refresh QR
+                        </button>
+                      </div>
+                    )}
+
+                    <canvas ref={canvasRef} className="max-w-full rounded-lg" />
+                  </div>
+
+                  {qrPin && (
+                    <div className="text-center">
+                      <p className="text-[11px] text-outline">Pairing PIN code:</p>
+                      <span className="text-sm font-mono font-bold tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-md">
+                        {qrPin}
+                      </span>
+                    </div>
+                  )}
+
+                  <p className="text-xs text-center text-on-surface-variant max-w-xs">
+                    Open TradeDairy on your logged-in mobile browser and tap <strong>&quot;Scan PC Login&quot;</strong> in the header to authenticate instantly.
+                  </p>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Guest / Demo Mode Link */}
+          <div className="pt-2 border-t border-surface-container text-center">
+            <p className="text-xs text-outline">
+              Just testing or exploring?{' '}
+              <button
+                type="button"
+                onClick={handleDemoLogin}
+                className="text-primary font-bold hover:underline cursor-pointer"
+              >
+                Launch Guest Demo Mode →
+              </button>
+            </p>
+          </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="py-3 text-center text-xs text-on-surface-variant border-t border-surface-container/60">
-        © 2026 TradeDairy.online • Multi-Device Realtime Journaling
+      <footer className="h-12 px-4 max-w-5xl mx-auto w-full flex items-center justify-center text-xs text-outline">
+        <span>© {new Date().getFullYear()} TradeDairy • Precision Trading Intelligence</span>
       </footer>
     </div>
   );
