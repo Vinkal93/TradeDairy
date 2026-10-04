@@ -1,12 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useTrades, TimeframeFilter } from '../context/TradeContext';
 import { formatCurrency, formatPercent } from '../lib/utils';
 import { localDate } from '../lib/dates';
 
 export default function DashboardPage() {
+  const router = useRouter();
   const {
     user,
     accounts,
@@ -16,7 +18,28 @@ export default function DashboardPage() {
     setTimeframe,
     analytics,
     intradayEquityCurve,
+    isLoaded,
   } = useTrades();
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    if (!user.isLoggedIn) {
+      if (!user.isOnboarded) {
+        router.push('/onboarding');
+      } else {
+        router.push('/login');
+      }
+    }
+  }, [user.isLoggedIn, user.isOnboarded, isLoaded, router]);
+
+  if (!isLoaded || !user.isLoggedIn) {
+    return (
+      <div className="min-h-[75vh] flex flex-col items-center justify-center gap-3">
+        <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-xs text-on-surface-variant font-medium">Entering TradeDairy Terminal...</p>
+      </div>
+    );
+  }
 
   const todayJournal = journals[localDate()] || {
     postMarketNotes: 'Add your reflections in the daily journal.',

@@ -13,8 +13,8 @@ export const INITIAL_USER: UserProfile = {
   dailyMaxTrades: 6,
   defaultRiskPerTrade: 1,
   avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDE1QclnM-SpbowLq4dk9JMiWIBURwgrfnza9o1NTBFR0ALgbSMFiBp_h8PDfmcHo3wwscOKZny8SB7TJqhvG_eM8c9S_3n3xf135LfJkL-M3vnsVWQagS9EpaOTYjR_wyGZu4e7se3-TL9_3auHPReo69kjJuOuWULvaJgnnhegVKj6U936JjTiraoXBCif--luKyhf2U_XHWnZiJ-u0BYKTSOh_oc-2zHvKwdhnLau7YYW4Jc9lJb',
-  isLoggedIn: true,
-  isOnboarded: true,
+  isLoggedIn: false,
+  isOnboarded: false,
   plan: 'Pro',
 };
 

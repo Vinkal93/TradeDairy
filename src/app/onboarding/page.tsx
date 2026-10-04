@@ -10,32 +10,44 @@ import confetti from 'canvas-confetti';
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { user, updateUser, addAccount, accounts } = useTrades();
+  const { user, updateUser, addAccount, login } = useTrades();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
 
-  // Step 1 State
-  const [fullName, setFullName] = useState(user.fullName);
-  const [experience, setExperience] = useState<'beginner' | 'intermediate' | 'advanced'>(user.experience);
-  const [primaryMarket, setPrimaryMarket] = useState(user.primaryMarket);
-  const [currency, setCurrency] = useState<'INR' | 'USD' | 'EUR' | 'GBP'>(user.baseCurrency);
-  const [styles, setStyles] = useState<string[]>(user.activeStyles);
+  // Step 1 State: Persona & Style
+  const [fullName, setFullName] = useState(user.fullName || 'Trader');
+  const [experience, setExperience] = useState<'beginner' | 'intermediate' | 'advanced'>(
+    user.experience || 'intermediate'
+  );
+  const [primaryMarket, setPrimaryMarket] = useState(user.primaryMarket || 'Indian Markets (NSE / BSE)');
+  const [currency, setCurrency] = useState<'INR' | 'USD' | 'EUR' | 'GBP'>(user.baseCurrency || 'INR');
+  const [styles, setStyles] = useState<string[]>(
+    user.activeStyles?.length ? user.activeStyles : ['Intraday', 'F&O Options']
+  );
 
-  // Step 2 State
-  const [broker, setBroker] = useState<'Zerodha' | 'Groww' | 'Angel One' | 'Upstox' | 'Dhan' | 'Custom Broker'>('Zerodha');
-  const [accountName, setAccountName] = useState('Main Trading Account');
+  // Step 2 State: Demat Broker & Capital
+  const [broker, setBroker] = useState<'Zerodha' | 'Groww' | 'Angel One' | 'Upstox' | 'Dhan' | 'Custom Broker'>(
+    'Zerodha'
+  );
+  const [accountName, setAccountName] = useState('Primary Demat Account');
   const [capital, setCapital] = useState<number>(100000);
+
+  // Step 3 State: Risk Shield Parameters
+  const [dailyMaxLoss, setDailyMaxLoss] = useState<number>(user.dailyMaxLoss || 3000);
+  const [dailyMaxTrades, setDailyMaxTrades] = useState<number>(user.dailyMaxTrades || 6);
+  const [riskPercent, setRiskPercent] = useState<number>(user.defaultRiskPerTrade || 1);
+
   const [setupError, setSetupError] = useState('');
 
   const toggleStyle = (styleName: string) => {
-    setStyles(prev =>
-      prev.includes(styleName) ? prev.filter(s => s !== styleName) : [...prev, styleName]
+    setStyles((prev) =>
+      prev.includes(styleName) ? prev.filter((s) => s !== styleName) : [...prev, styleName]
     );
   };
 
   const handleStep1Next = () => {
     if (!fullName.trim() || styles.length === 0) {
-      setSetupError('Enter your name and select at least one trading style.');
+      setSetupError('Please enter your name and select at least one trading style.');
       return;
     }
     setSetupError('');
@@ -51,11 +63,10 @@ export default function OnboardingPage() {
 
   const handleStep2Next = () => {
     if (!accountName.trim() || !Number.isFinite(capital) || capital <= 0) {
-      setSetupError('Enter an account label and positive starting capital.');
+      setSetupError('Please enter an account name and a positive starting capital.');
       return;
     }
     setSetupError('');
-    // Add or update initial broker
     addAccount({
       broker,
       accountName: `${accountName} (${broker})`,
@@ -69,441 +80,447 @@ export default function OnboardingPage() {
     });
     setStep(3);
 
-    // Fire celebration confetti!
+    // Fire celebratory confetti
     try {
       confetti({
-        particleCount: 80,
+        particleCount: 75,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#006948', '#85f8c4', '#316bf3', '#10B981'],
+        colors: ['#006948', '#85f8c4', '#0051d5', '#10B981'],
       });
     } catch {
-      // Ignored if confetti fails
+      // ignore
     }
   };
 
-  const handleFinish = (target: '/add-trade' | '/') => {
-    updateUser({ isOnboarded: true });
-    router.push(target);
+  const handleProceedToLogin = () => {
+    updateUser({
+      fullName: fullName.trim(),
+      dailyMaxLoss,
+      dailyMaxTrades,
+      defaultRiskPerTrade: riskPercent,
+      isOnboarded: true,
+    });
+    router.push('/login');
+  };
+
+  const handleDirectDemoLogin = () => {
+    login('Vinkal Prajapati', 'vinkal@tradedairy.online');
+    router.push('/');
   };
 
   return (
-    <div className="min-h-screen bg-background text-on-surface flex flex-col justify-between antialiased">
+    <div className="min-h-screen bg-background text-on-surface flex flex-col justify-between antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
       {/* Top Header Bar */}
       <header className="fixed top-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] border-b border-surface-container">
-        <div className="h-16 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
+        <div className="h-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 flex items-center justify-between">
           <div className="flex items-center gap-space-sm">
             <BrandLogo />
-            <span className="font-label-sm text-xs px-2.5 py-0.5 bg-surface-container text-on-surface-variant rounded-full font-semibold">
-              Setup Wizard
+            <span className="font-label-sm text-[11px] px-2.5 py-0.5 bg-surface-container text-primary rounded-full font-bold uppercase tracking-wider">
+              Step 1 of 3: Onboarding
             </span>
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={handleDirectDemoLogin}
+              className="inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-lg text-primary bg-primary/10 hover:bg-primary/20 transition-all gap-1 cursor-pointer"
+              title="Skip setup and explore Demo Workspace immediately"
+            >
+              <span className="material-symbols-outlined text-[16px]">bolt</span>
+              <span className="hidden sm:inline">1-Click Demo Login</span>
+            </button>
+
             <Link
               href="/login"
               prefetch={true}
-              className="inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-lg text-on-surface-variant bg-surface-container-low hover:bg-surface-container transition-all gap-1"
+              className="inline-flex items-center text-xs font-semibold px-3.5 py-1.5 rounded-lg text-on-surface bg-surface-container hover:bg-surface-container-high transition-all gap-1.5 border border-surface-container"
             >
-              <span className="material-symbols-outlined text-[16px]">login</span>
-              <span>Login Screen</span>
-            </Link>
-            <Link
-              href="/"
-              prefetch={true}
-              className="inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-lg text-on-surface-variant bg-surface-container-low hover:bg-surface-container transition-all gap-1"
-            >
-              <span className="material-symbols-outlined text-[16px]">close</span>
-              <span>Skip to App</span>
+              <span className="material-symbols-outlined text-[16px] text-secondary">login</span>
+              <span>Log In</span>
             </Link>
           </div>
         </div>
       </header>
 
       {/* Main Container */}
-      <main className="w-full pt-20 pb-16 flex-1 flex flex-col items-center justify-center px-4 sm:px-6">
-        <div className="w-full max-w-3xl mx-auto py-space-md">
-          {setupError && <p role="alert" className="mb-4 p-3 rounded-lg bg-error-container text-error text-sm">{setupError}</p>}
-          {/* Progress Indicator Steps */}
-          <div className="w-full max-w-xl mx-auto mb-space-lg">
-            <div className="relative flex items-center justify-between">
-              {/* Step 1 */}
-              <div className="flex flex-col items-center gap-1 z-10">
-                <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-sm transition-all ${
-                    step >= 1 ? 'bg-primary text-on-primary ring-4 ring-primary-fixed/40' : 'bg-surface-container text-on-surface-variant'
-                  }`}
-                >
-                  {step > 1 ? '✓' : '1'}
-                </div>
-                <span className="font-label-sm text-xs font-semibold text-on-surface">1. Profile</span>
-              </div>
-
-              <div className={`flex-1 h-1 mx-2 rounded-full transition-all ${step >= 2 ? 'bg-primary' : 'bg-surface-container'}`}></div>
-
-              {/* Step 2 */}
-              <div className="flex flex-col items-center gap-1 z-10">
-                <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-sm transition-all ${
-                    step >= 2 ? 'bg-primary text-on-primary ring-4 ring-primary-fixed/40' : 'bg-surface-container text-on-surface-variant'
-                  }`}
-                >
-                  {step > 2 ? '✓' : '2'}
-                </div>
-                <span className="font-label-sm text-xs font-semibold text-on-surface">2. Broker</span>
-              </div>
-
-              <div className={`flex-1 h-1 mx-2 rounded-full transition-all ${step >= 3 ? 'bg-primary' : 'bg-surface-container'}`}></div>
-
-              {/* Step 3 */}
-              <div className="flex flex-col items-center gap-1 z-10">
-                <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-sm transition-all ${
-                    step === 3 ? 'bg-primary text-on-primary ring-4 ring-primary-fixed/40' : 'bg-surface-container text-on-surface-variant'
-                  }`}
-                >
-                  3
-                </div>
-                <span className="font-label-sm text-xs font-semibold text-on-surface">3. Ready</span>
-              </div>
+      <main className="flex-1 flex flex-col items-center justify-center pt-24 pb-12 px-4 sm:px-6 w-full max-w-3xl mx-auto">
+        {/* Progress Stepper Pills */}
+        <div className="w-full flex items-center justify-center gap-2 sm:gap-4 mb-6">
+          <div className="flex items-center gap-2">
+            <div
+              className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                step >= 1 ? 'bg-primary text-on-primary shadow-xs' : 'bg-surface-container text-on-surface-variant'
+              }`}
+            >
+              1
             </div>
+            <span className={`text-xs font-medium hidden sm:inline ${step === 1 ? 'text-primary font-bold' : 'text-on-surface-variant'}`}>
+              Persona &amp; Style
+            </span>
           </div>
+          <div className={`w-8 sm:w-12 h-0.5 ${step >= 2 ? 'bg-primary' : 'bg-surface-container-high'}`} />
+          <div className="flex items-center gap-2">
+            <div
+              className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                step >= 2 ? 'bg-primary text-on-primary shadow-xs' : 'bg-surface-container text-on-surface-variant'
+              }`}
+            >
+              2
+            </div>
+            <span className={`text-xs font-medium hidden sm:inline ${step === 2 ? 'text-primary font-bold' : 'text-on-surface-variant'}`}>
+              Broker &amp; Capital
+            </span>
+          </div>
+          <div className={`w-8 sm:w-12 h-0.5 ${step >= 3 ? 'bg-primary' : 'bg-surface-container-high'}`} />
+          <div className="flex items-center gap-2">
+            <div
+              className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                step >= 3 ? 'bg-primary text-on-primary shadow-xs' : 'bg-surface-container text-on-surface-variant'
+              }`}
+            >
+              3
+            </div>
+            <span className={`text-xs font-medium hidden sm:inline ${step === 3 ? 'text-primary font-bold' : 'text-on-surface-variant'}`}>
+              Risk Rules
+            </span>
+          </div>
+        </div>
 
-          {/* STEP 1: Basic Profile */}
-          {step === 1 && (
-            <div className="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm border border-surface-container flex flex-col gap-6 animate-in fade-in duration-200">
+        {setupError && (
+          <div className="w-full mb-4 p-3 rounded-xl bg-error-container text-on-error-container text-xs flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px]">error</span>
+            <span>{setupError}</span>
+          </div>
+        )}
+
+        {/* STEP 1: Trader Persona & Focus */}
+        {step === 1 && (
+          <div className="w-full bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-xs border border-surface-container flex flex-col gap-5 animate-in fade-in duration-200">
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-primary">Welcome to TradeDairy</span>
+              <h1 className="text-xl sm:text-2xl font-bold text-on-surface tracking-tight mt-1">
+                Tell us about your trading style
+              </h1>
+              <p className="text-xs text-on-surface-variant mt-1">
+                We will personalize your journaling metrics, risk gauges, and analytics charts based on your market focus.
+              </p>
+            </div>
+
+            <div className="space-y-4">
               <div>
-                <h1 className="font-headline-xl text-xl sm:text-2xl text-on-surface font-bold tracking-tight">
-                  Welcome to TradeDairy! Let&apos;s tailor your journal.
-                </h1>
-                <p className="font-body-md text-xs sm:text-sm text-on-surface-variant mt-1">
-                  Tell us about your trading style so we can personalize your analytics and risk metrics.
-                </p>
-              </div>
-
-              {/* Name */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-on-surface">Full Legal / Trading Alias</label>
+                <label className="block text-xs font-semibold text-on-surface mb-1">Your Name / Trader Alias</label>
                 <input
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. Vinkal Prajapati"
-                  className="w-full h-11 px-3 rounded-lg bg-surface-container-low text-sm text-on-surface border border-surface-container focus:bg-surface-container-lowest"
-                  required
+                  className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-surface-container text-xs text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary"
                 />
               </div>
 
-              {/* Experience */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-semibold text-on-surface">Trading Experience Level</label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-on-surface mb-1.5">Experience Level</label>
+                <div className="grid grid-cols-3 gap-2">
                   {[
-                    { key: 'beginner', title: 'Beginner', sub: 'Learning market price structure', span: '< 1 Year' },
-                    { key: 'intermediate', title: 'Intermediate', sub: 'Consistent playbook, focusing on psychology', span: '1-3 Years' },
-                    { key: 'advanced', title: 'Advanced', sub: 'Systematic execution & portfolio models', span: '3+ Years' },
-                  ].map((exp) => (
-                    <div
-                      key={exp.key}
-                      onClick={() => setExperience(exp.key as any)}
-                      className={`p-3 rounded-xl border cursor-pointer transition-all flex flex-col justify-between ${
-                        experience === exp.key
-                          ? 'border-primary bg-primary/5 ring-2 ring-primary/40'
-                          : 'border-surface-container bg-surface-container-low hover:bg-surface-container'
-                      }`}
-                    >
-                      <div>
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="font-bold text-xs text-on-surface">{exp.title}</span>
-                          {experience === exp.key && <span className="text-primary text-xs font-bold">✓</span>}
-                        </div>
-                        <p className="text-[11px] text-on-surface-variant leading-snug">{exp.sub}</p>
-                      </div>
-                      <span className="text-[10px] text-primary font-bold mt-2">{exp.span}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Market Focus */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-semibold text-on-surface">Primary Market Focus</label>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    'Indian Markets (NSE / BSE)',
-                    'US Equities & Options',
-                    'Crypto',
-                    'Forex',
-                    'Commodities / MCX',
-                  ].map((m) => (
+                    { id: 'beginner', label: 'Beginner', desc: '< 1 yr' },
+                    { id: 'intermediate', label: 'Intermediate', desc: '1 - 3 yrs' },
+                    { id: 'advanced', label: 'Pro / Prop', desc: '3+ yrs' },
+                  ].map((lvl) => (
                     <button
-                      key={m}
+                      key={lvl.id}
                       type="button"
-                      onClick={() => setPrimaryMarket(m)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all border ${
-                        primaryMarket === m
-                          ? 'bg-primary text-on-primary border-primary shadow-xs'
-                          : 'bg-surface-container-low text-on-surface-variant border-surface-container hover:bg-surface-container'
+                      onClick={() => setExperience(lvl.id as any)}
+                      className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
+                        experience === lvl.id
+                          ? 'border-primary bg-primary/10 text-primary shadow-xs'
+                          : 'border-surface-container bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
                       }`}
                     >
-                      {m}
+                      <div className="font-bold text-xs">{lvl.label}</div>
+                      <div className="text-[10px] text-on-surface-variant mt-0.5">{lvl.desc}</div>
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Base Currency */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-semibold text-on-surface">Base Currency</label>
+              <div>
+                <label className="block text-xs font-semibold text-on-surface mb-1.5">
+                  Active Trading Styles (Select all that apply)
+                </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {[
-                    { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
-                    { code: 'USD', symbol: '$', name: 'US Dollar' },
-                    { code: 'EUR', symbol: '€', name: 'Euro' },
-                    { code: 'GBP', symbol: '£', name: 'British Pound' },
-                  ].map((cur) => (
-                    <div
-                      key={cur.code}
-                      onClick={() => setCurrency(cur.code as any)}
-                      className={`p-2.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
-                        currency === cur.code
-                          ? 'border-primary bg-primary/5 ring-2 ring-primary/40'
-                          : 'border-surface-container bg-surface-container-low hover:bg-surface-container'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
-                          {cur.symbol}
-                        </span>
-                        <div>
-                          <span className="text-xs font-bold text-on-surface block">{cur.code}</span>
-                          <span className="text-[10px] text-on-surface-variant">{cur.name}</span>
-                        </div>
-                      </div>
-                      {currency === cur.code && <span className="text-primary text-xs font-bold">✓</span>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Active Trading Styles */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-semibold text-on-surface">Active Trading Styles</label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {['Intraday', 'Swing Trading', 'Positional', 'Scalping', 'Options'].map((st) => {
-                    const checked = styles.includes(st);
+                    { name: 'Scalping', icon: 'speed' },
+                    { name: 'Intraday', icon: 'timer' },
+                    { name: 'F&O Options', icon: 'trending_up' },
+                    { name: 'Swing Trading', icon: 'swap_calls' },
+                  ].map((item) => {
+                    const selected = styles.includes(item.name);
                     return (
                       <button
-                        key={st}
+                        key={item.name}
                         type="button"
-                        onClick={() => toggleStyle(st)}
-                        className={`p-2.5 rounded-xl text-left border transition-all text-xs font-semibold flex items-center justify-between ${
-                          checked
-                            ? 'border-primary bg-primary/5 text-primary'
+                        onClick={() => toggleStyle(item.name)}
+                        className={`p-3 rounded-xl border flex flex-col items-center gap-1.5 text-center transition-all cursor-pointer ${
+                          selected
+                            ? 'border-primary bg-primary/10 text-primary shadow-xs font-bold'
                             : 'border-surface-container bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
                         }`}
                       >
-                        <span>{st}</span>
-                        <span>{checked ? '✓' : '+'}</span>
+                        <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
+                        <span className="text-xs">{item.name}</span>
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Step 1 Next Button */}
-              <div className="flex justify-end pt-4 border-t border-surface-container">
-                <button
-                  type="button"
-                  onClick={handleStep1Next}
-                  className="px-6 py-2.5 rounded-lg bg-primary hover:bg-primary-hover text-on-primary font-bold text-xs shadow-md transition-all cursor-pointer"
-                >
-                  Continue to Broker Setup →
-                </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div>
+                  <label className="block text-xs font-semibold text-on-surface mb-1">Primary Market</label>
+                  <select
+                    value={primaryMarket}
+                    onChange={(e) => setPrimaryMarket(e.target.value)}
+                    className="w-full h-11 px-3 rounded-xl bg-surface-container-low border border-surface-container text-xs text-on-surface focus:outline-none focus:bg-surface-container-lowest"
+                  >
+                    <option value="Indian Markets (NSE / BSE)">Indian Markets (NSE / BSE)</option>
+                    <option value="US Equities (NASDAQ / NYSE)">US Equities (NASDAQ / NYSE)</option>
+                    <option value="Crypto & Web3">Crypto &amp; Web3</option>
+                    <option value="Forex Majors">Forex Majors</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-on-surface mb-1">Base Currency</label>
+                  <select
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value as any)}
+                    className="w-full h-11 px-3 rounded-xl bg-surface-container-low border border-surface-container text-xs text-on-surface focus:outline-none focus:bg-surface-container-lowest"
+                  >
+                    <option value="INR">INR (₹) - Indian Rupee</option>
+                    <option value="USD">USD ($) - US Dollar</option>
+                    <option value="EUR">EUR (€) - Euro</option>
+                    <option value="GBP">GBP (£) - British Pound</option>
+                  </select>
+                </div>
               </div>
             </div>
-          )}
 
-          {/* STEP 2: Broker Account Setup */}
-          {step === 2 && (
-            <div className="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm border border-surface-container flex flex-col gap-6 animate-in fade-in duration-200">
+            <div className="flex items-center justify-between pt-4 border-t border-surface-container">
+              <Link
+                href="/login"
+                className="text-xs text-on-surface-variant hover:text-primary transition-colors font-semibold"
+              >
+                Skip to Login
+              </Link>
+              <button
+                type="button"
+                onClick={handleStep1Next}
+                className="px-6 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-semibold shadow-sm hover:bg-primary-hover transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <span>Next: Connect Broker</span>
+                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 2: Demat Broker Setup & Initial Capital */}
+        {step === 2 && (
+          <div className="w-full bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-xs border border-surface-container flex flex-col gap-5 animate-in fade-in duration-200">
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-primary">Demat Connection</span>
+              <h2 className="text-xl sm:text-2xl font-bold text-on-surface tracking-tight mt-1">
+                Configure your trading account
+              </h2>
+              <p className="text-xs text-on-surface-variant mt-1">
+                Select your primary broker to track contract notes, accurate brokerage, and daily P&amp;L automatically.
+              </p>
+            </div>
+
+            <div className="space-y-4">
               <div>
-                <h1 className="font-headline-xl text-xl sm:text-2xl text-on-surface font-bold tracking-tight">
-                  Add your primary trading account
-                </h1>
-                <p className="font-body-md text-xs sm:text-sm text-on-surface-variant mt-1">
-                  Track trades across multiple accounts. Enter your starting capital for automated ROI math.
-                </p>
-              </div>
-
-              {/* Broker Grid */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-semibold text-on-surface">Select Broker Platform</label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <label className="block text-xs font-semibold text-on-surface mb-2">Select Primary Broker</label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                   {[
-                    { name: 'Zerodha', tag: 'Kite • Direct Manual', initial: 'Z', color: '#0051d5' },
-                    { name: 'Groww', tag: 'Stock & F&O Manual', initial: 'G', color: '#006948' },
-                    { name: 'Angel One', tag: 'SmartAPI / Manual', initial: 'A', color: '#00873a' },
-                    { name: 'Upstox', tag: 'Pro Web / Manual', initial: 'U', color: '#316bf3' },
-                    { name: 'Dhan', tag: 'Options Trader', initial: 'D', color: '#00855d' },
-                    { name: 'Custom Broker', tag: 'Custom Entry', initial: 'C', color: '#213145' },
+                    { name: 'Zerodha', tag: 'Kite Connect' },
+                    { name: 'Groww', tag: 'Direct Excel' },
+                    { name: 'Angel One', tag: 'SmartAPI' },
+                    { name: 'Upstox', tag: 'Pro Terminal' },
+                    { name: 'Dhan', tag: 'Dhan HQ' },
+                    { name: 'Custom Broker', tag: 'Manual Ledger' },
                   ].map((b) => (
                     <button
                       key={b.name}
                       type="button"
                       onClick={() => setBroker(b.name as any)}
-                      className={`p-3 rounded-xl border text-left cursor-pointer transition-all flex flex-col justify-between ${
+                      className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                         broker === b.name
-                          ? 'border-primary bg-primary/5 ring-2 ring-primary/40'
+                          ? 'border-primary bg-primary/10 shadow-xs'
                           : 'border-surface-container bg-surface-container-low hover:bg-surface-container'
                       }`}
                     >
-                      <div className="flex items-center justify-between mb-2">
-                        <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-xs"
-                          style={{ backgroundColor: b.color }}
-                        >
-                          {b.initial}
-                        </div>
-                        {broker === b.name && <span className="text-primary text-xs font-bold">✓</span>}
-                      </div>
-                      <span className="font-bold text-xs text-on-surface block">{b.name}</span>
-                      <span className="text-[10px] text-on-surface-variant">{b.tag}</span>
+                      <div className="font-bold text-xs text-on-surface">{b.name}</div>
+                      <div className="text-[10px] text-on-surface-variant mt-0.5">{b.tag}</div>
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Account Label */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-on-surface">Account Label / Portfolio Name</label>
+              <div>
+                <label className="block text-xs font-semibold text-on-surface mb-1">Account Display Label</label>
                 <input
                   type="text"
                   value={accountName}
                   onChange={(e) => setAccountName(e.target.value)}
-                  placeholder="e.g. Main Intraday Account"
-                  className="h-11 px-3 rounded-lg bg-surface-container-low text-xs text-on-surface border border-surface-container focus:bg-surface-container-lowest"
-                  required
+                  placeholder="e.g. Zerodha F&O Main"
+                  className="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-surface-container text-xs text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary"
                 />
               </div>
 
-              {/* Starting Capital */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-on-surface">Starting Capital Balance ({currency} {currency === 'INR' ? '₹' : '$'})</label>
+              <div>
+                <label className="block text-xs font-semibold text-on-surface mb-1">
+                  Starting Trading Capital ({currency})
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-outline font-bold text-xs">
+                    {currency === 'INR' ? '₹' : '$'}
+                  </span>
+                  <input
+                    type="number"
+                    value={capital}
+                    onChange={(e) => setCapital(Number(e.target.value))}
+                    className="w-full h-11 pl-8 pr-3.5 rounded-xl bg-surface-container-low border border-surface-container text-xs text-on-surface font-mono font-bold focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary"
+                  />
+                </div>
+                <span className="text-[11px] text-on-surface-variant mt-1 block">
+                  Used to calculate your real-time return on investment (ROI) and drawdown.
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-4 border-t border-surface-container">
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="text-xs text-on-surface-variant hover:text-on-surface transition-colors font-semibold cursor-pointer"
+              >
+                Back
+              </button>
+              <button
+                type="button"
+                onClick={handleStep2Next}
+                className="px-6 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-semibold shadow-sm hover:bg-primary-hover transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <span>Next: Risk Shield</span>
+                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 3: Risk Protection Rules & Proceed to Login */}
+        {step === 3 && (
+          <div className="w-full bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-xs border border-surface-container flex flex-col gap-5 animate-in fade-in duration-200">
+            <div className="text-center">
+              <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center text-2xl mx-auto mb-2 animate-bounce">
+                🎉
+              </div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-primary">Almost Ready!</span>
+              <h2 className="text-xl sm:text-2xl font-bold text-on-surface tracking-tight mt-0.5">
+                Set Your Discipline &amp; Risk Shield
+              </h2>
+              <p className="text-xs text-on-surface-variant max-w-md mx-auto mt-1">
+                Protect yourself from emotional tilt and over-trading with automatic risk alerts.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="p-3.5 rounded-xl bg-surface-container-low border border-surface-container">
+                <label className="block text-[11px] font-bold text-on-surface mb-1">Daily Max Loss (₹)</label>
                 <input
                   type="number"
-                  value={capital}
-                  onChange={(e) => setCapital(parseFloat(e.target.value) || 0)}
-                  className="h-11 px-3 rounded-lg bg-surface-container-low text-sm font-bold text-on-surface border border-surface-container focus:bg-surface-container-lowest"
-                  required
+                  value={dailyMaxLoss}
+                  onChange={(e) => setDailyMaxLoss(Number(e.target.value))}
+                  className="w-full h-9 px-2.5 rounded-lg bg-surface-container-lowest border border-surface-container text-xs font-mono font-bold text-error"
                 />
-                <span className="text-[11px] text-on-surface-variant">Used to compute account ROI, drawdown limits, and portfolio sizing.</span>
+                <span className="text-[10px] text-on-surface-variant mt-1 block">Halts trading alert on breach</span>
               </div>
 
-              {/* Step 2 Actions */}
-              <div className="flex justify-between items-center pt-4 border-t border-surface-container">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="text-xs text-on-surface-variant hover:text-on-surface font-semibold"
-                >
-                  ← Back
-                </button>
-                <button
-                  type="button"
-                  onClick={handleStep2Next}
-                  className="px-6 py-2.5 rounded-lg bg-primary hover:bg-primary-hover text-on-primary font-bold text-xs shadow-md transition-all cursor-pointer"
-                >
-                  Complete Setup &amp; Review →
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 3: Ready & Celebration */}
-          {step === 3 && (
-            <div className="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm border border-surface-container flex flex-col gap-6 animate-in fade-in duration-200 text-center">
-              {/* Success Badge */}
-              <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center text-3xl shadow-md ring-4 ring-primary-fixed/40 mb-3 animate-bounce">
-                  🎉
-                </div>
-                <h1 className="font-headline-xl text-xl sm:text-2xl text-on-surface font-bold tracking-tight">
-                  You&apos;re ready to start your trading journal!
-                </h1>
-                <p className="font-body-md text-xs sm:text-sm text-on-surface-variant max-w-lg mt-1">
-                  Your profile is configured, your <strong>{formatCurrency(capital, currency)}</strong> starting capital is recorded, and discipline tracking is active.
-                </p>
+              <div className="p-3.5 rounded-xl bg-surface-container-low border border-surface-container">
+                <label className="block text-[11px] font-bold text-on-surface mb-1">Max Trades / Day</label>
+                <input
+                  type="number"
+                  value={dailyMaxTrades}
+                  onChange={(e) => setDailyMaxTrades(Number(e.target.value))}
+                  className="w-full h-9 px-2.5 rounded-lg bg-surface-container-lowest border border-surface-container text-xs font-mono font-bold text-on-surface"
+                />
+                <span className="text-[10px] text-on-surface-variant mt-1 block">Prevents over-trading FOMO</span>
               </div>
 
-              {/* Snapshot Summary Card */}
-              <div className="p-4 rounded-xl bg-surface-container-low border border-surface-container text-left flex flex-col gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-primary">Setup Summary Snapshot</span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
-                  <div>
-                    <span className="text-on-surface-variant block">Profile &amp; Focus:</span>
-                    <strong className="text-on-surface">{fullName}</strong>
-                    <p className="text-[11px] text-on-surface-variant">{primaryMarket} ({currency})</p>
-                  </div>
-                  <div>
-                    <span className="text-on-surface-variant block">Active Broker &amp; Capital:</span>
-                    <strong className="text-on-surface">{broker}</strong>
-                    <p className="text-[11px] text-on-surface-variant">{formatCurrency(capital, currency)} Manual Tracking</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* 3 High-Edge Journaling Tips */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
-                <div className="p-3 rounded-xl bg-surface-container-low/70 border border-surface-container flex flex-col gap-1">
-                  <span className="text-xl">⏱️</span>
-                  <strong className="text-xs text-on-surface">1. Log Immediately</strong>
-                  <p className="text-[11px] text-on-surface-variant leading-snug">
-                    Record trades right away while entry logic and emotions are fresh.
-                  </p>
-                </div>
-
-                <div className="p-3 rounded-xl bg-surface-container-low/70 border border-surface-container flex flex-col gap-1">
-                  <span className="text-xl">🧠</span>
-                  <strong className="text-xs text-on-surface">2. Track Emotions</strong>
-                  <p className="text-[11px] text-on-surface-variant leading-snug">
-                    Tag calm, FOMO, or fear to build self-awareness and eliminate tilt.
-                  </p>
-                </div>
-
-                <div className="p-3 rounded-xl bg-surface-container-low/70 border border-surface-container flex flex-col gap-1">
-                  <span className="text-xl">📊</span>
-                  <strong className="text-xs text-on-surface">3. Review Weekly</strong>
-                  <p className="text-[11px] text-on-surface-variant leading-snug">
-                    Use the calendar heatmap and setup win-rate charts to refine your edge.
-                  </p>
-                </div>
-              </div>
-
-              {/* Action CTAs */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => handleFinish('/add-trade')}
-                  className="w-full sm:w-auto px-6 py-3 rounded-lg bg-primary hover:bg-primary-hover text-on-primary font-bold text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <span className="material-symbols-outlined text-[18px]">add_circle</span>
-                  <span>+ Record My First Trade</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleFinish('/')}
-                  className="w-full sm:w-auto px-6 py-3 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-semibold text-xs border border-surface-container transition-all cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <span>Go to Dashboard</span>
-                  <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-                </button>
+              <div className="p-3.5 rounded-xl bg-surface-container-low border border-surface-container">
+                <label className="block text-[11px] font-bold text-on-surface mb-1">Risk Per Trade (%)</label>
+                <input
+                  type="number"
+                  value={riskPercent}
+                  onChange={(e) => setRiskPercent(Number(e.target.value))}
+                  className="w-full h-9 px-2.5 rounded-lg bg-surface-container-lowest border border-surface-container text-xs font-mono font-bold text-primary"
+                />
+                <span className="text-[10px] text-on-surface-variant mt-1 block">Suggested 1% of total capital</span>
               </div>
             </div>
-          )}
-        </div>
+
+            {/* Summary Snapshot Card */}
+            <div className="p-4 rounded-xl bg-surface-container-low border border-surface-container flex flex-col gap-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-primary">Your Configured Profile</span>
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div>
+                  <span className="text-on-surface-variant block text-[11px]">Trader:</span>
+                  <span className="font-bold text-on-surface">{fullName}</span> ({experience})
+                </div>
+                <div>
+                  <span className="text-on-surface-variant block text-[11px]">Primary Demat &amp; Capital:</span>
+                  <span className="font-bold text-on-surface">{broker}</span> ({formatCurrency(capital, currency)})
+                </div>
+              </div>
+            </div>
+
+            {/* Primary Action Buttons: Flow to Login */}
+            <div className="flex flex-col gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={handleProceedToLogin}
+                className="w-full py-3 rounded-xl bg-primary hover:bg-primary-hover text-on-primary font-bold text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <span>Save Setup &amp; Proceed to Login</span>
+                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleDirectDemoLogin}
+                className="w-full py-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface font-semibold text-xs border border-surface-container transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined text-primary text-[18px]">bolt</span>
+                <span>Skip Login &amp; Enter Demo Dashboard Directly</span>
+              </button>
+            </div>
+          </div>
+        )}
       </main>
+
+      {/* Footer */}
+      <footer className="w-full max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between text-xs text-on-surface-variant border-t border-surface-container">
+        <div>TradeDairy.online • Precision Journaling &amp; Trading Analytics</div>
+        <div className="flex items-center gap-4 mt-2 sm:mt-0">
+          <Link href="/login" className="hover:text-primary transition-colors">
+            Login
+          </Link>
+          <Link href="/su" className="hover:text-primary transition-colors font-mono">
+            /su
+          </Link>
+        </div>
+      </footer>
     </div>
   );
 }

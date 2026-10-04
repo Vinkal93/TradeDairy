@@ -46,7 +46,7 @@ export default function LoginPage() {
       if (mode === 'signup') {
         const user = await signupWithEmail(email, password, name || email.split('@')[0]);
         login(user.displayName || name || email.split('@')[0], user.email || email);
-        router.push('/onboarding');
+        router.push('/');
       } else {
         const user = await loginWithEmail(email, password);
         login(user.displayName || email.split('@')[0], user.email || email);

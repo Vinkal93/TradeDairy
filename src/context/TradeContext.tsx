@@ -54,6 +54,9 @@ interface TradeContextType {
   resetDemoData: () => void;
   eraseAllData: () => void;
   
+  // Loading state
+  isLoaded: boolean;
+
   // Import/Export
   exportTradesCSV: () => string;
   importTradesCSV: (csvString: string) => number;
@@ -361,9 +364,10 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const login = (name: string, email: string) => {
     setUser(prev => ({
       ...prev,
-      fullName: name,
+      fullName: name || prev.fullName,
       email: email,
       isLoggedIn: true,
+      isOnboarded: true,
     }));
   };
 
@@ -373,11 +377,14 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } catch (e) {
       console.error('Firebase signout error', e);
     }
-    setUser(prev => ({ ...prev, isLoggedIn: false }));
+    setUser(prev => ({ ...prev, isLoggedIn: false, isOnboarded: false }));
+    try {
+      localStorage.removeItem('tradedairy_super_admin_session');
+    } catch {}
   };
 
   const resetDemoData = () => {
-    setUser(INITIAL_USER);
+    setUser({ ...INITIAL_USER, isLoggedIn: true, isOnboarded: true });
     setAccounts(INITIAL_ACCOUNTS);
     setTrades(INITIAL_TRADES);
     setJournals({ [INITIAL_JOURNAL.date]: INITIAL_JOURNAL });
@@ -389,9 +396,11 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const eraseAllData = () => {
     setTrades([]);
     setJournals({});
+    setUser(prev => ({ ...prev, isLoggedIn: false, isOnboarded: false }));
     try {
       localStorage.removeItem(STORAGE_KEYS.TRADES);
       localStorage.removeItem(STORAGE_KEYS.JOURNALS);
+      localStorage.removeItem(STORAGE_KEYS.USER);
     } catch (e) {
       console.error('Error erasing panel data', e);
     }
@@ -546,6 +555,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         logout,
         resetDemoData,
         eraseAllData,
+        isLoaded,
         exportTradesCSV,
         importTradesCSV,
       }}
