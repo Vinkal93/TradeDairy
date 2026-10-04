@@ -8,6 +8,7 @@ import {
   UserProfile,
   AnalyticsSummary,
   DeviceSession,
+  DEFAULT_INDEX_LOT_SIZES,
 } from '../types';
 import {
   INITIAL_USER as DEMO_USER,
@@ -56,8 +57,9 @@ interface TradeContextType {
 
   // Profile & Auth Actions
   updateUser: (profile: Partial<UserProfile>) => void;
-  login: (name: string, email: string) => void;
+  login: (name: string, email: string) => Promise<void>;
   logout: () => Promise<void>;
+  updateIndexLotSize: (indexSymbol: string, lotSize: number) => void;
   resetDemoData: () => void;
   eraseAllData: () => void;
 
@@ -103,6 +105,7 @@ const EMPTY_USER: UserProfile = {
   isLoggedIn: false,
   isOnboarded: false,
   plan: 'Free',
+  indexLotSizes: DEFAULT_INDEX_LOT_SIZES,
 };
 
 // Helper: Namespace storage per logged-in user email/id
@@ -737,7 +740,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setUser((prev) => ({ ...prev, ...profile }));
   };
 
-  const login = (name: string, email: string) => {
+  const login = async (name: string, email: string): Promise<void> => {
     const cleanEmail = email.trim().toLowerCase();
     const updatedUser: UserProfile = {
       ...user,
@@ -756,10 +759,20 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const currentDevice = detectDevice();
     setDeviceSessions((prev) => [currentDevice, ...prev.filter((s) => !s.isCurrent)]);
 
-    // Load this specific user's scoped data and fetch cloud data
+    // Await cloud sync so all trades and accounts from other devices are loaded BEFORE returning!
+    await fetchCloudSync(cleanEmail);
     loadScopedData(cleanEmail);
-    fetchCloudSync(cleanEmail);
     broadcastSync('PERSIST_CHANGE');
+  };
+
+  const updateIndexLotSize = (indexSymbol: string, lotSize: number) => {
+    if (!indexSymbol || lotSize <= 0) return;
+    const currentLotSizes = user.indexLotSizes || DEFAULT_INDEX_LOT_SIZES;
+    const updated = {
+      ...currentLotSizes,
+      [indexSymbol.toUpperCase()]: lotSize,
+    };
+    updateUser({ indexLotSizes: updated });
   };
 
   const logout = async () => {
@@ -976,6 +989,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         updateUser,
         login,
         logout,
+        updateIndexLotSize,
         resetDemoData,
         eraseAllData,
         deviceSessions,

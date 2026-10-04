@@ -202,18 +202,47 @@ function LoginForm() {
     try {
       if (mode === 'signup') {
         const cleanName = name.trim() || email.split('@')[0] || 'Active Trader';
-        const userCredential = await signupWithEmail(email.trim(), password, cleanName);
         try {
-          confetti({
-            particleCount: 70,
-            spread: 60,
-            origin: { y: 0.6 },
-            colors: ['#006948', '#85f8c4', '#10B981'],
-          });
-        } catch {}
+          const userCredential = await signupWithEmail(email.trim(), password, cleanName);
+          try {
+            confetti({
+              particleCount: 70,
+              spread: 60,
+              origin: { y: 0.6 },
+              colors: ['#006948', '#85f8c4', '#10B981'],
+            });
+          } catch {}
 
-        login(userCredential.displayName || cleanName, userCredential.email || email.trim());
-        router.push('/');
+          await login(userCredential.displayName || cleanName, userCredential.email || email.trim());
+          router.push('/');
+          return;
+        } catch (signupErr: any) {
+          // If email is already in use, attempt direct login with the provided password!
+          if (signupErr.code === 'auth/email-already-in-use') {
+            try {
+              const loginCredential = await loginWithEmail(email.trim(), password);
+              try {
+                confetti({
+                  particleCount: 50,
+                  spread: 50,
+                  origin: { y: 0.6 },
+                  colors: ['#006948', '#85f8c4', '#10B981'],
+                });
+              } catch {}
+              await login(
+                loginCredential.displayName || cleanName,
+                loginCredential.email || email.trim()
+              );
+              router.push('/');
+              return;
+            } catch {
+              setMode('login');
+              setError('Account already exists for this email! Please enter your password to sign in.');
+              return;
+            }
+          }
+          throw signupErr;
+        }
       } else {
         const userCredential = await loginWithEmail(email.trim(), password);
         try {
@@ -225,7 +254,7 @@ function LoginForm() {
           });
         } catch {}
 
-        login(
+        await login(
           userCredential.displayName || email.split('@')[0] || 'Active Trader',
           userCredential.email || email.trim()
         );
@@ -260,7 +289,7 @@ function LoginForm() {
     setError('');
     try {
       const userCredential = await loginWithGoogle();
-      login(
+      await login(
         userCredential.displayName || 'Google Trader',
         userCredential.email || 'trader@google.com'
       );

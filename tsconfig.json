@@ -35,7 +35,8 @@
     ".next-verify/types/**/*.ts",
     ".next-mobile/types/**/*.ts",
     ".next-final/types/**/*.ts",
-    ".next-design/types/**/*.ts"
+    ".next-design/types/**/*.ts",
+    ".next-seo/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

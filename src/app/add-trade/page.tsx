@@ -1,9 +1,9 @@
 'use client';
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useMemo, useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTrades } from '../../context/TradeContext';
-import { AssetClass, ChargeSegment, EmotionalState, TradeSide } from '../../types';
+import { AssetClass, ChargeSegment, EmotionalState, TradeSide, DEFAULT_INDEX_LOT_SIZES } from '../../types';
 import { localDate } from '../../lib/dates';
 import { calculateCharges, calculatePnl, CHARGE_LABELS, DEFAULT_CHARGES } from '../../lib/charges';
 import { formatCurrency } from '../../lib/utils';
@@ -18,7 +18,7 @@ export default function AddTradePage() {
 }
 function TradeForm() {
   const router = useRouter(), query = useSearchParams();
-  const { accounts, addTrade, updateTrade, getTradeById, storageError } = useTrades();
+  const { accounts, addTrade, updateTrade, getTradeById, storageError, user, updateIndexLotSize } = useTrades();
   const existing = query.get('edit') ? getTradeById(query.get('edit')!) : undefined;
   const [mode, setMode] = useState<'basic' | 'quick'>('basic');
   const [accountId, setAccountId] = useState(existing?.accountId || accounts.find(a => a.isActive)?.id || '');
@@ -28,7 +28,52 @@ function TradeForm() {
   const [segment, setSegment] = useState<ChargeSegment>(existing?.segment || (existing?.assetClass === 'Equity' ? 'equity-intraday' : existing?.assetClass === 'Futures' ? 'futures' : existing && existing.assetClass !== 'Options' ? 'manual' : 'options'));
   const [manualAsset, setManualAsset] = useState<AssetClass>(existing?.assetClass || 'Crypto');
   const [side, setSide] = useState<TradeSide>(existing?.side || 'BUY');
-  const [quantity, setQuantity] = useState(existing ? String(existing.quantity) : '');
+
+  // Index Lot Size configuration & detection
+  const lotSizes = useMemo(() => ({
+    ...DEFAULT_INDEX_LOT_SIZES,
+    ...(user.indexLotSizes || {}),
+  }), [user.indexLotSizes]);
+
+  const detectIndex = useCallback((inst: string): string => {
+    const upper = inst.toUpperCase().trim();
+    if (upper.includes('BANKNIFTY') || upper.includes('BANK NIFTY')) return 'BANKNIFTY';
+    if (upper.includes('FINNIFTY') || upper.includes('FIN NIFTY')) return 'FINNIFTY';
+    if (upper.includes('MIDCPNIFTY') || upper.includes('MIDCAP')) return 'MIDCPNIFTY';
+    if (upper.includes('NIFTY NEXT 50')) return 'NIFTY NEXT 50';
+    if (upper.includes('NIFTY')) return 'NIFTY';
+    if (upper.includes('BANKEX')) return 'BANKEX';
+    if (upper.includes('SENSEX')) return 'SENSEX';
+    const firstWord = upper.split(/[\s_-]+/)[0];
+    return firstWord && firstWord.length > 1 ? firstWord : 'NIFTY';
+  }, []);
+
+  const [quantityMode, setQuantityMode] = useState<'qty' | 'lots'>(() => {
+    return existing && existing.assetClass !== 'Options' ? 'qty' : 'lots';
+  });
+  const [selectedIndex, setSelectedIndex] = useState(() => detectIndex(existing?.instrument || 'NIFTY'));
+  const activeLotSize = lotSizes[selectedIndex] || lotSizes[detectIndex(instrument)] || 25;
+  const [lotsCount, setLotsCount] = useState(() => {
+    if (existing?.quantity) {
+      return String(Math.max(1, Math.round(existing.quantity / activeLotSize)));
+    }
+    return '1';
+  });
+  const [lotConfigModalOpen, setLotConfigModalOpen] = useState(false);
+  const [customIndexName, setCustomIndexName] = useState('');
+  const [customIndexLot, setCustomIndexLot] = useState<number>(25);
+
+  const [quantity, setQuantity] = useState(existing ? String(existing.quantity) : String(activeLotSize));
+
+  // Sync index when instrument updates
+  useEffect(() => {
+    if (instrument) {
+      const detected = detectIndex(instrument);
+      if (detected && lotSizes[detected]) {
+        setSelectedIndex(detected);
+      }
+    }
+  }, [instrument, detectIndex, lotSizes]);
   const [entry, setEntry] = useState(existing ? String(existing.entryPrice) : '');
   const [exit, setExit] = useState(existing?.exitPrice !== undefined ? String(existing.exitPrice) : '');
   const [entryTime, setEntryTime] = useState(existing?.entryTime || new Date().toTimeString().slice(0, 5));
@@ -107,11 +152,170 @@ function TradeForm() {
             {segment === 'manual' && <label className="field-label">Market<select className={fieldClass} value={manualAsset} onChange={e => setManualAsset(e.target.value as AssetClass)}>{['Crypto', 'Forex', 'Commodities'].map(a => <option key={a}>{a}</option>)}</select></label>}
           </div>
           <fieldset><legend className="field-label mb-2">What did you do first?</legend><div className="grid grid-cols-2 gap-2">{(['BUY', 'SELL'] as const).map(s => <button type="button" key={s} aria-pressed={side === s} onClick={() => setSide(s)} className={`rounded-xl border py-3 text-sm ${side === s ? s === 'BUY' ? 'bg-primary/10 border-primary text-primary font-medium' : 'bg-error/10 border-error text-error font-medium' : 'border-surface-container text-on-surface-variant'}`}>{s === 'BUY' ? 'Buy first · Long' : 'Sell first · Short'}</button>)}</div></fieldset>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <label className="field-label">Quantity *<input className={fieldClass} type="number" min="0.000001" step="any" required inputMode="decimal" value={quantity} onChange={e => setQuantity(e.target.value)} placeholder="Units, not lots" /></label>
+          {/* Quantity & Price Section with Lots vs Qty Switcher */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="field-label !mb-0 font-bold">
+                  {quantityMode === 'lots' ? 'Lots *' : 'Quantity *'}
+                </span>
+
+                {/* Lots vs Qty Toggle */}
+                <div className="inline-flex p-0.5 rounded-lg bg-surface-container border border-surface-container-high text-[11px] font-semibold">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setQuantityMode('lots');
+                      const calculatedLots = Math.max(1, Math.round((Number(quantity) || activeLotSize) / activeLotSize));
+                      setLotsCount(String(calculatedLots));
+                      setQuantity(String(calculatedLots * activeLotSize));
+                    }}
+                    className={`px-2 py-0.5 rounded-md transition-all cursor-pointer ${
+                      quantityMode === 'lots'
+                        ? 'bg-white text-primary shadow-xs font-bold'
+                        : 'text-on-surface-variant hover:text-on-surface'
+                    }`}
+                  >
+                    📦 Lots
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setQuantityMode('qty')}
+                    className={`px-2 py-0.5 rounded-md transition-all cursor-pointer ${
+                      quantityMode === 'qty'
+                        ? 'bg-white text-primary shadow-xs font-bold'
+                        : 'text-on-surface-variant hover:text-on-surface'
+                    }`}
+                  >
+                    🔢 Qty
+                  </button>
+                </div>
+              </div>
+
+              {quantityMode === 'lots' ? (
+                <div className="space-y-2">
+                  {/* Selected Index & Lot Size Pill */}
+                  <div className="flex items-center justify-between gap-1 p-1.5 rounded-lg bg-surface-container-low border border-surface-container text-[11px]">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="text-outline font-medium">Index:</span>
+                      <select
+                        value={selectedIndex}
+                        onChange={(e) => {
+                          const newIdx = e.target.value;
+                          setSelectedIndex(newIdx);
+                          const newLotSize = lotSizes[newIdx] || 25;
+                          setQuantity(String((Number(lotsCount) || 1) * newLotSize));
+                        }}
+                        className="font-bold text-primary bg-white border border-surface-container rounded px-1.5 py-0.5 text-xs outline-none"
+                      >
+                        {Object.keys(lotSizes).map((idx) => (
+                          <option key={idx} value={idx}>
+                            {idx} (1 Lot = {lotSizes[idx]})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCustomIndexName(selectedIndex);
+                        setCustomIndexLot(activeLotSize);
+                        setLotConfigModalOpen(true);
+                      }}
+                      className="text-primary hover:underline font-semibold shrink-0 cursor-pointer text-[11px]"
+                    >
+                      ⚙️ Edit
+                    </button>
+                  </div>
+
+                  {/* Lots Input with quick increment pills */}
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      className={fieldClass}
+                      type="number"
+                      min="1"
+                      step="1"
+                      required
+                      inputMode="numeric"
+                      value={lotsCount}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setLotsCount(val);
+                        const num = Number(val);
+                        if (num > 0) {
+                          setQuantity(String(num * activeLotSize));
+                        }
+                      }}
+                      placeholder="e.g. 2"
+                    />
+
+                    {/* Quick +Lots Pills */}
+                    <div className="flex gap-1 shrink-0">
+                      {[1, 2, 5].map((count) => (
+                        <button
+                          type="button"
+                          key={count}
+                          onClick={() => {
+                            const newLots = String((Number(lotsCount) || 0) + count);
+                            setLotsCount(newLots);
+                            setQuantity(String(Number(newLots) * activeLotSize));
+                          }}
+                          className="px-2 py-2 text-xs font-semibold rounded-lg bg-surface-container-low hover:bg-surface-container border border-surface-container text-on-surface"
+                        >
+                          +{count}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <p className="text-[11px] text-primary font-semibold">
+                    = {quantity || 0} Total Units ({lotsCount || 0} Lots × {activeLotSize})
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <input
+                    className={fieldClass}
+                    type="number"
+                    min="0.000001"
+                    step="any"
+                    required
+                    inputMode="decimal"
+                    value={quantity}
+                    onChange={(e) => {
+                      setQuantity(e.target.value);
+                      const num = Number(e.target.value);
+                      if (num > 0) {
+                        setLotsCount(String(Math.round(num / activeLotSize) || 1));
+                      }
+                    }}
+                    placeholder="Units, not lots"
+                  />
+                  <div className="flex items-center justify-between text-[11px] text-outline mt-1">
+                    <span>
+                      ≈ {(Number(quantity) / activeLotSize).toFixed(1)} Lots ({selectedIndex}: 1 Lot = {activeLotSize})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCustomIndexName(selectedIndex);
+                        setCustomIndexLot(activeLotSize);
+                        setLotConfigModalOpen(true);
+                      }}
+                      className="text-primary hover:underline font-medium"
+                    >
+                      Set lot
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <label className="field-label">{side === 'BUY' ? 'Buy' : 'Sell'} price *<input className={fieldClass} type="number" min="0.000001" step="any" required inputMode="decimal" value={entry} onChange={e => setEntry(e.target.value)} placeholder="Entry price" /></label>
             <label className="field-label">{side === 'BUY' ? 'Sell' : 'Buy'} price · optional<input className={fieldClass} type="number" min="0.000001" step="any" inputMode="decimal" value={exit} onChange={e => setExit(e.target.value)} placeholder="Blank = open position" /></label>
-          </div><p className="text-xs text-on-surface-variant">Options/futures quantity = lots × lot size. Leave exit price blank until you close the position.</p>
+          </div>
+          <p className="text-xs text-on-surface-variant">Switch between Lots and Quantity anytime. Configured lot sizes are saved to your account and synced.</p>
         </section>
         <section className="card space-y-4"><div className="flex items-center justify-between"><h2 className="section-title">Charges</h2><span className="text-xs text-on-surface-variant">{closed ? 'Entry + exit' : 'Entry only'}</span></div>
           {canAuto && <div className="flex flex-wrap gap-2">{(['auto', 'manual'] as const).map(m => <button key={m} type="button" aria-pressed={chargeMode === m} onClick={() => setChargeMode(m)} className={`btn-secondary ${chargeMode === m ? 'border-primary text-primary bg-primary/5' : ''}`}>{m === 'auto' ? 'Calculate automatically' : 'Enter contract-note total'}</button>)}</div>}
@@ -134,5 +338,90 @@ function TradeForm() {
       </aside>
     </form>
     {accountOpen && <Modal title="Add trading account" onClose={() => setAccountOpen(false)}><AccountForm onCancel={() => setAccountOpen(false)} onSaved={a => { setAccountId(a.id); setAccountOpen(false); }} /></Modal>}
+    {lotConfigModalOpen && (
+      <Modal title="Configure Index Lot Sizes" onClose={() => setLotConfigModalOpen(false)}>
+        <div className="space-y-4">
+          <p className="text-xs text-on-surface-variant">
+            Customize lot sizes for your preferred indices or symbols. These settings are saved to your account and automatically synced across devices.
+          </p>
+
+          <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+            {Object.entries(lotSizes).map(([idx, size]) => (
+              <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-low border border-surface-container">
+                <span className="font-semibold text-sm text-on-surface">{idx}</span>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    defaultValue={size}
+                    id={`lot-size-${idx}`}
+                    className="w-20 px-2 py-1 text-sm bg-surface-container rounded-lg border border-outline/20 text-on-surface text-right"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const el = document.getElementById(`lot-size-${idx}`) as HTMLInputElement;
+                      const val = Number(el?.value);
+                      if (val > 0) {
+                        updateIndexLotSize(idx, val);
+                      }
+                    }}
+                    className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-primary text-on-primary hover:bg-primary/90"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="pt-3 border-t border-surface-container">
+            <label className="text-xs font-semibold text-on-surface mb-1.5 block">Add Custom Symbol / Stock Lot</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="e.g. RELIANCE or CRUDEOIL"
+                value={customIndexName}
+                onChange={(e) => setCustomIndexName(e.target.value.toUpperCase())}
+                className="flex-1 px-3 py-1.5 text-sm bg-surface-container-low rounded-lg border border-outline/20 text-on-surface uppercase"
+              />
+              <input
+                type="number"
+                min="1"
+                placeholder="Lot"
+                value={customIndexLot}
+                onChange={(e) => setCustomIndexLot(Number(e.target.value))}
+                className="w-20 px-2 py-1.5 text-sm bg-surface-container-low rounded-lg border border-outline/20 text-on-surface text-right"
+              />
+              <button
+                type="button"
+                disabled={!customIndexName.trim() || customIndexLot <= 0}
+                onClick={() => {
+                  if (customIndexName.trim() && customIndexLot > 0) {
+                    updateIndexLotSize(customIndexName.trim().toUpperCase(), customIndexLot);
+                    setSelectedIndex(customIndexName.trim().toUpperCase());
+                    setCustomIndexName('');
+                  }
+                }}
+                className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary text-on-primary hover:bg-primary/90 disabled:opacity-50"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+
+          <div className="flex justify-end pt-2">
+            <button
+              type="button"
+              onClick={() => setLotConfigModalOpen(false)}
+              className="btn-primary py-2 px-5 text-sm"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </Modal>
+    )}
   </div>;
 }

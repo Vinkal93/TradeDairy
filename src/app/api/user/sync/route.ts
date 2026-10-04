@@ -106,14 +106,15 @@ export async function POST(request: NextRequest) {
     }
 
     const email = rawEmail.trim().toLowerCase();
+    const existing = await loadUserData(email);
     const updatedAt = new Date().toISOString();
 
     const dataToSave: CloudUserData = {
       email,
-      user: user || {},
-      accounts: Array.isArray(accounts) ? accounts : [],
-      trades: Array.isArray(trades) ? trades : [],
-      journals: journals && typeof journals === 'object' ? journals : {},
+      user: user !== undefined ? { ...(existing?.user || {}), ...user } : (existing?.user || {}),
+      accounts: Array.isArray(accounts) ? accounts : (existing?.accounts || []),
+      trades: Array.isArray(trades) ? trades : (existing?.trades || []),
+      journals: journals && typeof journals === 'object' ? { ...(existing?.journals || {}), ...journals } : (existing?.journals || {}),
       updatedAt,
     };
 

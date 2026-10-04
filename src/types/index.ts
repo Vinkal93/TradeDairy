@@ -112,7 +112,18 @@ export interface UserProfile {
   isOnboarded: boolean;
   plan: 'Free' | 'Pro';
   activeSessions?: DeviceSession[];
+  indexLotSizes?: Record<string, number>;
 }
+
+export const DEFAULT_INDEX_LOT_SIZES: Record<string, number> = {
+  NIFTY: 25,
+  BANKNIFTY: 15,
+  FINNIFTY: 25,
+  MIDCPNIFTY: 50,
+  SENSEX: 10,
+  BANKEX: 15,
+  'NIFTY NEXT 50': 10,
+};
 
 export interface DeviceSession {
   id: string;
