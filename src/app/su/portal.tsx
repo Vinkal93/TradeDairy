@@ -1,0 +1,15 @@
+'use client';
+import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useTrades } from '../../context/TradeContext';
+import { fieldClass } from '../../components/common/ChargeEditor';
+
+export function AdminPortal({ configured, authenticated }: { configured: boolean; authenticated: boolean }) {
+  const router = useRouter(), { user, accounts, trades, journals } = useTrades();
+  const [email, setEmail] = useState(''), [password, setPassword] = useState(''), [error, setError] = useState(''), [busy, setBusy] = useState(false);
+  const login = async (e: React.FormEvent) => { e.preventDefault(); setBusy(true); setError(''); try { const response = await fetch('/api/admin/session', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) }); const result = await response.json(); if (!response.ok) setError(result.error); else { setPassword(''); router.refresh(); } } catch { setError('Could not connect.'); } finally { setBusy(false); } };
+  return <div className="min-h-dvh bg-background p-4 sm:p-8"><main className="max-w-3xl mx-auto space-y-5"><div className="flex justify-between gap-3 items-center"><h1 className="page-title">Private administration</h1><Link href="/" className="text-sm text-primary">Exit</Link></div>
+    {!configured ? <section className="card space-y-3"><h2 className="section-title">Admin access is not configured</h2><p className="text-sm text-outline">Configure the server’s admin email, password hash and session secret to enable authenticated access.</p></section> : !authenticated ? <form className="card max-w-md mx-auto space-y-4" onSubmit={login}><label className="field-label">Admin email<input className={fieldClass} type="email" required autoComplete="username" value={email} onChange={e => setEmail(e.target.value)} /></label><label className="field-label">Password<input className={fieldClass} type="password" required autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} /></label>{error && <p role="alert" className="text-sm text-error">{error}</p>}<button className="btn-primary w-full" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button></form> : <><section className="card space-y-4"><h2 className="section-title">This device’s workspace</h2><p className="text-sm text-outline">{user.fullName} · {user.email || 'Local profile'}</p><div className="grid grid-cols-3 gap-3">{[['Accounts', accounts.length], ['Trades', trades.length], ['Journals', Object.keys(journals).length]].map(([label, count]) => <div key={label}><p className="text-xs text-outline">{label}</p><p className="text-2xl mt-2">{count}</p></div>)}</div><p className="text-xs text-outline">A platform-wide user database, subscription service and broker API are not connected. Only real workspace data from this browser is shown.</p></section><button className="btn-secondary" onClick={async () => { await fetch('/api/admin/session', { method: 'DELETE' }); router.refresh(); }}>Sign out of administration</button></>}
+  </main></div>;
+}

@@ -315,6 +315,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const emotionStats = useMemo(() => {
     const map: Record<string, { count: number; wins: number; pnl: number }> = {};
     filteredTrades.forEach(t => {
+      if (t.status !== 'CLOSED') return;
       const e = t.emotion || 'Calm';
       if (!map[e]) map[e] = { count: 0, wins: 0, pnl: 0 };
       map[e].count++;
@@ -433,16 +434,9 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const eraseAllData = () => {
+    persist(STORAGE_KEYS.TRADES, []); persist(STORAGE_KEYS.JOURNALS, {});
     setTrades([]);
     setJournals({});
-    setUser(prev => ({ ...prev, isLoggedIn: false, isOnboarded: false }));
-    try {
-      localStorage.removeItem(STORAGE_KEYS.TRADES);
-      localStorage.removeItem(STORAGE_KEYS.JOURNALS);
-      localStorage.removeItem(STORAGE_KEYS.USER);
-    } catch (e) {
-      console.error('Error erasing panel data', e);
-    }
   };
 
   // CSV Export & Import

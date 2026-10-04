@@ -57,7 +57,7 @@ export default function LoginPage() {
       // Friendly message based on Firebase error code
       let msg = err.message || 'Authentication failed. Please check credentials.';
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-        msg = 'Invalid email or password. You can also sign up or use 1-Click Demo Login below.';
+        msg = 'Invalid email or password. You can also sign up or use Continue on this device below.';
       } else if (err.code === 'auth/email-already-in-use') {
         msg = 'An account with this email already exists. Please switch to Sign In.';
       } else if (err.code === 'auth/weak-password') {
@@ -84,7 +84,7 @@ export default function LoginPage() {
       if (err.code === 'auth/unauthorized-domain') {
         const currentDomain = typeof window !== 'undefined' ? window.location.hostname : 'your-app.vercel.app';
         setError(
-          `Domain "${currentDomain}" is not authorized for Google Sign-In. Please add "${currentDomain}" to Firebase Console -> Authentication -> Settings -> Authorized domains. You can also use 1-Click Demo Login or Email/Password below!`
+          `Domain "${currentDomain}" is not authorized for Google Sign-In. Please add "${currentDomain}" to Firebase Console -> Authentication -> Settings -> Authorized domains. You can also use Continue on this device or Email/Password below!`
         );
       } else if (err.code !== 'auth/popup-closed-by-user') {
         setError(err.message || 'Google sign-in cancelled or not enabled.');
@@ -95,8 +95,7 @@ export default function LoginPage() {
   };
 
   const handleDemoLogin = () => {
-    login('Vinkal Prajapati', 'vinkal@tradedairy.online');
-    router.push('/');
+    router.push('/onboarding');
   };
 
   return (
@@ -115,15 +114,7 @@ export default function LoginPage() {
             <span className="material-symbols-outlined text-[16px]">tune</span>
             <span className="hidden sm:inline">Setup Wizard</span>
           </Link>
-          <Link
-            href="/su"
-            prefetch={true}
-            className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg text-primary bg-primary/10 hover:bg-primary/20 transition-colors"
-            title="Super Admin Portal"
-          >
-            <span className="material-symbols-outlined text-[16px]">admin_panel_settings</span>
-            <span className="hidden sm:inline">Super Admin (/su)</span>
-          </Link>
+          
           <Link
             href="/"
             prefetch={true}
@@ -159,7 +150,7 @@ export default function LoginPage() {
             className="w-full py-2.5 px-3 rounded-xl bg-primary-fixed/40 hover:bg-primary-fixed/60 border border-primary/20 text-on-primary-fixed font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
           >
             <span className="material-symbols-outlined text-[18px] text-primary">bolt</span>
-            <span>1-Click Demo Login (Vinkal Prajapati)</span>
+            <span>Continue on this device (Vinkal Prajapati)</span>
           </button>
 
           {/* Google Sign In Button */}
@@ -307,12 +298,7 @@ export default function LoginPage() {
                 <span className="text-[10px] text-on-surface-variant">Platform governance &amp; telemetry</span>
               </div>
             </div>
-            <Link
-              href="/su"
-              className="px-2.5 py-1 rounded bg-secondary text-on-secondary text-[10px] font-bold hover:bg-secondary/90 transition-colors"
-            >
-              Open /su
-            </Link>
+            
           </div>
 
           <p className="text-center text-[11px] text-on-surface-variant">
