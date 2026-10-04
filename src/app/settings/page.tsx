@@ -15,7 +15,6 @@ export default function SettingsPage() {
     trades,
     journals,
     eraseAllData,
-    resetDemoData,
     exportTradesCSV,
   } = useTrades();
 
@@ -29,7 +28,6 @@ export default function SettingsPage() {
   const [risk, setRisk] = useState(user.defaultRiskPerTrade || 0);
   const [notice, setNotice] = useState('');
   const [eraseModalOpen, setEraseModalOpen] = useState(false);
-  const [resetModalOpen, setResetModalOpen] = useState(false);
 
   const download = (content: string, filename: string, type: string) => {
     const url = URL.createObjectURL(new Blob([content], { type }));
@@ -69,18 +67,7 @@ export default function SettingsPage() {
     }
   };
 
-  const handleResetConfirm = () => {
-    try {
-      resetDemoData();
-      setResetModalOpen(false);
-      setNotice('Demo data restored successfully.');
-    } catch {
-      setNotice('Could not reset demo data.');
-      setResetModalOpen(false);
-    }
-  };
-
-  return (
+return (
     <div className="space-y-4 max-w-4xl mx-auto">
       {/* Title */}
       <div>
@@ -324,14 +311,7 @@ export default function SettingsPage() {
                 <span>Delete All Trades &amp; Journals</span>
               </button>
 
-              <button
-                type="button"
-                className="btn-secondary text-on-surface hover:bg-surface-container-low text-xs py-1.5 px-3"
-                onClick={() => setResetModalOpen(true)}
-              >
-                <span className="material-symbols-outlined text-[16px]">restart_alt</span>
-                <span>Reset to Sample Trades</span>
-              </button>
+              
             </div>
           </section>
         </div>
@@ -363,22 +343,7 @@ export default function SettingsPage() {
       />
 
       {/* Custom Reset Confirmation Modal */}
-      <ConfirmModal
-        isOpen={resetModalOpen}
-        title="Reset to Sample Demo Trades"
-        message={
-          <div>
-            <p>
-              This will replace any current local data with sample verified trades, Zerodha/Groww
-              demat accounts, and journal entries.
-            </p>
-          </div>
-        }
-        confirmText="Reset to Demo"
-        confirmVariant="primary"
-        onConfirm={handleResetConfirm}
-        onClose={() => setResetModalOpen(false)}
-      />
+      
     </div>
   );
 }

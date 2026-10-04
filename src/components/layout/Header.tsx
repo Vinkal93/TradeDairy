@@ -56,7 +56,7 @@ export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 md:left-56 right-0 h-13 sm:h-14 bg-white/95 backdrop-blur-md z-40 border-b border-surface-container px-3 sm:px-4 flex items-center gap-2.5 sm:gap-3 transition-all">
+    <header className="fixed top-0 left-0 md:left-56 right-0 h-[56px] bg-white/95 backdrop-blur-md z-40 border-b border-surface-container px-3 sm:px-4 flex items-center gap-2.5 sm:gap-3 transition-all">
       <button
         type="button"
         aria-label="Open navigation"
@@ -89,7 +89,7 @@ export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void
           </span>
           <input
             id="global-search"
-            className="w-full h-8.5 sm:h-9 pl-9 pr-3 rounded-lg bg-surface-container-low/80 hover:bg-surface-container-low border border-transparent focus:border-surface-container focus:bg-white outline-none focus:ring-1 focus:ring-primary/30 text-xs sm:text-sm text-on-surface transition-all placeholder:text-on-surface-variant/70"
+            className="w-full h-10 pl-9 pr-3 rounded-lg bg-surface-container-low/80 hover:bg-surface-container-low border border-transparent focus:border-surface-container focus:bg-white outline-none focus:ring-1 focus:ring-primary/30 text-xs sm:text-sm text-on-surface transition-all placeholder:text-on-surface-variant/70"
             placeholder="Search trades, symbols, setups..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -118,14 +118,7 @@ export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void
         </button>
 
         {/* Super Admin Quick Link */}
-        <Link
-          href="/su"
-          title="Super Admin Portal"
-          className="hidden lg:inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold text-secondary hover:bg-secondary/10 transition-colors"
-        >
-          <span className="material-symbols-outlined text-[16px]">security</span>
-          <span>/su</span>
-        </Link>
+        
 
         {/* Profile Menu */}
         <div ref={ref} className="relative">
@@ -191,13 +184,7 @@ export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void
                 <span className="material-symbols-outlined text-[18px] text-outline">calculate</span>
                 <span>Broker charges rules</span>
               </Link>
-              <Link
-                href="/su"
-                className="flex items-center gap-2 px-3 py-2 text-xs sm:text-sm rounded-lg hover:bg-surface-container-low text-secondary font-medium"
-              >
-                <span className="material-symbols-outlined text-[18px]">security</span>
-                <span>Super Admin Portal</span>
-              </Link>
+              
 
               <div className="border-t border-surface-container my-1"></div>
 

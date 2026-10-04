@@ -39,9 +39,9 @@ export function Sidebar() {
               key={path}
               href={path}
               aria-current={active ? 'page' : undefined}
-              className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs sm:text-[13px] font-medium transition-colors ${
+              className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs sm:text-[13px] font-normal transition-colors ${
                 active
-                  ? 'bg-primary/10 text-primary font-semibold'
+                  ? 'bg-primary/10 text-primary font-normal'
                   : 'text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface'
               }`}
             >
