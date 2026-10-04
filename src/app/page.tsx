@@ -1,10 +1,58 @@
-import Link from 'next/link';
 import { HomeExperience } from '../components/public/HomeExperience';
-import { PublicShell } from '../components/public/PublicShell';
+import { LandingPage } from '../components/public/LandingPage';
 import { pageMetadata, SITE_URL, serializeJsonLd } from '../lib/seo';
-export const metadata = pageMetadata('Trading Journal & Indian Brokerage Calculator', 'Record stock, intraday and options trades, calculate net profit after charges, and review your trading process with TradeDairy.', '/');
-export default function HomePage() {
- const schema = {'@context':'https://schema.org','@graph':[{'@type':'Organization','@id':SITE_URL+'/#organization',name:'TradeDairy',url:SITE_URL,logo:SITE_URL+'/icon.svg'},{'@type':'WebSite','@id':SITE_URL+'/#website',name:'TradeDairy',url:SITE_URL,publisher:{'@id':SITE_URL+'/#organization'}},{'@type':'SoftwareApplication',name:'TradeDairy',applicationCategory:'FinanceApplication',operatingSystem:'Web',url:SITE_URL,description:'Trading journal with account charge settings, trade records, daily reflections and recorded performance analytics.',featureList:['Manual trade entry and Quick Log','Account-specific brokerage settings','Net P&L after transaction costs','Daily trading journal','CSV import and export']} ]};
- return <HomeExperience><PublicShell><script type="application/ld+json" dangerouslySetInnerHTML={{__html:serializeJsonLd(schema)}}/><section className="grid lg:grid-cols-[1.25fr_1fr] gap-10 items-center"><div><p className="text-primary font-semibold text-xs tracking-widest">YOUR TRADES. YOUR PROCESS. YOUR JOURNAL.</p><h1 className="text-4xl sm:text-6xl font-semibold tracking-tight leading-tight mt-5">A trading journal that makes every trade easier to review.</h1><p className="text-lg text-on-surface-variant leading-relaxed mt-6">Record actual buy and sell prices, account for brokerage and taxes, and understand your net trading results. Bring your ledger, daily notes and performance charts together with TradeDairy.</p><div className="flex flex-wrap gap-3 mt-8"><Link href="/onboarding" className="btn-primary !px-6 !py-3">Start your trading journal</Link><Link href="/brokerage-calculator" className="btn-secondary !px-6 !py-3">Calculate brokerage</Link></div></div><div className="card !p-7 sm:!p-9 bg-white"><p className="text-xs tracking-widest text-primary font-semibold">A SIMPLE REVIEW WORKFLOW</p>{[['01','Record your execution','Account, instrument, quantity and actual prices.'],['02','Understand the costs','Brokerage, turnover charges and net profit or loss.'],['03','Review your decisions','Trading notes, daily reflections and performance.']].map(([n,title,text])=><div className="flex gap-5 items-start mt-7" key={n}><span className="bg-primary/10 text-primary rounded-xl p-3 font-semibold">{n}</span><div><h2 className="font-semibold text-lg">{title}</h2><p className="text-sm text-outline leading-relaxed mt-2">{text}</p></div></div>)}</div></section><section className="mt-16 sm:mt-24"><h2 className="text-2xl sm:text-3xl font-semibold">Built around the trades you actually record</h2><div className="grid md:grid-cols-3 gap-5 mt-7">{[['/trading-journal','Stocks, futures and options','Keep execution details, costs and review notes together in an online trading journal.'],['/intraday-trading-journal','Intraday session reviews','Follow daily results and reflect on entries, exits and the trading plan.'],['/options-trading-journal','Options premium trades','Record actual units and long or short premium trades, with costs included.']].map(([href,title,text])=><Link href={href} className="card hover:border-primary/30 transition-colors" key={href}><h3 className="section-title">{title}</h3><p className="text-sm text-on-surface-variant leading-relaxed mt-4">{text}</p><span className="text-primary text-sm block mt-5">Explore →</span></Link>)}</div></section><section className="card mt-12 sm:mt-16"><h2 className="text-2xl font-semibold">Gross profit is only part of the story</h2><p className="text-on-surface-variant leading-relaxed mt-4 max-w-4xl">A ₹10 or ₹20 per-order brokerage plan is just one part of a trade’s costs. Your segment, exchange, turnover and trade date affect taxes and fees. Use the public calculator for a regular-trade estimate, or enter your contract-note total in the journal for an exact recorded result.</p><Link href="/guides/how-to-calculate-net-pnl" className="text-primary inline-block mt-5">Learn how net P&amp;L is calculated →</Link></section><section className="mt-12"><h2 className="text-2xl font-semibold">Start with a useful review routine</h2><nav className="grid sm:grid-cols-3 gap-5 mt-6" aria-label="Trading guides">{[['trading-journal-template','What to record in a trading journal'],['how-to-calculate-net-pnl','How to calculate profit after charges'],['trading-performance-metrics','How to read performance metrics']].map(([slug,label])=><Link className="card text-primary font-medium" key={slug} href={'/guides/'+slug}>{label} →</Link>)}</nav></section></PublicShell></HomeExperience>;
-}
 
+export const metadata = pageMetadata(
+  'TradeDairy | Turn Trading Chaos Into Disciplined Profit',
+  'Precision trading journal & performance analytics platform engineered for Indian intraday, F&O options, and swing traders. Track STT, broker charges, and emotional leaks.',
+  '/'
+);
+
+export default function HomePage() {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': SITE_URL + '/#organization',
+        name: 'TradeDairy',
+        url: SITE_URL,
+        logo: SITE_URL + '/icon.svg',
+      },
+      {
+        '@type': 'WebSite',
+        '@id': SITE_URL + '/#website',
+        name: 'TradeDairy',
+        url: SITE_URL,
+        publisher: { '@id': SITE_URL + '/#organization' },
+      },
+      {
+        '@type': 'SoftwareApplication',
+        name: 'TradeDairy',
+        applicationCategory: 'FinanceApplication',
+        operatingSystem: 'Web',
+        url: SITE_URL,
+        description:
+          'Precision trading journal & performance analytics platform engineered for Indian intraday, F&O options, and swing traders. Automate brokerage & STT deduction, identify behavioral leaks, and stop giving hard-earned gains back to the market.',
+        featureList: [
+          'Automated statutory fee & STT engine',
+          'Behavioral leak & FOMO detection',
+          'TradingView execution screenshot storage',
+          'Multi-broker CSV and API sync (Zerodha, Groww, Angel One, Upstox, Dhan)',
+          'P&L calendar heatmap & cumulative curves',
+          'True Net P&L Brokerage calculator',
+        ],
+      },
+    ],
+  };
+
+  return (
+    <HomeExperience>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }}
+      />
+      <LandingPage />
+    </HomeExperience>
+  );
+}
