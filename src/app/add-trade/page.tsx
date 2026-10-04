@@ -307,6 +307,7 @@ export default function AddTradePage() {
 
       {/* Primary 2-Column Responsive Workspace Grid */}
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+        {formError && <p role="alert" className="lg:col-span-12 p-3 rounded-lg bg-error-container text-error text-sm">{formError}</p>}
         {/* LEFT COLUMN: Form Execution Panels (8 cols) */}
         <div className="lg:col-span-8 flex flex-col gap-space-lg">
           {/* Section 1: Trade Basics */}

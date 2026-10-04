@@ -224,6 +224,7 @@ export default function LoginPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
+            {notice && <p role="status" className="p-3 rounded-lg bg-primary/10 text-primary text-xs">{notice}</p>}
             {error && (
               <div className="p-3 rounded-lg bg-error-container/30 border border-error/40 text-xs text-error font-medium flex items-center gap-2">
                 <span className="material-symbols-outlined text-[16px] flex-shrink-0">error</span>

@@ -11,6 +11,7 @@ import {
 import { INITIAL_USER, INITIAL_ACCOUNTS, INITIAL_TRADES, INITIAL_JOURNAL } from '../lib/seedData';
 import { onFirebaseAuthStateChange, logoutFirebase } from '../lib/firebase';
 import { matchesTimeframe } from '../lib/dates';
+import { csvCell, parseCSV } from '../lib/csv';
 
 export type TimeframeFilter = 'Today' | 'This Week' | 'This Month' | 'This Year' | 'All Time';
 
@@ -426,7 +427,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       t.date,
       t.entryTime,
       t.exitTime || '',
-      `"${t.instrument}"`,
+      t.instrument,
       t.assetClass,
       t.side,
       t.quantity,
@@ -438,59 +439,65 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       t.charges,
       t.netPnl,
       t.roi,
-      `"${t.setup}"`,
+      t.setup,
       t.emotion || '',
-      `"${t.accountName || t.accountId}"`,
-      `"${(t.notes || '').replace(/"/g, '""')}"`,
+      t.accountName || t.accountId,
+      t.notes || '',
     ]);
 
-    return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    return [headers.join(','), ...rows.map(r => r.map(csvCell).join(','))].join('\n');
   };
 
   const importTradesCSV = (csvString: string): number => {
     try {
-      const lines = csvString.trim().split('\n');
+      const lines = parseCSV(csvString);
       if (lines.length < 2) return 0;
+      if (lines[0][0]?.trim() !== 'ID' || lines[0][4]?.trim() !== 'Instrument') return 0;
       let importedCount = 0;
 
       const newTradesList: Trade[] = [];
 
       for (let i = 1; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (!line) continue;
-        const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
-        if (cols.length >= 8) {
-          const instrument = cols[4] || 'NIFTY 50';
+        const cols = lines[i];
+        if (cols.length >= 20) {
+          const instrument = cols[4];
           const side = (cols[6] === 'SELL' ? 'SELL' : 'BUY') as 'BUY' | 'SELL';
-          const qty = parseFloat(cols[7]) || 1;
-          const entry = parseFloat(cols[8]) || 100;
-          const exit = parseFloat(cols[9]) || entry;
-          const charges = parseFloat(cols[13]) || 20;
+          const qty = Number(cols[7]);
+          const entry = Number(cols[8]);
+          const exit = cols[9].trim() ? Number(cols[9]) : undefined;
+          const charges = Number(cols[13]);
+          const account = accounts.find(a => a.accountName === cols[18] || a.id === cols[18]) || accounts.find(a => a.isActive);
+          if (!instrument.trim() || !/^\d{4}-\d{2}-\d{2}$/.test(cols[1]) || !['BUY', 'SELL'].includes(cols[6]) ||
+              !['Options', 'Futures', 'Equity', 'Forex', 'Crypto', 'Commodities'].includes(cols[5]) ||
+              ![qty, entry, charges].every(Number.isFinite) || qty <= 0 || entry <= 0 || charges < 0 ||
+              (exit !== undefined && (!Number.isFinite(exit) || exit <= 0)) || !account) continue;
 
-          const gross = side === 'BUY' ? (exit - entry) * qty : (entry - exit) * qty;
-          const net = gross - charges;
+          const gross = exit === undefined ? 0 : side === 'BUY' ? (exit - entry) * qty : (entry - exit) * qty;
+          const net = exit === undefined ? 0 : gross - charges;
           const roi = ((net / (entry * qty)) * 100);
 
           newTradesList.push({
             id: `TD-IMP-${Date.now()}-${i}`,
-            date: cols[1] || '2026-10-04',
+            date: cols[1],
             entryTime: cols[2] || '10:00 AM',
-            exitTime: cols[3] || '11:00 AM',
+            exitTime: exit === undefined ? undefined : cols[3] || undefined,
             instrument,
             assetClass: (cols[5] as any) || 'Options',
             side,
-            status: 'CLOSED',
+            status: exit === undefined ? 'OPEN' : 'CLOSED',
             quantity: qty,
             entryPrice: entry,
             exitPrice: exit,
-            grossPnl: Math.round(gross),
+            stopLoss: Number(cols[10]) || undefined,
+            target: Number(cols[11]) || undefined,
+            grossPnl: gross,
             charges,
-            netPnl: Math.round(net),
+            netPnl: net,
             roi: Number(roi.toFixed(2)),
             setup: cols[16] || 'Breakout',
             emotion: (cols[17] as any) || 'Calm',
-            accountId: 'acc_zerodha',
-            accountName: cols[18] || 'Main Account — Zerodha',
+            accountId: account.id,
+            accountName: account.accountName,
             notes: cols[19] || 'Imported via CSV',
             rulesFollowed: true,
             createdAt: new Date().toISOString(),
