@@ -2,10 +2,12 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { BrandLogo } from '../common/BrandLogo';
+import { LoadingWorkspace } from '../common/LoadingWorkspace';
+import { useTrades } from '../../context/TradeContext';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -17,19 +19,37 @@ const MOBILE_NAV_ITEMS = [
   { name: 'Journal', path: '/journal', icon: 'edit_note' },
   { name: 'Analytics', path: '/analytics', icon: 'monitoring' },
   { name: 'Calendar', path: '/calendar', icon: 'calendar_today' },
-  { name: 'AI Broker Sync', path: '/broker-sync', icon: 'sync_alt' },
   { name: 'Accounts', path: '/accounts', icon: 'account_balance' },
   { name: 'Settings', path: '/settings', icon: 'settings' },
   { name: 'Broker Charges', path: '/settings/charges', icon: 'calculate' },
-  { name: 'Setup Wizard', path: '/onboarding', icon: 'tune' },
-  { name: 'Trader Login', path: '/login', icon: 'login' },
-  { name: 'Super Admin (/su)', path: '/su', icon: 'security' },
 ];
 
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, isLoaded, storageError } = useTrades();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
+
+  // If on login, onboarding, or super admin portal, don't show trader shell
+  const isAuthOrOnboarding =
+    pathname === '/login' ||
+    pathname === '/signup' ||
+    pathname === '/onboarding' ||
+    (pathname === '/su' || pathname?.startsWith('/su/'));
+
+  // Global Route Guard: Enforce Onboarding -> Login -> Dashboard flow
+  useEffect(() => {
+    if (!isLoaded || isAuthOrOnboarding) return;
+    if (!user.isLoggedIn) {
+      if (!user.isOnboarded) {
+        router.replace('/onboarding');
+      } else {
+        router.replace('/login');
+      }
+    }
+  }, [isLoaded, user.isLoggedIn, user.isOnboarded, isAuthOrOnboarding, router]);
+
   useEffect(() => { setMobileMenuOpen(false); }, [pathname]);
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -55,15 +75,17 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     };
   }, [mobileMenuOpen]);
 
-  // If on login, onboarding, or super admin portal, don't show trader shell
-  const isAuthOrOnboarding =
-    pathname === '/login' ||
-    pathname === '/signup' ||
-    pathname === '/onboarding' ||
-    pathname?.startsWith('/su');
-
   if (isAuthOrOnboarding) {
     return <>{children}</>;
+  }
+
+  // Prevent rendering protected UI if unauthenticated or still loading
+  if (!isLoaded || !user.isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <LoadingWorkspace isReady={false} />
+      </div>
+    );
   }
 
   const isActive = (path: string) => {
@@ -117,7 +139,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
                       onClick={() => setMobileMenuOpen(false)}
                       className={`flex items-center gap-space-sm px-space-md py-2.5 rounded-lg font-label-lg text-label-lg transition-colors ${
                         active
-                          ? 'bg-surface-container-high text-primary font-bold'
+                          ? 'bg-surface-container-high text-primary font-normal'
                           : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
                       }`}
                     >
@@ -129,10 +151,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
               </nav>
             </div>
 
-            <div className="p-space-sm rounded-xl bg-surface-container-low flex flex-col gap-1 border border-primary/10">
-              <span className="font-label-sm text-primary uppercase font-bold tracking-wider">Pro Plan Active</span>
-              <p className="text-[11px] text-on-surface-variant">TradeDairy v2.4.0 Engine</p>
-            </div>
+            <p className="text-xs text-outline pt-4">Your personal trading journal</p>
           </div>
         </div>
       )}
@@ -141,8 +160,9 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
       <Header onToggleMobileMenu={() => setMobileMenuOpen(true)} />
 
       {/* Main Content Area */}
-      <div className="md:pl-60 flex-1 flex flex-col pb-20 md:pb-6">
-        <main className="w-full pt-16 bg-background min-h-screen px-3 sm:px-space-md lg:px-space-lg py-space-md max-w-[1440px] mx-auto">
+      <div className="md:pl-60 flex-1 flex flex-col pb-16 md:pb-6">
+        <main className="w-full pt-24 lg:pt-28 bg-background min-h-screen px-4 sm:px-6 lg:px-8 xl:px-10 pb-8 max-w-[1680px] mx-auto">
+          {storageError && <p role="alert" className="rounded-xl bg-error-container text-error p-3 mb-4 text-sm">{storageError}</p>}
           {children}
         </main>
       </div>

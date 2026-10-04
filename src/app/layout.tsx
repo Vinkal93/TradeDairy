@@ -1,18 +1,35 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { TradeProvider } from '../context/TradeContext';
-import { AppShell } from '../components/layout/AppShell';
+import { SiteFrame } from '../components/layout/SiteFrame';
+import { SITE_URL } from '../lib/seo';
 
 export const metadata: Metadata = {
-  title: 'TradeDairy — Precision Journaling & Trading Intelligence',
-  description: 'Track. Learn. Improve. Grow. Professional trading journal and analytics workspace for active traders.',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'TradeDairy — Trading Journal & Brokerage Calculator',
+    template: '%s | TradeDairy',
+  },
+  description:
+    'Record trades, calculate net profit after brokerage and taxes, and review trading performance with TradeDairy.',
+  applicationName: 'TradeDairy',
+  category: 'Finance',
+  referrer: 'strict-origin-when-cross-origin',
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: '/icon.svg',
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+    other: process.env.BING_SITE_VERIFICATION
+      ? { 'msvalidate.01': process.env.BING_SITE_VERIFICATION }
+      : undefined,
+  },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
@@ -28,9 +45,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-background text-on-surface antialiased font-body-md">
-        <TradeProvider>
-          <AppShell>{children}</AppShell>
-        </TradeProvider>
+        <SiteFrame>{children}</SiteFrame>
       </body>
     </html>
   );
