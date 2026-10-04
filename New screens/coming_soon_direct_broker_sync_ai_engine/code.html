@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"error-container":"#ffdad6","on-secondary-container":"#fefcff","error":"#ba1a1a","on-primary":"#ffffff","surface-container-lowest":"#ffffff","primary-container":"#00855d","surface-tint":"#006c4a","on-primary-fixed-variant":"#005137","on-error-container":"#93000a","surface-container-highest":"#d3e4fe","on-background":"#0b1c30","on-secondary-fixed-variant":"#003ea8","on-primary-container":"#f5fff7","surface-container-high":"#dce9ff","primary-fixed-dim":"#68dba9","secondary-fixed-dim":"#b4c5ff","background":"#f8f9ff","on-tertiary":"#ffffff","inverse-on-surface":"#eaf1ff","on-tertiary-container":"#f7fff2","on-surface-variant":"#3d4a42","surface-dim":"#cbdbf5","secondary-fixed":"#dbe1ff","tertiary-container":"#00873a","surface-container-low":"#eff4ff","tertiary-fixed":"#7ffc97","on-tertiary-fixed":"#002109","primary":"#006948","tertiary-fixed-dim":"#62df7d","secondary":"#0051d5","on-surface":"#0b1c30","secondary-container":"#316bf3","on-secondary-fixed":"#00174b","outline-variant":"#bccac0","surface":"#f8f9ff","outline":"#6d7a72","inverse-surface":"#213145","on-primary-fixed":"#002114","on-secondary":"#ffffff","primary-fixed":"#85f8c4","inverse-primary":"#68dba9","on-error":"#ffffff","surface-bright":"#f8f9ff","tertiary":"#006b2c","surface-container":"#e5eeff","surface-variant":"#d3e4fe","on-tertiary-fixed-variant":"#005320"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-2xl":"2.5rem",margin:"2rem","gutter-mobile":"0.75rem","space-xs":"0.5rem","margin-mobile":"1rem","space-md":"1rem","space-lg":"1.5rem","space-xl":"2rem","space-2xs":"0.25rem","space-sm":"0.75rem",gutter:"1.5rem"},fontFamily:{"body-md":["Inter"],"headline-xl-mobile":["Plus Jakarta Sans"],"data-metric-lg":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"data-table":["Inter"],"headline-xl":["Plus Jakarta Sans"],"label-md":["Inter"],"body-lg":["Inter"],"label-sm":["Inter"],"body-sm":["Inter"],"label-lg":["Inter"],"data-metric-md":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"]},fontSize:{"body-md":["14px",{lineHeight:"20px",fontWeight:"400"}],"headline-xl-mobile":["24px",{lineHeight:"32px",fontWeight:"700"}],"data-metric-lg":["28px",{lineHeight:"34px",fontWeight:"700"}],"headline-lg":["24px",{lineHeight:"32px",fontWeight:"600"}],"data-table":["13px",{lineHeight:"18px",fontWeight:"500"}],"headline-xl":["32px",{lineHeight:"40px",fontWeight:"700"}],"label-md":["12px",{lineHeight:"16px",fontWeight:"600"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],"label-sm":["11px",{lineHeight:"14px",fontWeight:"500"}],"body-sm":["13px",{lineHeight:"18px",fontWeight:"400"}],"label-lg":["14px",{lineHeight:"20px",fontWeight:"600"}],"data-metric-md":["18px",{lineHeight:"24px",fontWeight:"700"}],"headline-sm":["16px",{lineHeight:"24px",fontWeight:"600"}],"headline-md":["20px",{lineHeight:"28px",fontWeight:"600"}]}}}}</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-lg flex items-center justify-between bg-surface-container-low"><div class="flex items-center gap-space-sm"><div class="flex items-center justify-center w-8 h-8 rounded-lg bg-primary-container text-on-primary"><span class="material-symbols-outlined text-base">admin_panel_settings</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-tight">Admin Core</span><span class="font-label-sm text-label-sm text-on-surface-variant">v2.4.0 Engine</span></div></div><div class="flex items-center gap-space-2xs px-space-xs py-space-2xs rounded-full bg-surface-container-high"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface-variant">Sync</span></div></div><div class="px-space-md py-space-sm"><div class="px-space-sm pb-space-xs font-label-sm text-label-sm uppercase tracking-wider text-outline">Core Operations</div><nav class="flex flex-col gap-space-2xs" data-active-classes="bg-primary-container text-on-primary font-label-lg rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-2.5 transition-colors bg-primary-container text-on-primary font-label-lg rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" data-path="command-center" href="#"><span class="material-symbols-outlined text-lg">grid_view</span><span>Overview / Command Center</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="users-management" href="#"><span class="material-symbols-outlined text-lg">group</span><span>Users Management</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="plans-and-pricing" href="#"><span class="material-symbols-outlined text-lg">payments</span><span>Plans &amp; Pricing</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="feature-locks-and-flags" href="#"><span class="material-symbols-outlined text-lg">toggle_on</span><span>Feature Locks &amp; Flags</span></a></nav></div><div class="px-space-md py-space-sm"><div class="px-space-sm pb-space-xs font-label-sm text-label-sm uppercase tracking-wider text-outline">Data &amp; Integrity</div><nav class="flex flex-col gap-space-2xs" data-active-classes="bg-primary-container text-on-primary font-label-lg rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="import-engine" href="#"><span class="material-symbols-outlined text-lg">publish</span><span>Import Engine</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="data-exports" href="#"><span class="material-symbols-outlined text-lg">cloud_download</span><span>Data Exports</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="system-audit-and-logs" href="#"><span class="material-symbols-outlined text-lg">receipt_long</span><span>System Audit &amp; Logs</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="platform-settings" href="#"><span class="material-symbols-outlined text-lg">settings</span><span>Platform Settings</span></a></nav></div></div><div class="p-space-md bg-surface-container-low"><div class="p-space-sm rounded-xl bg-surface-container flex flex-col gap-space-sm"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant">Environment</span><span class="px-space-xs py-space-2xs rounded bg-surface-container-highest text-secondary font-label-sm text-label-sm uppercase font-bold">Production</span></div><a class="flex items-center justify-center gap-space-xs py-2 px-space-sm rounded-lg bg-surface text-secondary hover:bg-secondary-container hover:text-on-secondary-container transition-all font-label-lg text-label-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" data-path="trader-app" href="#"><span class="material-symbols-outlined text-base">open_in_new</span><span>Return to Trader App</span></a></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs"><img alt="Brand logo. - Primary color: #059669
+- Font: plusJakartaSans
+- Mode: light
+- Roundness: rounded-md
+" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WpIyvRuHtwea36sKPkql_KB0D7TrI4ZhMMkU6MruMREwKl93VFLWeOFfEKQ2XvK-0E6z1TbA1lCF8b01SHHIPdz4azgEsdr8NzODGQHFbMeWPmWEx839rhO0T6CWSyPLzgr53H_xxbdELw6Co3Kwmj13IdO2BxtWcF_Q_Qgb8bWo80qxHH8xy0UeOpLCFgJ6C90wiU--jDwkbkwTyIbzD2XEisvUqpYe0_cyXzAKFkdAvYOQuGnvCUug"/><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight hidden sm:inline">TradeDairy.online</span></div><div class="flex items-center px-space-xs py-space-2xs rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm uppercase tracking-wider font-semibold"><span class="px-1">Admin Console</span></div><div class="hidden xl:flex items-center gap-space-2xs px-space-sm py-1 rounded-full bg-surface-container"><span class="w-2 h-2 rounded-full bg-tertiary-container"></span><span class="font-label-sm text-label-sm text-tertiary-container font-semibold">Broker APIs Operational</span></div></div><div class="flex items-center gap-space-md"><div class="relative hidden md:flex items-center w-64 lg:w-80"><span class="material-symbols-outlined absolute left-3 text-outline text-lg pointer-events-none">search</span><input class="w-full h-9 pl-9 pr-4 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm placeholder:text-outline focus:outline-none focus:bg-surface focus:ring-2 focus:ring-primary" placeholder="Search users, accounts, flags..." type="text"/></div><div class="hidden lg:flex items-center gap-space-xs px-space-sm py-1.5 rounded-lg bg-surface-container-low"><span class="material-symbols-outlined text-primary text-base">supervised_user_circle</span><div class="flex flex-col"><span class="font-label-sm text-label-sm text-outline leading-tight">Active Users</span><span class="font-data-metric-md text-data-metric-md text-on-surface leading-tight">1,428</span></div></div><div class="relative flex items-center justify-center"><button class="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-xl">notifications</span></button><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error ring-2 ring-surface"></span></div><div class="flex items-center gap-space-sm pl-space-xs"><div class="hidden sm:flex flex-col text-right"><span class="font-label-lg text-label-lg text-on-surface leading-tight font-semibold">Super Admin</span><span class="font-label-sm text-label-sm text-on-surface-variant leading-tight">Root Security</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-container" src="https://lh3.googleusercontent.com/aida/AEtjO1VgoFrdwIF5bJWzPcSr35IEiLU0QQfBh7Mlrd053RB7naWmCumSm8lAoNH8P-_HcgKdBCY7JA-Wq4ZADRs0XG7ViE0NW7_5EU1QlshC1M0QFauVR-IlOcNC3u6qGhACiRWsPJFF3mYWqlJmAKuf0VmJ1t8WM_upJSjyOHak_yjSChoOd3hHYGZHtTfEcn3P4buGgJEqeCmO5bjnfRFqbxs8wtuVaOqY7IP9OdWOKSkyj19xTYl-vIUZRmo"/></div></div></header><main class="w-full pt-16 bg-background min-h-screen"><div class="flex flex-col w-full">
+<div class="relative overflow-hidden px-margin py-space-xl flex flex-col gap-space-2xl">
+<div class="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-primary-container/10 blur-3xl pointer-events-none"></div>
+<div class="absolute top-1/2 -left-20 w-80 h-80 rounded-full bg-secondary-container/10 blur-3xl pointer-events-none"></div>
+<div class="flex flex-col lg:flex-row items-stretch justify-between gap-space-xl z-10">
+<div class="flex flex-col justify-center max-w-2xl gap-space-md">
+<div class="inline-flex items-center gap-space-xs self-start px-space-sm py-1 rounded-full bg-surface-container-high shadow-sm">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary-container"></span>
+</span>
+<span class="font-label-md text-label-md text-primary tracking-wide uppercase">High-Frequency Roadmap — Q2 2026</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">
+          Direct Broker API Auto-Sync &amp; AI Strategy Backtesting Engine
+        </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+          Say goodbye to manual trade entry. Connect your Zerodha, Dhan, Angel One, and Upstox accounts for zero-touch execution sync, automated candle markers, and institutional backtesting.
+        </p>
+<div class="grid grid-cols-3 gap-space-sm pt-space-xs">
+<div class="flex flex-col p-space-sm rounded-xl bg-surface-container-low shadow-sm">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Sync Latency</span>
+<span class="font-data-metric-md text-data-metric-md text-primary">&lt; 200ms</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Real-time webhooks</span>
+</div>
+<div class="flex flex-col p-space-sm rounded-xl bg-surface-container-low shadow-sm">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Historical Depth</span>
+<span class="font-data-metric-md text-data-metric-md text-secondary">5+ Years</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Tick &amp; 1-min OHLC</span>
+</div>
+<div class="flex flex-col p-space-sm rounded-xl bg-surface-container-low shadow-sm">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Security Layer</span>
+<span class="font-data-metric-md text-data-metric-md text-tertiary">OAuth 2.0</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Read-only tokens</span>
+</div>
+</div>
+</div>
+<div class="w-full lg:w-[480px] flex-shrink-0 flex flex-col justify-center">
+<div class="relative p-space-lg rounded-2xl bg-surface-container-lowest shadow-xl flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-2xl">verified_user</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Get Priority Access</span>
+</div>
+<span class="px-space-xs py-space-2xs rounded bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">Limited 2,000 Seats</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Be first in line to connect your demat account when we launch the private alpha testing queue.
+          </p>
+<form class="flex flex-col gap-space-sm" id="waitlist-form" onsubmit="event.preventDefault(); handleWaitlistSubmit();">
+<div class="flex flex-col gap-space-2xs">
+<label class="font-label-sm text-label-sm text-on-surface font-semibold" for="trader-email">Trader Email Address</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-outline text-lg pointer-events-none">mail</span>
+<input class="w-full h-11 pl-10 pr-3 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md placeholder:text-outline focus:outline-none focus:bg-surface focus:shadow-md transition-all" id="trader-email" placeholder="you@algotrader.in" required="" type="email"/>
+</div>
+</div>
+<div class="flex flex-col gap-space-2xs">
+<label class="font-label-sm text-label-sm text-on-surface font-semibold" for="primary-broker">Primary Demat / Trading Broker</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-outline text-lg pointer-events-none">account_balance</span>
+<select class="w-full h-11 pl-10 pr-8 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:bg-surface focus:shadow-md appearance-none transition-all cursor-pointer" id="primary-broker" required="">
+<option disabled="" selected="" value="">Select your active broker...</option>
+<option value="zerodha">Zerodha Kite Connect</option>
+<option value="dhan">Dhan HQ Direct API</option>
+<option value="angelone">Angel One SmartAPI</option>
+<option value="upstox">Upstox Developer API</option>
+<option value="icici">ICICI Direct Breeze</option>
+<option value="fyers">Fyers API v3</option>
+<option value="other">Other / Multi-Broker</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 text-outline pointer-events-none text-lg">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-2xs">
+<label class="font-label-sm text-label-sm text-on-surface font-semibold" for="trading-style">Execution Frequency</label>
+<div class="grid grid-cols-3 gap-space-2xs">
+<label class="flex items-center justify-center p-2 rounded-lg bg-surface-container-low cursor-pointer has-[:checked]:bg-primary-container has-[:checked]:text-on-primary text-on-surface-variant font-label-sm text-label-sm text-center transition-colors">
+<input checked="" class="sr-only" name="freq" type="radio" value="scalper"/>
+<span>Scalper / Intraday</span>
+</label>
+<label class="flex items-center justify-center p-2 rounded-lg bg-surface-container-low cursor-pointer has-[:checked]:bg-primary-container has-[:checked]:text-on-primary text-on-surface-variant font-label-sm text-label-sm text-center transition-colors">
+<input class="sr-only" name="freq" type="radio" value="fno"/>
+<span>F&amp;O Options</span>
+</label>
+<label class="flex items-center justify-center p-2 rounded-lg bg-surface-container-low cursor-pointer has-[:checked]:bg-primary-container has-[:checked]:text-on-primary text-on-surface-variant font-label-sm text-label-sm text-center transition-colors">
+<input class="sr-only" name="freq" type="radio" value="swing"/>
+<span>Swing / Prop</span>
+</label>
+</div>
+</div>
+<button class="mt-space-xs w-full h-12 rounded-lg bg-primary-container hover:bg-surface-tint text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-space-xs shadow-md transition-all" id="submit-btn" type="submit">
+<span class="material-symbols-outlined text-lg">rocket_launch</span>
+<span id="btn-text">Join Early Beta Waitlist (1,840 waiting)</span>
+</button>
+</form>
+<div class="hidden p-space-sm rounded-lg bg-primary/10 text-primary flex items-center gap-space-sm" id="confirmation-msg">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-bold">You're #1,841 on the priority list!</span>
+<span class="font-body-sm text-body-sm">Check your inbox shortly for alpha verification.</span>
+</div>
+</div>
+<div class="flex items-start gap-space-xs p-space-sm rounded-xl bg-surface-container-high/60">
+<span class="material-symbols-outlined text-primary text-lg flex-shrink-0 mt-0.5">verified</span>
+<p class="font-body-sm text-body-sm text-on-surface leading-tight">
+<span class="font-semibold text-primary">Zero spam guarantee.</span> Early beta access + 3 months free Pro upgrade for the first 2,000 verified participants.
+            </p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-space-md z-10">
+<div class="flex flex-col gap-space-2xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Next Evolution of TradeDairy</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Institutional Architecture for Everyday Edge</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+<div class="flex flex-col justify-between p-space-lg rounded-2xl bg-surface-container-lowest shadow-md hover:shadow-xl transition-all">
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="w-12 h-12 rounded-xl bg-primary-container/15 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">sync_saved_locally</span>
+</div>
+<span class="px-space-xs py-space-2xs rounded-full bg-primary/10 text-primary font-label-sm text-label-sm font-semibold">Pillar 01</span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Direct Read-Only OAuth Broker Ingestion</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Connect your Indian broker accounts via official regulatory APIs. Zero manual trade entry, zero CSV uploads. Live order-book fills mirror into your diary inside 200 milliseconds.
+              </p>
+</div>
+<div class="p-space-sm rounded-xl bg-surface-container-low flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Supported Integrations</span>
+<div class="grid grid-cols-2 gap-space-xs">
+<div class="flex items-center gap-space-xs p-1.5 rounded-lg bg-surface shadow-sm">
+<span class="material-symbols-outlined text-primary text-base">domain</span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Zerodha Kite</span>
+</div>
+<div class="flex items-center gap-space-xs p-1.5 rounded-lg bg-surface shadow-sm">
+<span class="material-symbols-outlined text-secondary text-base">bolt</span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Dhan HQ</span>
+</div>
+<div class="flex items-center gap-space-xs p-1.5 rounded-lg bg-surface shadow-sm">
+<span class="material-symbols-outlined text-tertiary text-base">hub</span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Angel SmartAPI</span>
+</div>
+<div class="flex items-center gap-space-xs p-1.5 rounded-lg bg-surface shadow-sm">
+<span class="material-symbols-outlined text-primary text-base">candlestick_chart</span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Upstox API</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm flex items-center justify-between bg-surface-container-high/40 p-space-xs rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Bank-grade Tokenization</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">256-bit AES</span>
+</div>
+</div>
+<div class="flex flex-col justify-between p-space-lg rounded-2xl bg-surface-container-lowest shadow-md hover:shadow-xl transition-all">
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="w-12 h-12 rounded-xl bg-secondary-container/15 text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">neurology</span>
+</div>
+<span class="px-space-xs py-space-2xs rounded-full bg-secondary/10 text-secondary font-label-sm text-label-sm font-semibold">Pillar 02</span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">AI Strategy Backtester &amp; Edge Simulator</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Stress-test your logged trade setups against 5 years of tick data. Verify whether your 9:30 AM BankNifty opening range breakout produces positive expectancy across high-volatility regimes.
+              </p>
+</div>
+<div class="p-space-sm rounded-xl bg-surface-container-low flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Simulated Setup</span>
+<span class="px-1.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold">+18.4% Alpha</span>
+</div>
+<div class="h-20 w-full flex items-end gap-1.5 pt-2">
+<div class="flex-1 bg-primary/20 rounded-t h-[40%] hover:bg-primary transition-colors" title="2021"></div>
+<div class="flex-1 bg-primary/30 rounded-t h-[65%] hover:bg-primary transition-colors" title="2022"></div>
+<div class="flex-1 bg-error/30 rounded-t h-[30%] hover:bg-error transition-colors" title="2023 Bear Spike"></div>
+<div class="flex-1 bg-primary/50 rounded-t h-[80%] hover:bg-primary transition-colors" title="2024"></div>
+<div class="flex-1 bg-primary-container rounded-t h-[95%] hover:bg-surface-tint transition-colors" title="2025 Projected"></div>
+</div>
+<div class="flex items-center justify-between text-outline font-label-sm text-label-sm">
+<span>FY21</span>
+<span>FY22</span>
+<span>FY23</span>
+<span>FY24</span>
+<span>FY25</span>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm flex items-center justify-between bg-surface-container-high/40 p-space-xs rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Monte Carlo Runs</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold">10,000 Paths</span>
+</div>
+</div>
+<div class="flex flex-col justify-between p-space-lg rounded-2xl bg-surface-container-lowest shadow-md hover:shadow-xl transition-all">
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="w-12 h-12 rounded-xl bg-error-container/40 text-error flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">shield_with_heart</span>
+</div>
+<span class="px-space-xs py-space-2xs rounded-full bg-error/10 text-error font-label-sm text-label-sm font-semibold">Pillar 03</span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Trailing Drawdown &amp; Prop Challenge Breaker</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Protect your capital and prop firm evaluation accounts. Instant WhatsApp and webhook triggers fire when your daily P&amp;L approaches 80% of your maximum trailing loss ceiling.
+              </p>
+</div>
+<div class="p-space-sm rounded-xl bg-surface-container-low flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Live Risk Circuit</span>
+<span class="font-label-sm text-label-sm text-error font-bold">Armed</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Daily Loss Threshold</span>
+<span class="font-bold text-on-surface">₹24,000 / ₹30,000 (80%)</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-high overflow-hidden">
+<div class="h-full bg-error rounded-full" style="width: 80%"></div>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-tertiary-container text-base">chat</span>
+<span>Automated WhatsApp Dispatch Ready</span>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm flex items-center justify-between bg-surface-container-high/40 p-space-xs rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Auto-Squaring Advice</span>
+<span class="font-label-sm text-label-sm text-error font-bold">Rule-Enforced</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-space-xl rounded-2xl bg-surface-container-low shadow-sm flex flex-col md:flex-row items-center justify-between gap-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="flex -space-x-3 overflow-hidden">
+<img class="inline-block h-12 w-12 rounded-full object-cover shadow-sm ring-2 ring-surface" data-alt="Portrait of an Indian male proprietary trader in his late 20s reviewing multi-screen trading monitors in an ambient Bengaluru office setup, cinematic calm fintech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4KAtAruYl1aJWs0yfXrrR9-Wfr5hs-yAg55sqz0ldb-crFuoM0iu4gOpbc03USLlWB-WZarRgYG6-5fwgLhhgkS9yojH0MRmtT_e95Peagyu6leYb4wbqviz86dwKnIewwT-qQlyFZ-wlIkqkg0M4QHp6O0jHg_W5PLMlZKq8fr5JB_d0S7TgpLIK5IGWujAoJJTEsXCogRt2JTzGPmLNPOJNWVM9aK-lCGzVKM7DY-M4XGlfUgLe"/>
+<img class="inline-block h-12 w-12 rounded-full object-cover shadow-sm ring-2 ring-surface" data-alt="Close up portrait of an Indian female derivative options trader looking confident with subtle emerald lighting reflecting on her face, studio quality fintech headshot." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKbllgwv6BerC-vONSOeIcq0pTbBSbtqyc8BAXMGPKgk2qX02dmLr3J_A7ZO5VyA1td7D-m1iLKyGxSM0S7NPuCxk5YX43Ou_JhLaRyLH6a_mkDuYcClqc_TKBOxr9T5OibHdOUW_EW56WmMk0L75UlOG9bAwBXVL_OKG4Yhh0M3NneSxzVcQI3rxadkI9XQK334i27dmqQmp80YwvUzDesKTUU7pdvIF44QVmqIB2BnEUZNC2AS2_"/>
+<img class="inline-block h-12 w-12 rounded-full object-cover shadow-sm ring-2 ring-surface" data-alt="Portrait of a professional hedge fund quant trader reviewing algorithms in a modern high-tech trading workspace, clean lighting, mint green and navy palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdEnY-bS9rKc0C_Cyx-zQhklX54It-CJtIbf68GhE67pWSD1aaFSuCAM7hOXg936LX5Caw10ryzf_IzoaQ_PzCdinBRfOVTFn1ErUxLtUSDscC0r2qhgdecf8moji7_bEo25FZUNzcrtrmoAx-CX3CC0tBf1u2B-sQ1SQiDl42nWW8ISFjTZaSND_yEZ58O-0RjbaelgcgnfpegJ1GkdNa39pcjr6-bTCZ17jkky1gngPLGbZ3JPH6"/>
+<div class="inline-flex h-12 w-12 rounded-full bg-primary-container text-on-primary font-label-md text-label-md items-center justify-center font-bold shadow-sm">
+            +1.8k
+          </div>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">1,840+ Indian Retail &amp; Prop Traders on Waitlist</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Active participants from Bengaluru, Mumbai, Delhi, Ahmedabad, and Hyderabad.</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm w-full md:w-auto">
+<a class="flex-1 md:flex-none flex items-center justify-center gap-space-xs px-space-md py-2.5 rounded-lg bg-surface hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg shadow-sm transition-all" data-path="command-center" href="#">
+<span class="material-symbols-outlined text-base">dashboard</span>
+<span>Back to Overview</span>
+</a>
+<a class="flex-1 md:flex-none flex items-center justify-center gap-space-xs px-space-md py-2.5 rounded-lg bg-secondary-container hover:bg-secondary text-on-secondary-container font-label-lg text-label-lg shadow-sm transition-all" href="#">
+<span class="material-symbols-outlined text-base">group</span>
+<span>Join Official Community</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<script>
+function handleWaitlistSubmit() {
+  const email = document.getElementById('trader-email').value;
+  const broker = document.getElementById('primary-broker').value;
+  const btn = document.getElementById('submit-btn');
+  const btnText = document.getElementById('btn-text');
+  const confirmMsg = document.getElementById('confirmation-msg');
+
+  if (!email || !broker) return;
+
+  btnText.textContent = "Reserving Your Seat...";
+  btn.disabled = true;
+
+  setTimeout(() => {
+    btn.classList.add('hidden');
+    confirmMsg.classList.remove('hidden');
+  }, 600);
+}
+</script></main></div></body></html>

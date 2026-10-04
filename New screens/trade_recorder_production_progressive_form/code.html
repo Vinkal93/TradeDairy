@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "inverse-primary": "#68dba9", "on-tertiary-container": "#f7fff2", "on-surface": "#0b1c30", "secondary-container": "#316bf3", "on-tertiary-fixed": "#002109", "on-background": "#0b1c30", "surface-container-low": "#eff4ff", "surface-container-lowest": "#ffffff", "inverse-on-surface": "#eaf1ff", "error-container": "#ffdad6", "surface-dim": "#cbdbf5", "primary": "#006948", "outline": "#6d7a72", "on-tertiary-fixed-variant": "#005320", "on-primary": "#ffffff", "surface-container-high": "#dce9ff", "surface-variant": "#d3e4fe", "on-primary-fixed-variant": "#005137", "background": "#f8f9ff", "surface": "#f8f9ff", "on-secondary-container": "#fefcff", "on-secondary-fixed-variant": "#003ea8", "on-error": "#ffffff", "on-error-container": "#93000a", "tertiary-fixed": "#7ffc97", "on-secondary-fixed": "#00174b", "tertiary-fixed-dim": "#62df7d", "on-primary-container": "#f5fff7", "primary-container": "#00855d", "on-surface-variant": "#3d4a42", "surface-tint": "#006c4a", "surface-bright": "#f8f9ff", "secondary-fixed-dim": "#b4c5ff", "on-secondary": "#ffffff", "on-tertiary": "#ffffff", "tertiary": "#006b2c", "outline-variant": "#bccac0", "error": "#ba1a1a", "tertiary-container": "#00873a", "primary-fixed-dim": "#68dba9", "inverse-surface": "#213145", "on-primary-fixed": "#002114", "secondary": "#0051d5", "surface-container-highest": "#d3e4fe", "secondary-fixed": "#dbe1ff", "primary-fixed": "#85f8c4", "surface-container": "#e5eeff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "gutter-mobile": "0.75rem", "space-2xl": "2.5rem", "space-2xs": "0.25rem", "space-sm": "0.75rem", "space-md": "1rem", "space-xs": "0.5rem", "gutter": "1.5rem", "margin-mobile": "1rem", "space-lg": "1.5rem", "space-xl": "2rem", "margin": "2rem" }, "fontFamily": { "body-md": ["Inter"], "headline-lg": ["Plus Jakarta Sans"], "label-md": ["Inter"], "headline-xl-mobile": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "data-table": ["Inter"], "label-lg": ["Inter"], "body-lg": ["Inter"], "body-sm": ["Inter"], "data-metric-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "label-sm": ["Inter"], "data-metric-lg": ["Plus Jakarta Sans"] }, "fontSize": { "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "600" }], "headline-xl-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }], "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }], "data-table": ["13px", { "lineHeight": "18px", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "data-metric-md": ["18px", { "lineHeight": "24px", "fontWeight": "700" }], "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "500" }], "data-metric-lg": ["28px", { "lineHeight": "34px", "fontWeight": "700" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-60 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between py-space-md"><div class="flex flex-col gap-space-md"><div class="px-space-md flex items-center gap-space-xs"><img alt="TradeDairy Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wn_h_-FaSNF4RxHDn7zZ-ktPVTloO1p8Ydu_BSqnLYt9FavAM6qcyl7VPV4e84eaTYHd-ai1_0uCYzO6OLrs3iqxRTuRlH-eUF-NDNk2K3CVazHanXfAFMBdHtzd-996lEcXjUWhUsJ8VHMe4x5C_JobZ2S6ogsniv8W-BBNvc-GPNl7ZtT_nQiBSfrxs3IxUA9-8MQpXuqZel567pgjS4R3FLGLIrn8ffGUgpizrHvV7m9kmQP3FA8ko"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface leading-none tracking-tight">TradeDairy</span><span class="font-label-sm text-label-sm text-on-surface-variant leading-tight">Journal &amp; Analytics</span></div></div><div class="px-space-md"><a class="flex items-center justify-center gap-space-xs w-full py-2.5 px-space-md rounded-lg bg-primary text-on-primary font-label-lg text-label-lg shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-all" data-path="add-trade" href="#"><span class="material-symbols-outlined text-[18px]">add</span><span>Add Trade</span></a></div><nav class="flex flex-col gap-1 px-space-xs" data-active-classes="bg-surface-container-high text-primary font-bold"><a class="flex items-center gap-space-sm px-space-md py-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[20px]">grid_view</span><span>Dashboard</span></a><a class="flex items-center gap-space-sm px-space-md py-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="trades" href="#"><span class="material-symbols-outlined text-[20px]">receipt_long</span><span>Trades</span></a><a class="flex items-center gap-space-sm px-space-md py-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="journal" href="#"><span class="material-symbols-outlined text-[20px]">edit_note</span><span>Journal</span></a><a class="flex items-center gap-space-sm px-space-md py-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="calendar" href="#"><span class="material-symbols-outlined text-[20px]">calendar_today</span><span>Calendar</span></a><a class="flex items-center gap-space-sm px-space-md py-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="analytics" href="#"><span class="material-symbols-outlined text-[20px]">monitoring</span><span>Analytics</span></a><a class="flex items-center gap-space-sm px-space-md py-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="trading-accounts" href="#"><span class="material-symbols-outlined text-[20px]">account_balance</span><span>Accounts</span></a><a class="flex items-center gap-space-sm px-space-md py-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="settings-profile" href="#"><span class="material-symbols-outlined text-[20px]">settings</span><span>Settings</span></a></nav></div><div class="px-space-md"><div class="p-space-sm rounded-xl bg-surface-container-low flex flex-col gap-space-2xs"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider">Pro Plan</span><span class="material-symbols-outlined text-primary text-[16px]">verified</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Unlimited trades &amp; deep insights active</p></div></div></aside><div class="pl-60"><header class="fixed top-0 left-60 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-space-lg flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md flex-1 max-w-lg"><div class="relative w-full"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span><input class="w-full h-10 pl-9 pr-space-md rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest transition-colors" placeholder="Search trades, instruments, setups..." type="text"/></div></div><div class="flex items-center gap-space-md"><div class="hidden sm:flex items-center gap-space-2xs px-space-sm py-1.5 rounded-lg bg-surface-container-low text-on-surface"><span class="material-symbols-outlined text-[16px] text-outline">event</span><span class="font-label-md text-label-md">Sun, 04 Oct 2026</span></div><button aria-label="Notifications" class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span></button><div class="flex items-center gap-space-xs pl-space-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDE1QclnM-SpbowLq4dk9JMiWIBURwgrfnza9o1NTBFR0ALgbSMFiBp_h8PDfmcHo3wwscOKZny8SB7TJqhvG_eM8c9S_3n3xf135LfJkL-M3vnsVWQagS9EpaOTYjR_wyGZu4e7se3-TL9_3auHPReo69kjJuOuWULvaJgnnhegVKj6U936JjTiraoXBCif--luKyhf2U_XHWnZiJ-u0BYKTSOh_oc-2zHvKwdhnLau7YYW4Jc9lJb"/><div class="hidden md:flex flex-col"><span class="font-label-md text-label-md text-on-surface leading-tight">Vinkal Prajapati</span><span class="font-label-sm text-label-sm text-primary leading-none">Pro Trader</span></div></div></div></header><main class="w-full pt-16 bg-background min-h-screen px-space-lg py-space-lg max-w-[1440px] mx-auto"><div class="flex flex-col w-full">
+<!-- Page Header Ribbon -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md mb-space-lg">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Record New Trade</h1>
+<span class="px-space-xs py-0.5 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm">F&amp;O Journal</span>
+</div>
+<div class="flex items-center gap-space-sm mt-space-2xs text-on-surface-variant font-body-sm text-body-sm">
+<span class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          Draft saved 2s ago
+        </span>
+<span>•</span>
+<span class="flex items-center gap-1 text-outline">
+<span class="material-symbols-outlined text-[15px]">verified_user</span>
+          Strict Rulebook Compliance Active
+        </span>
+</div>
+</div>
+<!-- Header Right Controls -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<!-- Mode Toggle Switch -->
+<div class="flex items-center bg-surface-container p-1 rounded-xl">
+<button class="px-space-sm py-1.5 rounded-lg font-label-md text-label-md text-on-surface-variant transition-all hover:text-on-surface" id="mode-fast" onclick="setMode('fast')">
+          Fast Mode
+        </button>
+<button class="px-space-sm py-1.5 rounded-lg font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-sm transition-all" id="mode-adv" onclick="setMode('advanced')">
+          Advanced Mode
+        </button>
+</div>
+<!-- Account Selector Dropdown -->
+<div class="relative">
+<div class="flex items-center gap-space-xs px-space-sm py-2 rounded-xl bg-surface-container-lowest shadow-sm cursor-pointer hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-primary text-[20px]">account_balance_wallet</span>
+<div class="flex flex-col pr-space-xs">
+<span class="font-label-sm text-label-sm text-outline leading-none">Trading Account</span>
+<span class="font-label-md text-label-md text-on-surface leading-tight font-semibold">Zerodha F&amp;O (Default)</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Main 12-Column Responsive Workspace -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT 8 COLUMNS: FORM CORE (PROGRESSIVE DISCLOSURE SECTIONS) -->
+<div class="lg:col-span-8 flex flex-col gap-space-lg">
+<!-- SECTION 1: TRADE BASICS -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg transition-all hover:shadow-md">
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-headline-sm text-headline-sm">1</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Trade Basics &amp; Execution</h2>
+</div>
+<span class="font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface-variant font-mono">Zerodha #ZK9914</span>
+</div>
+<!-- Row 1: Exchange & Segment Selection -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md mb-space-md">
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-space-2xs uppercase tracking-wider">Exchange *</label>
+<div class="grid grid-cols-3 gap-space-xs p-1 bg-surface-container-low rounded-lg">
+<button class="py-1.5 text-center rounded-md font-label-md text-label-md bg-surface-container-lowest text-primary font-bold shadow-sm" type="button">NSE</button>
+<button class="py-1.5 text-center rounded-md font-label-md text-label-md text-on-surface-variant hover:text-on-surface" type="button">BSE</button>
+<button class="py-1.5 text-center rounded-md font-label-md text-label-md text-on-surface-variant hover:text-on-surface" type="button">MCX</button>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-space-2xs uppercase tracking-wider">Market Segment *</label>
+<div class="grid grid-cols-4 gap-1 p-1 bg-surface-container-low rounded-lg">
+<button class="py-1.5 text-center rounded-md font-label-sm text-label-sm bg-primary text-on-primary font-bold" type="button">Options</button>
+<button class="py-1.5 text-center rounded-md font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface truncate px-1" type="button">Intraday</button>
+<button class="py-1.5 text-center rounded-md font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface truncate px-1" type="button">Delivery</button>
+<button class="py-1.5 text-center rounded-md font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface truncate px-1" type="button">Futures</button>
+</div>
+</div>
+</div>
+<!-- Row 2: Timestamps and Direction -->
+<div class="grid grid-cols-1 sm:grid-cols-4 gap-space-sm mb-space-md">
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-space-2xs">Trade Date *</label>
+<div class="relative">
+<input class="w-full h-10 px-space-xs rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest transition-colors" type="date" value="2026-10-04"/>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-space-2xs">Entry Timestamp</label>
+<input class="w-full h-10 px-space-xs rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest" type="text" value="10:15:04 AM"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-space-2xs">Exit Timestamp</label>
+<input class="w-full h-10 px-space-xs rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest" type="text" value="11:35:12 AM"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-space-2xs">Position Direction *</label>
+<div class="grid grid-cols-2 gap-1 p-1 bg-surface-container-low rounded-lg h-10">
+<button class="flex items-center justify-center gap-1 rounded font-label-md text-label-md bg-primary text-on-primary font-bold shadow-sm" type="button">
+<span>BUY</span>
+</button>
+<button class="flex items-center justify-center gap-1 rounded font-label-md text-label-md text-on-surface-variant hover:text-error" type="button">
+<span>SELL</span>
+</button>
+</div>
+</div>
+</div>
+<!-- DYNAMIC OPTIONS CONTRACT SPECIFIER (Since Segment is Options) -->
+<div class="p-space-sm rounded-xl bg-surface-container-low mb-space-md">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-md text-label-md text-primary font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+              Options Contract Parameters
+            </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Weekly Contract • Indian Index</span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-5 gap-space-xs">
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-1">Underlying</label>
+<input class="w-full h-9 px-2 rounded-lg bg-surface-container-lowest font-body-sm text-body-sm text-on-surface font-semibold focus:outline-none" type="text" value="NIFTY 50"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-1">Expiry</label>
+<input class="w-full h-9 px-2 rounded-lg bg-surface-container-lowest font-body-sm text-body-sm text-on-surface focus:outline-none" type="text" value="09 Oct 2026"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-1">Strike Price</label>
+<input class="w-full h-9 px-2 rounded-lg bg-surface-container-lowest font-body-sm text-body-sm text-on-surface focus:outline-none font-mono" id="strike-price" type="number" value="25000"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-1">Option Type</label>
+<div class="grid grid-cols-2 gap-1 p-0.5 bg-surface-container rounded-lg h-9">
+<button class="rounded font-label-sm text-label-sm bg-primary text-on-primary font-bold" type="button">CE</button>
+<button class="rounded font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface" type="button">PE</button>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-1">Lot Size</label>
+<input class="w-full h-9 px-2 rounded-lg bg-surface-container-lowest font-body-sm text-body-sm text-on-surface font-mono" id="lot-size" readonly="" type="number" value="50"/>
+</div>
+</div>
+</div>
+<!-- Prices, Quantities & Live Turnover -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-sm mb-space-sm">
+<div>
+<div class="flex items-center justify-between mb-1">
+<label class="font-label-sm text-label-sm text-outline">Buy Price (Avg)*</label>
+<span class="font-label-sm text-label-sm text-primary font-semibold">1st Leg</span>
+</div>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 font-body-sm text-outline">₹</span>
+<input class="w-full h-10 pl-7 pr-3 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest font-mono" id="input-buy-price" oninput="calculateRealtimeMetrics()" step="0.05" type="number" value="120.50"/>
+</div>
+</div>
+<div>
+<div class="flex items-center justify-between mb-1">
+<label class="font-label-sm text-label-sm text-outline">Sell Price (Avg)*</label>
+<span class="font-label-sm text-label-sm text-tertiary font-semibold">2nd Leg</span>
+</div>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 font-body-sm text-outline">₹</span>
+<input class="w-full h-10 pl-7 pr-3 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest font-mono" id="input-sell-price" oninput="calculateRealtimeMetrics()" step="0.05" type="number" value="135.00"/>
+</div>
+</div>
+<div>
+<div class="flex items-center justify-between mb-1">
+<label class="font-label-sm text-label-sm text-outline">Quantity (Shares/Units)*</label>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">1 Lot = 50</span>
+</div>
+<input class="w-full h-10 px-3 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest font-mono" id="input-qty" oninput="calculateRealtimeMetrics()" type="number" value="50"/>
+</div>
+</div>
+<!-- Orders Count & Turnover Pill Bar -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm p-space-sm rounded-lg bg-surface-container-lowest shadow-sm mt-space-sm">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-outline">Buy Orders:</span>
+<input class="w-12 h-7 text-center rounded bg-surface-container-low font-label-md text-label-md text-on-surface font-mono" id="buy-orders-count" min="1" oninput="calculateRealtimeMetrics()" type="number" value="1"/>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-outline">Sell Orders:</span>
+<input class="w-12 h-7 text-center rounded bg-surface-container-low font-label-md text-label-md text-on-surface font-mono" id="sell-orders-count" min="1" oninput="calculateRealtimeMetrics()" type="number" value="1"/>
+</div>
+<span class="hidden md:inline-block font-body-sm text-body-sm text-outline text-[11px] leading-tight">
+              (₹20 per executed order)
+            </span>
+</div>
+<div class="flex items-center gap-space-md text-right">
+<div>
+<span class="block font-label-sm text-label-sm text-outline">Buy Value</span>
+<span class="font-data-table text-data-table text-on-surface font-mono" id="buy-value-display">₹6,025.00</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-outline">Sell Value</span>
+<span class="font-data-table text-data-table text-on-surface font-mono" id="sell-value-display">₹6,750.00</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-outline">Turnover</span>
+<span class="font-data-table text-data-table text-secondary font-bold font-mono" id="turnover-value-display">₹12,775.00</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: RISK, STRATEGY & MARKET CONTEXT -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg transition-all hover:shadow-md">
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="w-7 h-7 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center font-headline-sm text-headline-sm">2</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Risk, Strategy &amp; Technical Setup</h2>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-[16px]">shield_with_heart</span>
+            Calculated R:R Ratio
+          </span>
+</div>
+<!-- Stop Loss & Target Row with Live R:R -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md mb-space-md">
+<div class="p-space-sm rounded-xl bg-error-container/30">
+<div class="flex items-center justify-between mb-1">
+<label class="font-label-sm text-label-sm text-error font-semibold">Stop Loss Price</label>
+<span class="font-label-sm text-label-sm text-error font-mono font-bold" id="planned-risk-display">-₹525.00</span>
+</div>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 font-body-sm text-outline">₹</span>
+<input class="w-full h-10 pl-7 pr-3 rounded-lg bg-surface-container-lowest font-body-sm text-body-sm text-on-surface focus:outline-none font-mono" id="input-stop-loss" oninput="calculateRealtimeMetrics()" step="0.05" type="number" value="110.00"/>
+</div>
+<span class="block mt-1 font-label-sm text-label-sm text-on-surface-variant">Risk: 10.50 pts (8.71%)</span>
+</div>
+<div class="p-space-sm rounded-xl bg-primary/10">
+<div class="flex items-center justify-between mb-1">
+<label class="font-label-sm text-label-sm text-primary font-semibold">Target Price</label>
+<span class="font-label-sm text-label-sm text-primary font-mono font-bold" id="potential-reward-display">+₹1,475.00</span>
+</div>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 font-body-sm text-outline">₹</span>
+<input class="w-full h-10 pl-7 pr-3 rounded-lg bg-surface-container-lowest font-body-sm text-body-sm text-on-surface focus:outline-none font-mono" id="input-target" oninput="calculateRealtimeMetrics()" step="0.05" type="number" value="150.00"/>
+</div>
+<span class="block mt-1 font-label-sm text-label-sm text-on-surface-variant">Potential: 29.50 pts (24.48%)</span>
+</div>
+<!-- Risk Reward Gauge Widget -->
+<div class="p-space-sm rounded-xl bg-surface-container flex flex-col justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Planned Risk : Reward</span>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-xl text-headline-xl text-primary font-bold" id="rr-ratio-display">1 : 2.81</span>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-primary text-on-primary font-semibold">Favorable</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-2 overflow-hidden flex">
+<div class="bg-error h-2" style="width: 26%"></div>
+<div class="bg-primary h-2" style="width: 74%"></div>
+</div>
+</div>
+</div>
+<!-- Strategy Chips -->
+<div class="mb-space-md">
+<label class="block font-label-sm text-label-sm text-outline mb-space-2xs uppercase tracking-wider">Setup / Strategy Engine *</label>
+<div class="flex flex-wrap gap-1.5" id="strategy-container">
+<button class="strategy-chip px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-primary text-on-primary font-semibold shadow-sm" type="button">Breakout</button>
+<button class="strategy-chip px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container" type="button">Reversal</button>
+<button class="strategy-chip px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container" type="button">Pullback</button>
+<button class="strategy-chip px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container" type="button">Support/Resistance</button>
+<button class="strategy-chip px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container" type="button">Momentum</button>
+<button class="strategy-chip px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container" type="button">ORB (Opening Range)</button>
+<button class="strategy-chip px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container" type="button">Trend Following</button>
+<button class="strategy-chip px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container" type="button">Scalping</button>
+</div>
+</div>
+<!-- Market Condition Chips -->
+<div class="mb-space-md">
+<label class="block font-label-sm text-label-sm text-outline mb-space-2xs uppercase tracking-wider">Market Condition / Regime</label>
+<div class="flex flex-wrap gap-1.5">
+<button class="px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-secondary text-on-secondary font-semibold shadow-sm" type="button">Trending</button>
+<button class="px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container" type="button">Range Bound</button>
+<button class="px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container" type="button">Volatile</button>
+<button class="px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container" type="button">Low Volatility</button>
+<button class="px-space-sm py-1 rounded-full font-label-sm text-label-sm bg-surface-container-low text-on-surface-variant hover:bg-surface-container" type="button">Unclear</button>
+</div>
+</div>
+<!-- Chart Screenshot Upload & Attached Preview -->
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-space-2xs uppercase tracking-wider">Technical Chart Screenshot</label>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm items-center">
+<!-- Drag & Drop Upload Tile -->
+<div class="h-28 rounded-xl bg-surface-container-low hover:bg-surface-container cursor-pointer flex flex-col items-center justify-center p-space-sm transition-colors text-center">
+<span class="material-symbols-outlined text-primary text-[28px]">cloud_upload</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold mt-1">Drop TradingView snapshot or click</span>
+<span class="font-label-sm text-label-sm text-outline">Supports PNG, JPG, or clipboard paste (Ctrl+V)</span>
+</div>
+<!-- Attached Thumbnail Preview -->
+<div class="h-28 rounded-xl bg-surface-container-lowest p-2 shadow-sm flex items-center gap-space-sm relative overflow-hidden group">
+<img class="w-24 h-24 rounded-lg object-cover shadow-xs" data-alt="Financial candlestick chart showing NIFTY 50 15-minute timeframe breakout with green volume spike bars, exponential moving averages, and technical indicators on a bright fintech analytical screen with crisp emerald green accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx_X-L5u_SPHB0RCTrHKjr93nlwMsn31rSqQwH785HMl89Qv7Cb57FIgf6dJ3ZD_TH6JylmAAS6H-aSUI3zCkZzZQgSgqbdpQj1CnfuVP4KO-WLDLmbXtnw7YQSwcqLud9BgKBAPC0OuHZa0l4hY6EB8cc4JwduWhbRFxkIKBJegFde5iMOCQcXN58emhKbw_JozSSQ-psHb9q5cxvJd0v-1R5rFav75TTxnvPfAc3dYf3Zn5i0IIn"/>
+<div class="flex flex-col min-w-0 pr-space-md">
+<span class="font-label-md text-label-md text-on-surface font-semibold truncate">NIFTY_15m_Breakout.png</span>
+<span class="font-label-sm text-label-sm text-outline font-mono">1.4 MB • 15m Chart</span>
+<span class="font-label-sm text-label-sm text-primary flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                  Annotated &amp; Linked
+                </span>
+</div>
+<button aria-label="Remove image" class="absolute top-2 right-2 p-1 rounded-md bg-surface-container-lowest text-outline hover:text-error transition-colors shadow-xs" type="button">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: TRADING PSYCHOLOGY & POST-TRADE AUDIT -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg transition-all hover:shadow-md">
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="w-7 h-7 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center font-headline-sm text-headline-sm">3</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Psychology &amp; Post-Trade Audit</h2>
+</div>
+<span class="font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-primary/10 text-primary font-semibold">Mindset Tracker</span>
+</div>
+<!-- Prompt 1 & 2: Reasoning & Confirmation -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md mb-space-md">
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-1">Why did you take this trade? *</label>
+<textarea class="w-full p-2.5 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest transition-colors leading-relaxed" rows="2">Breakout candle confirmed above 20 EMA on 5m chart with surging volume</textarea>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-1">What confirmation did you see? *</label>
+<textarea class="w-full p-2.5 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest transition-colors leading-relaxed" rows="2">VWAP reclaim + heavy call open interest unwinding at 25000 strike</textarea>
+</div>
+</div>
+<!-- Emotion Selector Matrix -->
+<div class="mb-space-md">
+<label class="block font-label-sm text-label-sm text-outline mb-space-2xs uppercase tracking-wider">What was your emotional state before entry? *</label>
+<div class="grid grid-cols-4 sm:grid-cols-8 gap-space-xs">
+<button class="p-2 rounded-xl bg-primary text-on-primary flex flex-col items-center justify-center gap-1 shadow-sm" type="button">
+<span class="text-xl">😌</span>
+<span class="font-label-sm text-label-sm font-semibold">Calm</span>
+</button>
+<button class="p-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface flex flex-col items-center justify-center gap-1" type="button">
+<span class="text-xl">😎</span>
+<span class="font-label-sm text-label-sm">Confident</span>
+</button>
+<button class="p-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface flex flex-col items-center justify-center gap-1" type="button">
+<span class="text-xl">😨</span>
+<span class="font-label-sm text-label-sm">Fear</span>
+</button>
+<button class="p-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface flex flex-col items-center justify-center gap-1" type="button">
+<span class="text-xl">😬</span>
+<span class="font-label-sm text-label-sm">FOMO</span>
+</button>
+<button class="p-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface flex flex-col items-center justify-center gap-1" type="button">
+<span class="text-xl">🤑</span>
+<span class="font-label-sm text-label-sm">Greed</span>
+</button>
+<button class="p-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface flex flex-col items-center justify-center gap-1" type="button">
+<span class="text-xl">😡</span>
+<span class="font-label-sm text-label-sm">Revenge</span>
+</button>
+<button class="p-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface flex flex-col items-center justify-center gap-1" type="button">
+<span class="text-xl">⏱️</span>
+<span class="font-label-sm text-label-sm">Hesitant</span>
+</button>
+<button class="p-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface flex flex-col items-center justify-center gap-1" type="button">
+<span class="text-xl">🚀</span>
+<span class="font-label-sm text-label-sm">Hyped</span>
+</button>
+</div>
+</div>
+<!-- Exit Reason & Plan Compliance -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md mb-space-md">
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-1">Primary Exit Reason *</label>
+<select class="w-full h-10 px-3 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest">
+<option selected="">Target Hit (Planned Level)</option>
+<option>Stop Loss Hit</option>
+<option>Trailing Stop Triggered</option>
+<option>Manual Pre-emptive Exit</option>
+<option>Setup Invalidated</option>
+<option>Fear Exit (Panic)</option>
+<option>Early Exit (Greed)</option>
+<option>End of Session Squared Off</option>
+</select>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-outline mb-1">Did you follow your trading plan? *</label>
+<div class="grid grid-cols-3 gap-1 p-1 bg-surface-container-low rounded-lg h-10">
+<button class="rounded font-label-sm text-label-sm bg-primary text-on-primary font-bold shadow-sm" type="button">Yes</button>
+<button class="rounded font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface" type="button">Partially</button>
+<button class="rounded font-label-sm text-label-sm text-on-surface-variant hover:text-error" type="button">No</button>
+</div>
+</div>
+</div>
+<!-- Multi-select Mistake & Execution Tags -->
+<div class="mb-space-md">
+<label class="block font-label-sm text-label-sm text-outline mb-space-2xs uppercase tracking-wider">Execution Tags &amp; Habits</label>
+<div class="flex flex-wrap gap-1.5">
+<span class="px- space-sm py-1 rounded-lg bg-primary/10 text-primary font-label-sm text-label-sm font-semibold flex items-center gap-1 cursor-pointer">
+<span class="material-symbols-outlined text-[16px]">check</span> Followed Plan
+            </span>
+<span class="px-space-sm py-1 rounded-lg bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container cursor-pointer">FOMO Entry</span>
+<span class="px-space-sm py-1 rounded-lg bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container cursor-pointer">Late Entry</span>
+<span class="px-space-sm py-1 rounded-lg bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container cursor-pointer">Early Exit</span>
+<span class="px-space-sm py-1 rounded-lg bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container cursor-pointer">Overtrading</span>
+<span class="px-space-sm py-1 rounded-lg bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container cursor-pointer">Revenge Trading</span>
+<span class="px-space-sm py-1 rounded-lg bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container cursor-pointer">Moved Stop Loss</span>
+<span class="px-space-sm py-1 rounded-lg bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container cursor-pointer">Oversized Position</span>
+</div>
+</div>
+<!-- 3 Qualitative Audit Questions -->
+<div class="space-y-space-sm pt-space-xs">
+<div>
+<label class="block font-label-sm text-label-sm text-tertiary font-semibold mb-1">What went well?</label>
+<input class="w-full h-9 px-3 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest" type="text" value="Patiently waited for the 15-minute candle to close above resistance before pulling trigger."/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-error font-semibold mb-1">What mistake did you make?</label>
+<input class="w-full h-9 px-3 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest" type="text" value="Could have trailed stop loss to protect 100% of peak gains on the sudden wick."/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-secondary font-semibold mb-1">What will you do differently next time?</label>
+<input class="w-full h-9 px-3 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest" type="text" value="Use 50% partial book at 1:2 R:R and leave runner to VWAP breach."/>
+</div>
+</div>
+</section>
+</div>
+<!-- RIGHT 4 COLUMNS: STICKY LIVE FINANCIAL ENGINE & CHARGES BREAKDOWN -->
+<div class="lg:col-span-4 flex flex-col gap-space-md lg:sticky lg:top-20">
+<!-- P&L Summary Hero Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-md p-space-lg relative overflow-hidden">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider font-bold">Real-time Calculation Engine</span>
+<span class="flex items-center gap-1 font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span> Live
+          </span>
+</div>
+<!-- Net Realized P&L Display -->
+<div class="mt-space-xs mb-space-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant block">Net Realized P&amp;L</span>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-data-metric-lg text-data-metric-lg text-tertiary tracking-tight" id="net-pnl-display">+₹1,307.50</span>
+<span class="font-label-md text-label-md px-2 py-0.5 rounded-md bg-tertiary/10 text-tertiary font-bold" id="roi-badge">+21.70% ROI</span>
+</div>
+</div>
+<!-- Gross P&L vs Charges Grid -->
+<div class="grid grid-cols-2 gap-space-xs p-space-sm rounded-xl bg-surface-container-low mb-space-md">
+<div>
+<span class="block font-label-sm text-label-sm text-outline">Gross P&amp;L</span>
+<span class="font-data-metric-md text-data-metric-md text-tertiary font-mono font-bold" id="gross-pnl-display">+₹1,350.00</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-outline">Estimated Charges</span>
+<span class="font-data-metric-md text-data-metric-md text-error font-mono font-bold" id="total-charges-summary">-₹42.50</span>
+</div>
+</div>
+<!-- Trade Analytics Metadata Strip -->
+<div class="grid grid-cols-3 gap-2 py-space-xs text-center">
+<div class="p-2 rounded-lg bg-surface-container-lowest shadow-xs">
+<span class="block font-label-sm text-label-sm text-outline">Points</span>
+<span class="font-label-md text-label-md text-tertiary font-mono font-bold" id="points-gained-display">+14.50</span>
+</div>
+<div class="p-2 rounded-lg bg-surface-container-lowest shadow-xs">
+<span class="block font-label-sm text-label-sm text-outline">Breakeven</span>
+<span class="font-label-md text-label-md text-on-surface font-mono font-bold" id="breakeven-display">₹121.35</span>
+</div>
+<div class="p-2 rounded-lg bg-surface-container-lowest shadow-xs">
+<span class="block font-label-sm text-label-sm text-outline">Duration</span>
+<span class="font-label-md text-label-md text-on-surface font-mono font-bold">1h 20m</span>
+</div>
+</div>
+<!-- Visual Progress/ROI Bar -->
+<div class="mt-space-md">
+<div class="flex justify-between font-label-sm text-label-sm text-outline mb-1">
+<span>Capital At Risk: ₹6,025</span>
+<span class="text-tertiary font-bold">Captured 49.1% of Max Target</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden flex">
+<div class="bg-primary h-2 rounded-full" style="width: 49.1%"></div>
+</div>
+</div>
+</div>
+<!-- Collapsible Detailed Charge Breakdown Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<button class="w-full p-space-md flex items-center justify-between hover:bg-surface-container-low transition-colors text-left" onclick="toggleChargeDetails()" type="button">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-outline text-[20px]">receipt</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Brokerage &amp; Regulatory Charges</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="font-label-md text-label-md text-error font-mono font-bold" id="charge-toggle-total">₹42.50</span>
+<span class="material-symbols-outlined text-outline text-[20px] transition-transform" id="charge-toggle-icon">expand_more</span>
+</div>
+</button>
+<!-- Detailed Breakdown Content -->
+<div class="px-space-md pb-space-md flex flex-col gap-2" id="charge-details-panel">
+<div class="p-2 rounded-lg bg-surface-container-low text-[11px] font-body-sm text-on-surface-variant flex items-center justify-between">
+<span>Engine: <strong>Zerodha Kite • NSE • Options</strong></span>
+<span class="text-primary font-semibold">Rule v2.4 (FY26-27)</span>
+</div>
+<div class="space-y-1.5 pt-1 text-on-surface-variant font-data-table text-data-table">
+<div class="flex justify-between items-center py-1">
+<span class="flex items-center gap-1">
+                Brokerage (2 orders @ ₹20 cap)
+                <span class="material-symbols-outlined text-outline text-[14px]">info</span>
+</span>
+<span class="font-mono text-on-surface" id="charge-brokerage">₹40.00</span>
+</div>
+<div class="flex justify-between items-center py-1">
+<span class="flex items-center gap-1">
+                STT / CTT (0.0625% on Sell ₹6,750)
+              </span>
+<span class="font-mono text-on-surface" id="charge-stt">₹4.22</span>
+</div>
+<div class="flex justify-between items-center py-1">
+<span>Exchange Txn Charges (0.05% turnover)</span>
+<span class="font-mono text-on-surface" id="charge-exchange">₹6.39</span>
+</div>
+<div class="flex justify-between items-center py-1">
+<span>SEBI Turnover Fees (₹10 / Cr)</span>
+<span class="font-mono text-on-surface" id="charge-sebi">₹0.13</span>
+</div>
+<div class="flex justify-between items-center py-1">
+<span>GST (18% on Brokerage + Exch + SEBI)</span>
+<span class="font-mono text-on-surface" id="charge-gst">₹8.37</span>
+</div>
+<div class="flex justify-between items-center py-1">
+<span>Stamp Duty (0.003% on Buy ₹6,025)</span>
+<span class="font-mono text-on-surface" id="charge-stamp">₹0.18</span>
+</div>
+<div class="flex justify-between items-center py-1">
+<span>IPFT Charges</span>
+<span class="font-mono text-on-surface" id="charge-ipft">₹0.06</span>
+</div>
+</div>
+<div class="mt-2 pt-2 text-[11px] text-outline font-body-sm leading-normal">
+            Disclaimer: Estimated regulatory and statutory charges for Indian equity derivatives. Your broker's official digital contract note is the final source for settled fees.
+          </div>
+<a class="mt-1 font-label-sm text-label-sm text-secondary hover:underline flex items-center gap-1" href="#">
+<span>Why this charge? / View Charge Engine Rules</span>
+<span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Quick Setup Compliance Card -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[24px]">verified</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Strict Rulebook Check Passed</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            Trade complies with your daily max risk (2.0% capital) and minimum 1:2 R:R mandate.
+          </p>
+</div>
+</div>
+</div>
+</div>
+<!-- STICKY ACTION DOCK / BOTTOM ACTIONS -->
+<div class="sticky bottom-0 z-30 -mx-space-lg px-space-lg py-space-md mt-space-xl bg-surface-container-lowest/95 backdrop-blur-md shadow-xl flex flex-col sm:flex-row items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">cloud_done</span>
+<span>Auto-saving enabled. Press <kbd class="px-1.5 py-0.5 rounded bg-surface-container font-mono text-[11px]">⌘+S</kbd> to record instantly.</span>
+</div>
+<div class="flex items-center gap-space-sm w-full sm:w-auto">
+<button class="px-space-md py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container font-label-lg text-label-lg transition-colors" onclick="resetTradeForm()" type="button">
+        Cancel / Reset
+      </button>
+<button class="px-space-md py-2.5 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high font-label-lg text-label-lg transition-colors" type="button">
+        Save &amp; Add Another
+      </button>
+<button class="flex-1 sm:flex-initial flex items-center justify-center gap-space-xs px-space-xl py-2.5 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg hover:bg-primary-container hover:text-on-primary-container shadow-md transition-all" onclick="submitTrade()" type="button">
+<span class="material-symbols-outlined text-[18px]">save</span>
+<span>Save Trade to Journal</span>
+</button>
+</div>
+</div>
+</div>
+<!-- CLIENT JAVASCRIPT: Real-time Live Calculation Engine -->
+<script>
+  function formatINR(val) {
+    return '₹' + Number(val).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function calculateRealtimeMetrics() {
+    const buyPrice = parseFloat(document.getElementById('input-buy-price').value) || 0;
+    const sellPrice = parseFloat(document.getElementById('input-sell-price').value) || 0;
+    const qty = parseFloat(document.getElementById('input-qty').value) || 0;
+    const buyOrders = parseInt(document.getElementById('buy-orders-count').value) || 1;
+    const sellOrders = parseInt(document.getElementById('sell-orders-count').value) || 1;
+    const stopLoss = parseFloat(document.getElementById('input-stop-loss').value) || 0;
+    const target = parseFloat(document.getElementById('input-target').value) || 0;
+
+    // Turnovers & Values
+    const buyVal = buyPrice * qty;
+    const sellVal = sellPrice * qty;
+    const totalTurnover = buyVal + sellVal;
+
+    document.getElementById('buy-value-display').innerText = formatINR(buyVal);
+    document.getElementById('sell-value-display').innerText = formatINR(sellVal);
+    document.getElementById('turnover-value-display').innerText = formatINR(totalTurnover);
+
+    // P&L Metrics
+    const pointsGained = sellPrice - buyPrice;
+    const grossPnl = pointsGained * qty;
+
+    // Detailed Regulatory Charges Breakdown (Zerodha Kite F&O Options Rules)
+    const brokerage = Math.min((buyOrders + sellOrders) * 20, 40.00);
+    const stt = sellVal * 0.000625; // 0.0625% on sell side option premium
+    const exchangeTxn = totalTurnover * 0.0005; // 0.05% of turnover
+    const sebiCharges = (totalTurnover / 10000000) * 10; // ₹10 per crore
+    const gst = (brokerage + exchangeTxn + sebiCharges) * 0.18; // 18% GST
+    const stampDuty = buyVal * 0.00003; // 0.003% on buy side
+    const ipft = totalTurnover * 0.000005; // 0.0005%
+
+    const totalCharges = brokerage + stt + exchangeTxn + sebiCharges + gst + stampDuty + ipft;
+    const netPnl = grossPnl - totalCharges;
+    const roi = buyVal > 0 ? (netPnl / buyVal) * 100 : 0;
+    const breakeven = buyPrice + (totalCharges / (qty || 1));
+
+    // Update Charge Display
+    document.getElementById('charge-brokerage').innerText = formatINR(brokerage);
+    document.getElementById('charge-stt').innerText = formatINR(stt);
+    document.getElementById('charge-exchange').innerText = formatINR(exchangeTxn);
+    document.getElementById('charge-sebi').innerText = formatINR(sebiCharges);
+    document.getElementById('charge-gst').innerText = formatINR(gst);
+    document.getElementById('charge-stamp').innerText = formatINR(stampDuty);
+    document.getElementById('charge-ipft').innerText = formatINR(ipft);
+    document.getElementById('total-charges-summary').innerText = '-' + formatINR(totalCharges);
+    document.getElementById('charge-toggle-total').innerText = formatINR(totalCharges);
+
+    // Update Hero P&L Display
+    const netEl = document.getElementById('net-pnl-display');
+    const grossEl = document.getElementById('gross-pnl-display');
+    const roiBadge = document.getElementById('roi-badge');
+    const pointsEl = document.getElementById('points-gained-display');
+    const breakevenEl = document.getElementById('breakeven-display');
+
+    if (grossPnl >= 0) {
+      grossEl.innerText = '+' + formatINR(grossPnl);
+      grossEl.className = 'font-data-metric-md text-data-metric-md text-tertiary font-mono font-bold';
+    } else {
+      grossEl.innerText = '-' + formatINR(Math.abs(grossPnl));
+      grossEl.className = 'font-data-metric-md text-data-metric-md text-error font-mono font-bold';
+    }
+
+    if (netPnl >= 0) {
+      netEl.innerText = '+' + formatINR(netPnl);
+      netEl.className = 'font-data-metric-lg text-data-metric-lg text-tertiary tracking-tight';
+      roiBadge.innerText = '+' + roi.toFixed(2) + '% ROI';
+      roiBadge.className = 'font-label-md text-label-md px-2 py-0.5 rounded-md bg-tertiary/10 text-tertiary font-bold';
+    } else {
+      netEl.innerText = '-' + formatINR(Math.abs(netPnl));
+      netEl.className = 'font-data-metric-lg text-data-metric-lg text-error tracking-tight';
+      roiBadge.innerText = roi.toFixed(2) + '% ROI';
+      roiBadge.className = 'font-label-md text-label-md px-2 py-0.5 rounded-md bg-error/10 text-error font-bold';
+    }
+
+    pointsEl.innerText = (pointsGained >= 0 ? '+' : '') + pointsGained.toFixed(2);
+    breakevenEl.innerText = '₹' + breakeven.toFixed(2);
+
+    // Planned Risk & Reward
+    const riskPerShare = Math.max(buyPrice - stopLoss, 0);
+    const rewardPerShare = Math.max(target - buyPrice, 0);
+    const plannedRisk = riskPerShare * qty;
+    const potentialReward = rewardPerShare * qty;
+
+    document.getElementById('planned-risk-display').innerText = '-₹' + plannedRisk.toFixed(2);
+    document.getElementById('potential-reward-display').innerText = '+₹' + potentialReward.toFixed(2);
+
+    if (riskPerShare > 0) {
+      const rr = (rewardPerShare / riskPerShare).toFixed(2);
+      document.getElementById('rr-ratio-display').innerText = '1 : ' + rr;
+    }
+  }
+
+  function toggleChargeDetails() {
+    const panel = document.getElementById('charge-details-panel');
+    const icon = document.getElementById('charge-toggle-icon');
+    if (panel.classList.contains('hidden')) {
+      panel.classList.remove('hidden');
+      icon.style.transform = 'rotate(0deg)';
+    } else {
+      panel.classList.add('hidden');
+      icon.style.transform = 'rotate(-90deg)';
+    }
+  }
+
+  function setMode(mode) {
+    const fastBtn = document.getElementById('mode-fast');
+    const advBtn = document.getElementById('mode-adv');
+    if (mode === 'fast') {
+      fastBtn.className = 'px-space-sm py-1.5 rounded-lg font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-sm transition-all';
+      advBtn.className = 'px-space-sm py-1.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all';
+    } else {
+      advBtn.className = 'px-space-sm py-1.5 rounded-lg font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-sm transition-all';
+      fastBtn.className = 'px-space-sm py-1.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all';
+    }
+  }
+
+  function submitTrade() {
+    alert('Trade successfully saved to journal with comprehensive post-trade audit and charges breakdown.');
+  }
+
+  function resetTradeForm() {
+    if (confirm('Are you sure you want to reset this trade draft?')) {
+      document.getElementById('input-buy-price').value = 100;
+      document.getElementById('input-sell-price').value = 100;
+      calculateRealtimeMetrics();
+    }
+  }
+
+  // Initial Run on Load
+  calculateRealtimeMetrics();
+</script></main></div></body></html>

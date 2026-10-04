@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"error-container":"#ffdad6","on-secondary-container":"#fefcff","error":"#ba1a1a","on-primary":"#ffffff","surface-container-lowest":"#ffffff","primary-container":"#00855d","surface-tint":"#006c4a","on-primary-fixed-variant":"#005137","on-error-container":"#93000a","surface-container-highest":"#d3e4fe","on-background":"#0b1c30","on-secondary-fixed-variant":"#003ea8","on-primary-container":"#f5fff7","surface-container-high":"#dce9ff","primary-fixed-dim":"#68dba9","secondary-fixed-dim":"#b4c5ff","background":"#f8f9ff","on-tertiary":"#ffffff","inverse-on-surface":"#eaf1ff","on-tertiary-container":"#f7fff2","on-surface-variant":"#3d4a42","surface-dim":"#cbdbf5","secondary-fixed":"#dbe1ff","tertiary-container":"#00873a","surface-container-low":"#eff4ff","tertiary-fixed":"#7ffc97","on-tertiary-fixed":"#002109","primary":"#006948","tertiary-fixed-dim":"#62df7d","secondary":"#0051d5","on-surface":"#0b1c30","secondary-container":"#316bf3","on-secondary-fixed":"#00174b","outline-variant":"#bccac0","surface":"#f8f9ff","outline":"#6d7a72","inverse-surface":"#213145","on-primary-fixed":"#002114","on-secondary":"#ffffff","primary-fixed":"#85f8c4","inverse-primary":"#68dba9","on-error":"#ffffff","surface-bright":"#f8f9ff","tertiary":"#006b2c","surface-container":"#e5eeff","surface-variant":"#d3e4fe","on-tertiary-fixed-variant":"#005320"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-2xl":"2.5rem",margin:"2rem","gutter-mobile":"0.75rem","space-xs":"0.5rem","margin-mobile":"1rem","space-md":"1rem","space-lg":"1.5rem","space-xl":"2rem","space-2xs":"0.25rem","space-sm":"0.75rem",gutter:"1.5rem"},fontFamily:{"body-md":["Inter"],"headline-xl-mobile":["Plus Jakarta Sans"],"data-metric-lg":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"data-table":["Inter"],"headline-xl":["Plus Jakarta Sans"],"label-md":["Inter"],"body-lg":["Inter"],"label-sm":["Inter"],"body-sm":["Inter"],"label-lg":["Inter"],"data-metric-md":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"]},fontSize:{"body-md":["14px",{lineHeight:"20px",fontWeight:"400"}],"headline-xl-mobile":["24px",{lineHeight:"32px",fontWeight:"700"}],"data-metric-lg":["28px",{lineHeight:"34px",fontWeight:"700"}],"headline-lg":["24px",{lineHeight:"32px",fontWeight:"600"}],"data-table":["13px",{lineHeight:"18px",fontWeight:"500"}],"headline-xl":["32px",{lineHeight:"40px",fontWeight:"700"}],"label-md":["12px",{lineHeight:"16px",fontWeight:"600"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],"label-sm":["11px",{lineHeight:"14px",fontWeight:"500"}],"body-sm":["13px",{lineHeight:"18px",fontWeight:"400"}],"label-lg":["14px",{lineHeight:"20px",fontWeight:"600"}],"data-metric-md":["18px",{lineHeight:"24px",fontWeight:"700"}],"headline-sm":["16px",{lineHeight:"24px",fontWeight:"600"}],"headline-md":["20px",{lineHeight:"28px",fontWeight:"600"}]}}}}</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-lg flex items-center justify-between bg-surface-container-low"><div class="flex items-center gap-space-sm"><div class="flex items-center justify-center w-8 h-8 rounded-lg bg-primary-container text-on-primary"><span class="material-symbols-outlined text-base">admin_panel_settings</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-tight">Admin Core</span><span class="font-label-sm text-label-sm text-on-surface-variant">v2.4.0 Engine</span></div></div><div class="flex items-center gap-space-2xs px-space-xs py-space-2xs rounded-full bg-surface-container-high"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface-variant">Sync</span></div></div><div class="px-space-md py-space-sm"><div class="px-space-sm pb-space-xs font-label-sm text-label-sm uppercase tracking-wider text-outline">Core Operations</div><nav class="flex flex-col gap-space-2xs" data-active-classes="bg-primary-container text-on-primary font-label-lg rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="command-center" href="#"><span class="material-symbols-outlined text-lg">grid_view</span><span>Overview / Command Center</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="users-management" href="#"><span class="material-symbols-outlined text-lg">group</span><span>Users Management</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="plans-and-pricing" href="#"><span class="material-symbols-outlined text-lg">payments</span><span>Plans &amp; Pricing</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="feature-locks-and-flags" href="#"><span class="material-symbols-outlined text-lg">toggle_on</span><span>Feature Locks &amp; Flags</span></a></nav></div><div class="px-space-md py-space-sm"><div class="px-space-sm pb-space-xs font-label-sm text-label-sm uppercase tracking-wider text-outline">Data &amp; Integrity</div><nav class="flex flex-col gap-space-2xs" data-active-classes="bg-primary-container text-on-primary font-label-lg rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-2.5 transition-colors bg-primary-container text-on-primary font-label-lg rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" data-path="import-engine" href="#"><span class="material-symbols-outlined text-lg">publish</span><span>Import Engine</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="data-exports" href="#"><span class="material-symbols-outlined text-lg">cloud_download</span><span>Data Exports</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="system-audit-and-logs" href="#"><span class="material-symbols-outlined text-lg">receipt_long</span><span>System Audit &amp; Logs</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="platform-settings" href="#"><span class="material-symbols-outlined text-lg">settings</span><span>Platform Settings</span></a></nav></div></div><div class="p-space-md bg-surface-container-low"><div class="p-space-sm rounded-xl bg-surface-container flex flex-col gap-space-sm"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant">Environment</span><span class="px-space-xs py-space-2xs rounded bg-surface-container-highest text-secondary font-label-sm text-label-sm uppercase font-bold">Production</span></div><a class="flex items-center justify-center gap-space-xs py-2 px-space-sm rounded-lg bg-surface text-secondary hover:bg-secondary-container hover:text-on-secondary-container transition-all font-label-lg text-label-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" data-path="trader-app" href="#"><span class="material-symbols-outlined text-base">open_in_new</span><span>Return to Trader App</span></a></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs"><img alt="Brand logo. - Primary color: #059669
+- Font: plusJakartaSans
+- Mode: light
+- Roundness: rounded-md
+" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WpIyvRuHtwea36sKPkql_KB0D7TrI4ZhMMkU6MruMREwKl93VFLWeOFfEKQ2XvK-0E6z1TbA1lCF8b01SHHIPdz4azgEsdr8NzODGQHFbMeWPmWEx839rhO0T6CWSyPLzgr53H_xxbdELw6Co3Kwmj13IdO2BxtWcF_Q_Qgb8bWo80qxHH8xy0UeOpLCFgJ6C90wiU--jDwkbkwTyIbzD2XEisvUqpYe0_cyXzAKFkdAvYOQuGnvCUug"/><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight hidden sm:inline">TradeDairy.online</span></div><div class="flex items-center px-space-xs py-space-2xs rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm uppercase tracking-wider font-semibold"><span class="px-1">Admin Console</span></div><div class="hidden xl:flex items-center gap-space-2xs px-space-sm py-1 rounded-full bg-surface-container"><span class="w-2 h-2 rounded-full bg-tertiary-container"></span><span class="font-label-sm text-label-sm text-tertiary-container font-semibold">Broker APIs Operational</span></div></div><div class="flex items-center gap-space-md"><div class="relative hidden md:flex items-center w-64 lg:w-80"><span class="material-symbols-outlined absolute left-3 text-outline text-lg pointer-events-none">search</span><input class="w-full h-9 pl-9 pr-4 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm placeholder:text-outline focus:outline-none focus:bg-surface focus:ring-2 focus:ring-primary" placeholder="Search users, accounts, flags..." type="text"/></div><div class="hidden lg:flex items-center gap-space-xs px-space-sm py-1.5 rounded-lg bg-surface-container-low"><span class="material-symbols-outlined text-primary text-base">supervised_user_circle</span><div class="flex flex-col"><span class="font-label-sm text-label-sm text-outline leading-tight">Active Users</span><span class="font-data-metric-md text-data-metric-md text-on-surface leading-tight">1,428</span></div></div><div class="relative flex items-center justify-center"><button class="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-xl">notifications</span></button><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error ring-2 ring-surface"></span></div><div class="flex items-center gap-space-sm pl-space-xs"><div class="hidden sm:flex flex-col text-right"><span class="font-label-lg text-label-lg text-on-surface leading-tight font-semibold">Super Admin</span><span class="font-label-sm text-label-sm text-on-surface-variant leading-tight">Root Security</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-container" src="https://lh3.googleusercontent.com/aida/AEtjO1VgoFrdwIF5bJWzPcSr35IEiLU0QQfBh7Mlrd053RB7naWmCumSm8lAoNH8P-_HcgKdBCY7JA-Wq4ZADRs0XG7ViE0NW7_5EU1QlshC1M0QFauVR-IlOcNC3u6qGhACiRWsPJFF3mYWqlJmAKuf0VmJ1t8WM_upJSjyOHak_yjSChoOd3hHYGZHtTfEcn3P4buGgJEqeCmO5bjnfRFqbxs8wtuVaOqY7IP9OdWOKSkyj19xTYl-vIUZRmo"/></div></div></header><main class="w-full pt-16 bg-background min-h-screen"><div class="flex flex-col w-full">
+<div class="p-space-lg lg:p-space-xl flex flex-col gap-space-xl max-w-7xl mx-auto w-full">
+<!-- Page Header & Action Bar -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+<div class="flex flex-col gap-space-2xs">
+<div class="flex items-center gap-space-xs text-primary font-label-md uppercase tracking-wider">
+<span class="material-symbols-outlined text-base">sync_alt</span>
+<span>Pipeline Ingestion Tier-1</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Trade Ingestion &amp; Broker Import Engine</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-3xl">Manage trade data parsers, CSV upload queues, auto-mapping templates, and broker contract note reconciliations across retail and institutional trading logs.</p>
+</div>
+<div class="flex items-center gap-space-xs self-start md:self-auto">
+<button class="flex items-center gap-space-xs px-space-sm py-2 rounded-lg bg-surface-container-high text-on-surface hover:bg-surface-variant transition-colors font-label-lg text-label-lg shadow-sm" id="webhookSyncBtn">
+<span class="material-symbols-outlined text-base text-secondary">satellite_alt</span>
+<span>Trigger Webhook Sync</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-sm py-2 rounded-lg bg-primary-container text-on-primary hover:opacity-95 transition-all font-label-lg text-label-lg shadow-md">
+<span class="material-symbols-outlined text-base">terminal</span>
+<span>CLI Import Mode</span>
+</button>
+</div>
+</div>
+<!-- Top KPI Cards with Sparklines & Progress Rings -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-space-md">
+<!-- KPI 1 -->
+<div class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between relative overflow-hidden group">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-outline">Total Imported Trades</span>
+<span class="p-space-2xs rounded-lg bg-surface-container text-primary">
+<span class="material-symbols-outlined text-base">receipt_long</span>
+</span>
+</div>
+<div class="my-space-xs flex items-baseline gap-space-xs">
+<span class="font-data-metric-lg text-data-metric-lg text-on-surface">842,190</span>
+<span class="flex items-center text-tertiary-container font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+<span>+14.2%</span>
+</span>
+</div>
+<div class="flex items-center justify-between text-outline font-label-sm text-label-sm">
+<span>Monthly throughput</span>
+<!-- Inline Sparkline SVG -->
+<svg class="w-20 h-5 text-primary" fill="none" viewbox="0 0 100 24">
+<path d="M0 20 L20 16 L40 18 L60 8 L80 12 L100 2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-outline">Active Import Jobs</span>
+<span class="p-space-2xs rounded-lg bg-surface-container-high text-secondary">
+<span class="material-symbols-outlined text-base animate-spin">refresh</span>
+</span>
+</div>
+<div class="my-space-xs flex items-baseline gap-space-xs">
+<span class="font-data-metric-lg text-data-metric-lg text-on-surface">4 Processing</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high text-secondary font-label-sm text-label-sm font-bold">LIVE</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-outline">avg 1.2s per trade batch</span>
+<div class="w-16 bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 72%"></div>
+</div>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-outline">Broker Parsers Live</span>
+<span class="p-space-2xs rounded-lg bg-surface-container text-primary">
+<span class="material-symbols-outlined text-base">hub</span>
+</span>
+</div>
+<div class="my-space-xs flex items-baseline gap-space-xs">
+<span class="font-data-metric-lg text-data-metric-lg text-on-surface">6 Brokers</span>
+<span class="font-label-sm text-label-sm text-outline">All Connected</span>
+</div>
+<div class="flex items-center gap-1.5 overflow-x-auto text-outline font-label-sm text-label-sm pt-0.5">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface font-semibold">Zerodha</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface font-semibold">Groww</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface font-semibold">AngelOne</span>
+<span class="px-1 py-0.5 text-xs text-outline font-medium">+3</span>
+</div>
+</div>
+<!-- KPI 4 -->
+<div class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-outline">Parser Error Rate</span>
+<span class="p-space-2xs rounded-lg bg-surface-container text-tertiary-container">
+<span class="material-symbols-outlined text-base">verified</span>
+</span>
+</div>
+<div class="my-space-xs flex items-baseline gap-space-xs">
+<span class="font-data-metric-lg text-data-metric-lg text-tertiary-container">0.12%</span>
+<span class="font-label-sm text-label-sm text-outline">vs 0.28% last week</span>
+</div>
+<div class="flex items-center justify-between text-outline font-label-sm text-label-sm">
+<span>Target threshold &lt;0.5%</span>
+<!-- Inline Donut Gauge -->
+<svg class="w-5 h-5 text-tertiary-container" viewbox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e2e8f0" stroke-width="3"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="94, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- MAIN SECTION 1: 3-Step CSV Ingestion Wizard & Live Preview Bento -->
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-xl">auto_fix_high</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Interactive Ingestion Wizard</h2>
+</div>
+<!-- Step status indicator pill -->
+<div class="flex items-center gap-2 bg-surface-container px-space-sm py-1.5 rounded-full font-label-md text-label-md">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+<span class="text-on-surface font-semibold">Step 2 of 3: Field Normalization</span>
+</div>
+</div>
+<!-- Wizard Main Card Container -->
+<div class="rounded-xl bg-surface-container-lowest shadow-sm overflow-hidden flex flex-col">
+<!-- Step Bar / Broker Source Tabs -->
+<div class="bg-surface-container-low p-space-sm flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-1.5 bg-surface-container p-1 rounded-lg">
+<button class="px-space-sm py-1.5 rounded-md font-label-lg text-label-lg bg-surface-container-lowest text-on-surface shadow-sm font-semibold flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span>Zerodha Tradebook CSV</span>
+</button>
+<button class="px-space-sm py-1.5 rounded-md font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest transition-colors flex items-center gap-1.5">
+<span>Groww P&amp;L Excel</span>
+</button>
+<button class="px-space-sm py-1.5 rounded-md font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest transition-colors flex items-center gap-1.5">
+<span>Angel One SmartAPI</span>
+</button>
+<button class="px-space-sm py-1.5 rounded-md font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest transition-colors flex items-center gap-1.5">
+<span>Generic CSV / TSV</span>
+</button>
+</div>
+<div class="flex items-center gap-space-xs font-label-sm text-label-sm text-secondary">
+<span class="material-symbols-outlined text-base">download_for_offline</span>
+<a class="underline hover:text-primary font-semibold" href="#">Download Zerodha Normalized Sample (.csv)</a>
+</div>
+</div>
+<!-- Ingestion Sandbox Split Pane: Uploaded File Summary & Mapping Diagnostics -->
+<div class="p-space-lg grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- File Overview Subpanel -->
+<div class="lg:col-span-4 flex flex-col gap-space-md">
+<div class="p-space-md rounded-xl bg-surface-container flex flex-col gap-space-sm">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-10 h-10 rounded-lg bg-primary-container text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined">csv</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate max-w-[190px]">Zerodha_tradebook_2026_Q3.csv</span>
+<span class="font-label-sm text-label-sm text-outline">Uploaded 4 mins ago • SHA256 verified</span>
+</div>
+</div>
+<button class="text-outline hover:text-error transition-colors p-1" title="Remove file">
+<span class="material-symbols-outlined text-base">cancel</span>
+</button>
+</div>
+<!-- File Metadata Badges -->
+<div class="grid grid-cols-2 gap-space-xs pt-space-xs">
+<div class="p-space-xs rounded bg-surface-container-lowest flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">File Size</span>
+<span class="font-data-metric-md text-data-metric-md text-on-surface">4.2 MB</span>
+</div>
+<div class="p-space-xs rounded bg-surface-container-lowest flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Parsed Trades</span>
+<span class="font-data-metric-md text-data-metric-md text-primary">1,240 Lines</span>
+</div>
+</div>
+<!-- Progress bar of parser validation -->
+<div class="flex flex-col gap-1 pt-space-2xs">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-outline">Parser Integrity Match</span>
+<span class="text-tertiary-container font-semibold">99.8%</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-2 overflow-hidden flex">
+<div class="bg-tertiary-container h-full" style="width: 98.2%"></div>
+<div class="bg-secondary h-full" style="width: 1.6%"></div>
+<div class="bg-error h-full" style="width: 0.2%"></div>
+</div>
+</div>
+</div>
+<!-- Health Ticker Diagnostics -->
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-md text-label-md text-outline uppercase tracking-wider">Validation Health Tally</span>
+<div class="flex items-center justify-between p-space-xs rounded-lg bg-surface-container-lowest shadow-sm">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></span>
+<span class="font-label-md text-label-md text-on-surface">Valid Trade Rows</span>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-tertiary-container font-bold font-label-sm text-label-sm">1,238</span>
+</div>
+<div class="flex items-center justify-between p-space-xs rounded-lg bg-surface-container-lowest shadow-sm">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary-container"></span>
+<span class="font-label-md text-label-md text-on-surface">Non-Fatal Warnings</span>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-secondary font-bold font-label-sm text-label-sm">2 (Auto-resolved)</span>
+</div>
+<div class="flex items-center justify-between p-space-xs rounded-lg bg-surface-container-lowest shadow-sm">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-outline"></span>
+<span class="font-label-md text-label-md text-on-surface">Fatal Execution Errors</span>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-outline font-bold font-label-sm text-label-sm">0</span>
+</div>
+</div>
+<!-- Visual Broker Engine Context Prompt -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container p-space-md flex flex-col justify-end min-h-[140px]">
+<div class="absolute inset-0 opacity-15">
+<img class="w-full h-full object-cover" data-alt="Abstract sleek financial fintech database network illustration with floating node charts, green and emerald glows, light minimal aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVF3NhKyLE6cskO8ajj20TgMVrYM6JTOJxPl_IO_KgddIvoC7HvvcyBamXzAqNLjtpsgsFiYwYu9lqhAwcz4OeHMgcCO3T1iRQZ33n-7qIz1duND4k69X_SIBXUcuO0ZqmV3019ZSWiX19W33n2nhHaJxlXK40oAPM5AT2Xe21TGlR38kBHikBScHEi3HPEUYemhbeXC809_ond77eiYmInv0ElymgiQPMq6PUnZiB6oZoVWX8CpqE"/>
+</div>
+<div class="relative z-10 flex flex-col gap-1">
+<span class="font-label-sm text-label-sm font-bold uppercase tracking-wider text-primary">Broker Schema Engine</span>
+<span class="font-body-sm text-body-sm text-on-surface">Broker format auto-detected using symbol mapping heuristic ‘NSE:BANKNIFTY’.</span>
+</div>
+</div>
+</div>
+<!-- Column Auto-Mapper Preview Table Panel -->
+<div class="lg:col-span-8 flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Column Auto-Mapper Preview</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Review schema assignments mapped to TradeDairy’s internal transactional ledger.</p>
+</div>
+<button class="text-secondary font-label-md text-label-md hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">tune</span>
+<span>Reset to Broker Default</span>
+</button>
+</div>
+<!-- Mapping Table -->
+<div class="overflow-x-auto rounded-lg bg-surface-container-low shadow-sm">
+<table class="w-full text-left font-data-table text-data-table">
+<thead class="bg-surface-container text-outline uppercase font-label-sm text-label-sm tracking-wider">
+<tr>
+<th class="py-space-xs px-space-sm">Source Header (CSV)</th>
+<th class="py-space-xs px-space-sm">Sample Value</th>
+<th class="py-space-xs px-space-sm">Target Core Field</th>
+<th class="py-space-xs px-space-sm">Transformation</th>
+<th class="py-space-xs px-space-sm text-right">Confidence</th>
+</tr>
+</thead>
+<tbody class="divide-transparent">
+<tr class="bg-surface-container-lowest hover:bg-surface-container transition-colors">
+<td class="py-space-xs px-space-sm font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-base">check_circle</span>
+<span>Trade Date</span>
+</td>
+<td class="py-space-xs px-space-sm text-outline">2026-03-28 09:16:42</td>
+<td class="py-space-xs px-space-sm">
+<span class="px-2 py-1 rounded bg-surface-container font-mono text-primary font-bold text-xs">executed_at</span>
+</td>
+<td class="py-space-xs px-space-sm text-on-surface-variant text-xs">ISO 8601 UTC parse</td>
+<td class="py-space-xs px-space-sm text-right">
+<span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm font-bold">100%</span>
+</td>
+</tr>
+<tr class="bg-surface-container-lowest hover:bg-surface-container transition-colors">
+<td class="py-space-xs px-space-sm font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-base">check_circle</span>
+<span>Symbol / Strike</span>
+</td>
+<td class="py-space-xs px-space-sm text-outline">NIFTY26MAR22000CE</td>
+<td class="py-space-xs px-space-sm">
+<span class="px-2 py-1 rounded bg-surface-container font-mono text-primary font-bold text-xs">instrument_symbol</span>
+</td>
+<td class="py-space-xs px-space-sm text-on-surface-variant text-xs">Derivatives Contract Parser</td>
+<td class="py-space-xs px-space-sm text-right">
+<span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm font-bold">100%</span>
+</td>
+</tr>
+<tr class="bg-surface-container-lowest hover:bg-surface-container transition-colors">
+<td class="py-space-xs px-space-sm font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-base">check_circle</span>
+<span>Buy/Sell</span>
+</td>
+<td class="py-space-xs px-space-sm">
+<span class="px-2 py-0.5 rounded bg-surface-container text-tertiary-container font-bold text-xs">BUY</span>
+</td>
+<td class="py-space-xs px-space-sm">
+<span class="px-2 py-1 rounded bg-surface-container font-mono text-primary font-bold text-xs">side</span>
+</td>
+<td class="py-space-xs px-space-sm text-on-surface-variant text-xs">String to Enum (LONG / SHORT)</td>
+<td class="py-space-xs px-space-sm text-right">
+<span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm font-bold">100%</span>
+</td>
+</tr>
+<tr class="bg-surface-container-lowest hover:bg-surface-container transition-colors">
+<td class="py-space-xs px-space-sm font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-base">check_circle</span>
+<span>Quantity</span>
+</td>
+<td class="py-space-xs px-space-sm text-outline">150</td>
+<td class="py-space-xs px-space-sm">
+<span class="px-2 py-1 rounded bg-surface-container font-mono text-primary font-bold text-xs">quantity</span>
+</td>
+<td class="py-space-xs px-space-sm text-on-surface-variant text-xs">Absolute Positive Integer</td>
+<td class="py-space-xs px-space-sm text-right">
+<span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm font-bold">100%</span>
+</td>
+</tr>
+<tr class="bg-surface-container-lowest hover:bg-surface-container transition-colors">
+<td class="py-space-xs px-space-sm font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-base">check_circle</span>
+<span>Price</span>
+</td>
+<td class="py-space-xs px-space-sm text-outline">128.45</td>
+<td class="py-space-xs px-space-sm">
+<span class="px-2 py-1 rounded bg-surface-container font-mono text-primary font-bold text-xs">price</span>
+</td>
+<td class="py-space-xs px-space-sm text-on-surface-variant text-xs">Decimal numeric currency INR</td>
+<td class="py-space-xs px-space-sm text-right">
+<span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm font-bold">100%</span>
+</td>
+</tr>
+<tr class="bg-surface-container-lowest hover:bg-surface-container transition-colors">
+<td class="py-space-xs px-space-sm font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-base">warning</span>
+<span>Order ID</span>
+</td>
+<td class="py-space-xs px-space-sm text-outline">#11009823488</td>
+<td class="py-space-xs px-space-sm">
+<span class="px-2 py-1 rounded bg-surface-container font-mono text-secondary font-bold text-xs">broker_order_ref</span>
+</td>
+<td class="py-space-xs px-space-sm text-on-surface-variant text-xs">Strip hash prefix • dedupe check</td>
+<td class="py-space-xs px-space-sm text-right">
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold">96%</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Dry Run Notification Pill Box -->
+<div class="p-space-xs px-space-sm rounded-lg bg-surface-container flex items-center justify-between text-on-surface font-body-sm text-body-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-lg">info</span>
+<span>2 trades contained zero-cost stamp duty fields. Automatic broker fee fallback was scheduled.</span>
+</div>
+<button class="font-label-md text-label-md text-secondary hover:underline">Inspect Warnings</button>
+</div>
+</div>
+</div>
+<!-- Wizard Action Footer Bar -->
+<div class="p-space-md bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-xs text-outline font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-base">shield</span>
+<span>All imports executed in ACID sandbox transactions with instant rollback support.</span>
+</div>
+<div class="flex items-center gap-space-xs w-full sm:w-auto justify-end">
+<button class="px-space-md py-2 rounded-lg bg-surface-container-highest text-on-surface font-label-lg text-label-lg hover:bg-surface-variant transition-colors">
+              Save as Broker Template
+            </button>
+<button class="px-space-md py-2 rounded-lg bg-surface text-secondary hover:bg-secondary-container hover:text-on-secondary-container font-label-lg text-label-lg transition-all shadow-sm flex items-center gap-1.5" id="dryRunBtn">
+<span class="material-symbols-outlined text-base">experiment</span>
+<span>Run Sandbox Dry Run</span>
+</button>
+<button class="px-space-md py-2 rounded-lg bg-primary-container text-on-primary hover:opacity-95 font-label-lg text-label-lg transition-all shadow-md flex items-center gap-1.5" id="bulkImportBtn">
+<span class="material-symbols-outlined text-base">cloud_done</span>
+<span>Execute Bulk Import</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- MAIN SECTION 2: Global Ingestion Queue & Import History Table -->
+<div class="flex flex-col gap-space-md">
+<!-- Queue Header & Filters -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-xl">database</span>
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Global Ingestion Queue &amp; Audit Log</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Real-time execution status of batch uploads, background parsers, and API synchronizations.</p>
+</div>
+</div>
+<!-- Search & Filter Controls -->
+<div class="flex items-center gap-space-xs">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-outline text-base">search</span>
+<input class="w-48 sm:w-60 h-8 pl-8 pr-3 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm focus:outline-none focus:ring-1 focus:ring-primary shadow-sm" placeholder="Filter by User or Job..." type="text"/>
+</div>
+<button class="h-8 px-space-xs rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container font-label-sm text-label-sm flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-base">filter_list</span>
+<span>All Status</span>
+</button>
+</div>
+</div>
+<!-- Execution Log Table Card -->
+<div class="rounded-xl bg-surface-container-lowest shadow-sm overflow-hidden flex flex-col">
+<div class="overflow-x-auto">
+<table class="w-full text-left font-data-table text-data-table">
+<thead class="bg-surface-container-low text-outline uppercase font-label-sm text-label-sm tracking-wider">
+<tr>
+<th class="py-space-sm px-space-md">Job ID</th>
+<th class="py-space-sm px-space-md">Uploaded By</th>
+<th class="py-space-sm px-space-md">Broker Format</th>
+<th class="py-space-sm px-space-md">Trades</th>
+<th class="py-space-sm px-space-md">Status</th>
+<th class="py-space-sm px-space-md">Duration</th>
+<th class="py-space-sm px-space-md text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-transparent">
+<!-- Row 1 (Completed) -->
+<tr class="bg-surface-container-lowest hover:bg-surface-container transition-colors">
+<td class="py-space-sm px-space-md font-mono text-xs text-outline">JOB-89410</td>
+<td class="py-space-sm px-space-md">
+<div class="flex items-center gap-space-xs">
+<img class="w-7 h-7 rounded-full object-cover" data-alt="Close up professional portrait of a male Indian algorithmic trader smiling, wearing modern smart casual attire, studio warm lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBd0zK7wzZZCCegdmZB8nkJ_-ViCE4ELjzYLog-QhB8Z300qYinwp1SNcPwr6Qe-GbPY9-RurDehXCe6vLfX5mTM4bCxDmflheW9ZVHSWqDehQhdPtFD-aBAhz3hizlr16ubEr_H2xhNPdVm0qsM7YkoDftgd2wqAzq-CMnr5aSkxPh-RkGAtJWODFp28RbXvDtgG7VBZz6twvHKsCUY7dlXyiistklc81pqXY8XjtdGt620KBvMjcp"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">vinkal@tradedairy.online</span>
+<span class="font-label-sm text-label-sm text-outline">Pro Tier Trader</span>
+</div>
+</div>
+</td>
+<td class="py-space-sm px-space-md">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-semibold text-xs">Zerodha Kite (CSV)</span>
+</td>
+<td class="py-space-sm px-space-md font-bold text-on-surface">420 trades</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-tertiary-container font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+<span>Completed</span>
+</span>
+</td>
+<td class="py-space-sm px-space-md text-outline">0.84s</td>
+<td class="py-space-sm px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1 rounded text-outline hover:text-primary transition-colors" title="View Ingestion Log">
+<span class="material-symbols-outlined text-lg">receipt</span>
+</button>
+<button class="p-1 rounded text-outline hover:text-secondary transition-colors" title="Re-run Pipeline">
+<span class="material-symbols-outlined text-lg">replay</span>
+</button>
+<button class="p-1 rounded text-outline hover:text-error transition-colors" title="Rollback Ingestion">
+<span class="material-symbols-outlined text-lg">undo</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 (In Progress) -->
+<tr class="bg-surface-container-lowest hover:bg-surface-container transition-colors">
+<td class="py-space-sm px-space-md font-mono text-xs text-secondary">JOB-89411</td>
+<td class="py-space-sm px-space-md">
+<div class="flex items-center gap-space-xs">
+<img class="w-7 h-7 rounded-full object-cover" data-alt="High quality professional corporate headshot of institutional portfolio manager with glasses, neutral cool office background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDahghPRVHsC6fnaCQcfe99SOij3QBbow0atSc7-Z-IKy3lCzrywGsPgYdP0NvPzc5wBMZuNWh1SvQ0d1tYH5etz2ZYPc7JOtW1s4KZPumorWFk91E4Q3WTaT52DrxyH18GAyvyyrm9_Mo6y4e-0at5_KkPM67Nsin5i-eHoBSB6n-mzOXo7ek2SQxqdzqcelDDsaX8xxy_AAzFG6jGgHtXgHwtoUQgwrl5u7CvMpuA5h2hSYgj0-Fy"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">arjun.desk@quanttrade.io</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Institutional VIP</span>
+</div>
+</div>
+</td>
+<td class="py-space-sm px-space-md">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-semibold text-xs">Interactive Brokers (XML)</span>
+</td>
+<td class="py-space-sm px-space-md font-bold text-on-surface">3,200 trades</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-secondary font-label-sm text-label-sm font-semibold animate-pulse">
+<span class="material-symbols-outlined text-xs animate-spin">sync</span>
+<span>Processing (78%)</span>
+</span>
+</td>
+<td class="py-space-sm px-space-md text-outline">3.12s elapsed</td>
+<td class="py-space-sm px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1 rounded text-secondary hover:underline text-xs font-semibold">View Live Log</button>
+<button class="p-1 rounded text-outline hover:text-error transition-colors" title="Abort Job">
+<span class="material-symbols-outlined text-lg">stop_circle</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 (Completed) -->
+<tr class="bg-surface-container-lowest hover:bg-surface-container transition-colors">
+<td class="py-space-sm px-space-md font-mono text-xs text-outline">JOB-89409</td>
+<td class="py-space-sm px-space-md">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-full bg-surface-container text-primary font-bold flex items-center justify-center text-xs">PS</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">priya.sharma@groww-sync.me</span>
+<span class="font-label-sm text-label-sm text-outline">Free Tier Trader</span>
+</div>
+</div>
+</td>
+<td class="py-space-sm px-space-md">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-semibold text-xs">Groww Reports (Excel)</span>
+</td>
+<td class="py-space-sm px-space-md font-bold text-on-surface">94 trades</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-tertiary-container font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+<span>Completed</span>
+</span>
+</td>
+<td class="py-space-sm px-space-md text-outline">0.31s</td>
+<td class="py-space-sm px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1 rounded text-outline hover:text-primary transition-colors" title="View Ingestion Log">
+<span class="material-symbols-outlined text-lg">receipt</span>
+</button>
+<button class="p-1 rounded text-outline hover:text-secondary transition-colors" title="Re-run Pipeline">
+<span class="material-symbols-outlined text-lg">replay</span>
+</button>
+<button class="p-1 rounded text-outline hover:text-error transition-colors" title="Rollback Ingestion">
+<span class="material-symbols-outlined text-lg">undo</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 (Failed) -->
+<tr class="bg-surface-container-lowest hover:bg-surface-container transition-colors">
+<td class="py-space-sm px-space-md font-mono text-xs text-error">JOB-89408</td>
+<td class="py-space-sm px-space-md">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-full bg-error-container text-error font-bold flex items-center justify-center text-xs">RK</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">rahul.k@fyers-algo.in</span>
+<span class="font-label-sm text-label-sm text-outline">Standard Trader</span>
+</div>
+</div>
+</td>
+<td class="py-space-sm px-space-md">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-semibold text-xs">Fyers API Tradebook</span>
+</td>
+<td class="py-space-sm px-space-md font-bold text-on-surface">512 trades</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-error-container text-error font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-xs">error</span>
+<span>Corrupted Headers</span>
+</span>
+</td>
+<td class="py-space-sm px-space-md text-outline">0.14s (Halted)</td>
+<td class="py-space-sm px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1 rounded text-error hover:underline text-xs font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">troubleshoot</span>
+<span>Inspect Error</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5 (Queued) -->
+<tr class="bg-surface-container-lowest hover:bg-surface-container transition-colors">
+<td class="py-space-sm px-space-md font-mono text-xs text-outline">JOB-89412</td>
+<td class="py-space-sm px-space-md">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-full bg-surface-container text-secondary font-bold flex items-center justify-center text-xs">AM</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">super.admin@tradedairy.online</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">Super Admin Cron</span>
+</div>
+</div>
+</td>
+<td class="py-space-sm px-space-md">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-semibold text-xs">Dhan Daily Reconciliation</span>
+</td>
+<td class="py-space-sm px-space-md font-bold text-on-surface">1,820 trades</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-outline font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-xs">hourglass_empty</span>
+<span>Queued (#1)</span>
+</span>
+</td>
+<td class="py-space-sm px-space-md text-outline">Pending</td>
+<td class="py-space-sm px-space-md text-right">
+<button class="p-1 rounded text-outline hover:text-primary transition-colors text-xs font-semibold">Force Run</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Pagination Footer -->
+<div class="p-space-sm bg-surface-container-low flex items-center justify-between font-label-sm text-label-sm text-outline">
+<span>Showing 1–5 of 1,294 import ledger records</span>
+<div class="flex items-center gap-1">
+<button class="px-2.5 py-1 rounded bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-medium">Previous</button>
+<span class="px-2 font-bold text-on-surface">1 / 259</span>
+<button class="px-2.5 py-1 rounded bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-medium">Next</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple interactive micro-feedback for Admin buttons
+  document.getElementById('dryRunBtn')?.addEventListener('click', function() {
+    const originalText = this.innerHTML;
+    this.innerHTML = '<span class="material-symbols-outlined text-base animate-spin">refresh</span><span>Validating 1,240 Rows...</span>';
+    setTimeout(() => {
+      this.innerHTML = '<span class="material-symbols-outlined text-base text-tertiary-container">done_all</span><span>Dry Run Passed (0 err)</span>';
+      setTimeout(() => {
+        this.innerHTML = originalText;
+      }, 3000);
+    }, 1200);
+  });
+
+  document.getElementById('bulkImportBtn')?.addEventListener('click', function() {
+    alert('Ingestion sequence initiated for Zerodha_tradebook_2026_Q3.csv. 1,238 records will be committed.');
+  });
+
+  document.getElementById('webhookSyncBtn')?.addEventListener('click', function() {
+    const icon = this.querySelector('.material-symbols-outlined');
+    icon?.classList.add('animate-spin');
+    setTimeout(() => {
+      icon?.classList.remove('animate-spin');
+      alert('Webhook dispatched: 6 broker endpoints notified for contract note fetch.');
+    }, 1500);
+  });
+</script></main></div></body></html>

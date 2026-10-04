@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"error-container":"#ffdad6","on-secondary-container":"#fefcff","error":"#ba1a1a","on-primary":"#ffffff","surface-container-lowest":"#ffffff","primary-container":"#00855d","surface-tint":"#006c4a","on-primary-fixed-variant":"#005137","on-error-container":"#93000a","surface-container-highest":"#d3e4fe","on-background":"#0b1c30","on-secondary-fixed-variant":"#003ea8","on-primary-container":"#f5fff7","surface-container-high":"#dce9ff","primary-fixed-dim":"#68dba9","secondary-fixed-dim":"#b4c5ff","background":"#f8f9ff","on-tertiary":"#ffffff","inverse-on-surface":"#eaf1ff","on-tertiary-container":"#f7fff2","on-surface-variant":"#3d4a42","surface-dim":"#cbdbf5","secondary-fixed":"#dbe1ff","tertiary-container":"#00873a","surface-container-low":"#eff4ff","tertiary-fixed":"#7ffc97","on-tertiary-fixed":"#002109","primary":"#006948","tertiary-fixed-dim":"#62df7d","secondary":"#0051d5","on-surface":"#0b1c30","secondary-container":"#316bf3","on-secondary-fixed":"#00174b","outline-variant":"#bccac0","surface":"#f8f9ff","outline":"#6d7a72","inverse-surface":"#213145","on-primary-fixed":"#002114","on-secondary":"#ffffff","primary-fixed":"#85f8c4","inverse-primary":"#68dba9","on-error":"#ffffff","surface-bright":"#f8f9ff","tertiary":"#006b2c","surface-container":"#e5eeff","surface-variant":"#d3e4fe","on-tertiary-fixed-variant":"#005320"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-2xl":"2.5rem",margin:"2rem","gutter-mobile":"0.75rem","space-xs":"0.5rem","margin-mobile":"1rem","space-md":"1rem","space-lg":"1.5rem","space-xl":"2rem","space-2xs":"0.25rem","space-sm":"0.75rem",gutter:"1.5rem"},fontFamily:{"body-md":["Inter"],"headline-xl-mobile":["Plus Jakarta Sans"],"data-metric-lg":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"data-table":["Inter"],"headline-xl":["Plus Jakarta Sans"],"label-md":["Inter"],"body-lg":["Inter"],"label-sm":["Inter"],"body-sm":["Inter"],"label-lg":["Inter"],"data-metric-md":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"]},fontSize:{"body-md":["14px",{lineHeight:"20px",fontWeight:"400"}],"headline-xl-mobile":["24px",{lineHeight:"32px",fontWeight:"700"}],"data-metric-lg":["28px",{lineHeight:"34px",fontWeight:"700"}],"headline-lg":["24px",{lineHeight:"32px",fontWeight:"600"}],"data-table":["13px",{lineHeight:"18px",fontWeight:"500"}],"headline-xl":["32px",{lineHeight:"40px",fontWeight:"700"}],"label-md":["12px",{lineHeight:"16px",fontWeight:"600"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],"label-sm":["11px",{lineHeight:"14px",fontWeight:"500"}],"body-sm":["13px",{lineHeight:"18px",fontWeight:"400"}],"label-lg":["14px",{lineHeight:"20px",fontWeight:"600"}],"data-metric-md":["18px",{lineHeight:"24px",fontWeight:"700"}],"headline-sm":["16px",{lineHeight:"24px",fontWeight:"600"}],"headline-md":["20px",{lineHeight:"28px",fontWeight:"600"}]}}}}</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-lg flex items-center justify-between bg-surface-container-low"><div class="flex items-center gap-space-sm"><div class="flex items-center justify-center w-8 h-8 rounded-lg bg-primary-container text-on-primary"><span class="material-symbols-outlined text-base">admin_panel_settings</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-tight">Admin Core</span><span class="font-label-sm text-label-sm text-on-surface-variant">v2.4.0 Engine</span></div></div><div class="flex items-center gap-space-2xs px-space-xs py-space-2xs rounded-full bg-surface-container-high"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface-variant">Sync</span></div></div><div class="px-space-md py-space-sm"><div class="px-space-sm pb-space-xs font-label-sm text-label-sm uppercase tracking-wider text-outline">Core Operations</div><nav class="flex flex-col gap-space-2xs" data-active-classes="bg-primary-container text-on-primary font-label-lg rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="command-center" href="#"><span class="material-symbols-outlined text-lg">grid_view</span><span>Overview / Command Center</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-2.5 transition-colors bg-primary-container text-on-primary font-label-lg rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" data-path="users-management" href="#"><span class="material-symbols-outlined text-lg">group</span><span>Users Management</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="plans-and-pricing" href="#"><span class="material-symbols-outlined text-lg">payments</span><span>Plans &amp; Pricing</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="feature-locks-and-flags" href="#"><span class="material-symbols-outlined text-lg">toggle_on</span><span>Feature Locks &amp; Flags</span></a></nav></div><div class="px-space-md py-space-sm"><div class="px-space-sm pb-space-xs font-label-sm text-label-sm uppercase tracking-wider text-outline">Data &amp; Integrity</div><nav class="flex flex-col gap-space-2xs" data-active-classes="bg-primary-container text-on-primary font-label-lg rounded-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]"><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="import-engine" href="#"><span class="material-symbols-outlined text-lg">publish</span><span>Import Engine</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="data-exports" href="#"><span class="material-symbols-outlined text-lg">cloud_download</span><span>Data Exports</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="system-audit-and-logs" href="#"><span class="material-symbols-outlined text-lg">receipt_long</span><span>System Audit &amp; Logs</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="platform-settings" href="#"><span class="material-symbols-outlined text-lg">settings</span><span>Platform Settings</span></a></nav></div></div><div class="p-space-md bg-surface-container-low"><div class="p-space-sm rounded-xl bg-surface-container flex flex-col gap-space-sm"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant">Environment</span><span class="px-space-xs py-space-2xs rounded bg-surface-container-highest text-secondary font-label-sm text-label-sm uppercase font-bold">Production</span></div><a class="flex items-center justify-center gap-space-xs py-2 px-space-sm rounded-lg bg-surface text-secondary hover:bg-secondary-container hover:text-on-secondary-container transition-all font-label-lg text-label-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.04)]" data-path="trader-app" href="#"><span class="material-symbols-outlined text-base">open_in_new</span><span>Return to Trader App</span></a></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs"><img alt="Brand logo. - Primary color: #059669
+- Font: plusJakartaSans
+- Mode: light
+- Roundness: rounded-md
+" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WpIyvRuHtwea36sKPkql_KB0D7TrI4ZhMMkU6MruMREwKl93VFLWeOFfEKQ2XvK-0E6z1TbA1lCF8b01SHHIPdz4azgEsdr8NzODGQHFbMeWPmWEx839rhO0T6CWSyPLzgr53H_xxbdELw6Co3Kwmj13IdO2BxtWcF_Q_Qgb8bWo80qxHH8xy0UeOpLCFgJ6C90wiU--jDwkbkwTyIbzD2XEisvUqpYe0_cyXzAKFkdAvYOQuGnvCUug"/><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight hidden sm:inline">TradeDairy.online</span></div><div class="flex items-center px-space-xs py-space-2xs rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm uppercase tracking-wider font-semibold"><span class="px-1">Admin Console</span></div><div class="hidden xl:flex items-center gap-space-2xs px-space-sm py-1 rounded-full bg-surface-container"><span class="w-2 h-2 rounded-full bg-tertiary-container"></span><span class="font-label-sm text-label-sm text-tertiary-container font-semibold">Broker APIs Operational</span></div></div><div class="flex items-center gap-space-md"><div class="relative hidden md:flex items-center w-64 lg:w-80"><span class="material-symbols-outlined absolute left-3 text-outline text-lg pointer-events-none">search</span><input class="w-full h-9 pl-9 pr-4 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm placeholder:text-outline focus:outline-none focus:bg-surface focus:ring-2 focus:ring-primary" placeholder="Search users, accounts, flags..." type="text"/></div><div class="hidden lg:flex items-center gap-space-xs px-space-sm py-1.5 rounded-lg bg-surface-container-low"><span class="material-symbols-outlined text-primary text-base">supervised_user_circle</span><div class="flex flex-col"><span class="font-label-sm text-label-sm text-outline leading-tight">Active Users</span><span class="font-data-metric-md text-data-metric-md text-on-surface leading-tight">1,428</span></div></div><div class="relative flex items-center justify-center"><button class="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-xl">notifications</span></button><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error ring-2 ring-surface"></span></div><div class="flex items-center gap-space-sm pl-space-xs"><div class="hidden sm:flex flex-col text-right"><span class="font-label-lg text-label-lg text-on-surface leading-tight font-semibold">Super Admin</span><span class="font-label-sm text-label-sm text-on-surface-variant leading-tight">Root Security</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-container" src="https://lh3.googleusercontent.com/aida/AEtjO1VgoFrdwIF5bJWzPcSr35IEiLU0QQfBh7Mlrd053RB7naWmCumSm8lAoNH8P-_HcgKdBCY7JA-Wq4ZADRs0XG7ViE0NW7_5EU1QlshC1M0QFauVR-IlOcNC3u6qGhACiRWsPJFF3mYWqlJmAKuf0VmJ1t8WM_upJSjyOHak_yjSChoOd3hHYGZHtTfEcn3P4buGgJEqeCmO5bjnfRFqbxs8wtuVaOqY7IP9OdWOKSkyj19xTYl-vIUZRmo"/></div></div></header><main class="w-full pt-16 bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Interactive Feedback Toast -->
+<div class="fixed bottom-6 right-8 hidden z-50 flex items-center gap-space-sm px-space-md py-space-sm rounded-xl bg-inverse-surface text-inverse-on-surface shadow-xl transition-all duration-300" id="toastNotification">
+<span class="material-symbols-outlined text-primary-fixed">verified</span>
+<span class="font-body-md text-body-md" id="toastMsg">Account privileges updated successfully.</span>
+</div>
+<!-- Breadcrumb & Administrative Metadata Bar -->
+<div class="flex flex-wrap items-center justify-between gap-space-md px-space-xl py-space-md bg-surface-container-low shadow-sm">
+<div class="flex items-center gap-space-xs font-label-md text-label-md text-outline">
+<span class="hover:text-primary transition-colors cursor-pointer">Governance</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="hover:text-primary transition-colors cursor-pointer">System Access</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="text-on-surface font-semibold">User Detail #TD-USR-8842</span>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs px-space-xs py-1 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-xs text-primary">security</span>
+<span>Scoped: SuperAdmin Tier 0</span>
+</div>
+<div class="flex items-center gap-space-xs text-outline font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span>Node: AP-SOUTH-1 (Mumbai Engine)</span>
+</div>
+</div>
+</div>
+<!-- Master User Header Elevation -->
+<div class="px-space-xl pt-space-xl pb-space-lg bg-surface">
+<div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-md flex flex-col xl:flex-row items-start xl:items-center justify-between gap-space-lg">
+<div class="flex flex-wrap items-center gap-space-lg">
+<div class="relative">
+<img class="w-20 h-20 rounded-xl object-cover shadow-sm ring-2 ring-primary-container" data-alt="High-resolution professional photographic portrait of Vinkal Prajapati, an Indian quantitative trader in his late thirties wearing a charcoal formal linen shirt, standing confidently in a sunlit fintech command office with soft teal reflections and architectural glass." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAev7Q25tnquGLh0vcxYAa54tor_FEPx2ZcCaj8q_POWCpW8hhIyFxQJlNBvXIQRmugcJ6UPDaw7StFO2SEySjW7D3RkygX72nL1foy0KixRjha20KnKBA-Ti9UU9SaYfXlwsO1_YWM1aHj4RxSVQ_KFlUCiVNhcoRAhYFz67LZMiFFuiYrRVy4uhg2Qg4LCJpp1eRyxg2eLiyPO4DVqZpSTgCqgYmEDRh-fuSglKtXZMt0vyQiz0Ht"/>
+<span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-tertiary-container text-on-tertiary flex items-center justify-center text-xs shadow-sm" title="Active Webhook Listener">
+<span class="material-symbols-outlined text-xs">bolt</span>
+</span>
+</div>
+<div class="flex flex-col gap-space-2xs">
+<div class="flex flex-wrap items-center gap-space-sm">
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Vinkal Prajapati</h1>
+<span class="px-space-xs py-1 rounded-full bg-primary text-on-primary font-label-sm text-label-sm font-semibold tracking-wide">
+              Trader Pro (Annual)
+            </span>
+<span class="flex items-center gap-1 px-space-xs py-1 rounded-full bg-surface-container-high text-tertiary font-label-sm text-label-sm font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Active Account
+            </span>
+</div>
+<div class="flex flex-wrap items-center gap-y-1 gap-x-space-md text-on-surface-variant font-body-sm text-body-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-outline">badge</span>
+<strong class="font-medium text-on-surface">UID:</strong> TD-USR-8842
+            </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-outline">mail</span>
+              vinkal@tradedairy.online
+            </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-outline">calendar_today</span>
+              Registered Jan 2026
+            </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-outline">pin_drop</span>
+              Ahmedabad, IN (Client IP: 49.36.12.84)
+            </span>
+</div>
+</div>
+</div>
+<!-- Action Button Group -->
+<div class="flex flex-wrap items-center gap-space-xs w-full xl:w-auto pt-space-xs xl:pt-0">
+<button class="flex items-center gap-space-xs px-space-md py-2.5 rounded-lg bg-secondary text-on-secondary hover:bg-secondary-container transition-all shadow-sm font-label-lg text-label-lg font-semibold" onclick="triggerToast('Impersonation token created. Redirecting to workspace...')" type="button">
+<span class="material-symbols-outlined text-base">login</span>
+<span>Impersonate Login</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-sm py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface transition-all font-label-lg text-label-lg" onclick="triggerToast('Password reset link sent to subscriber email.')" type="button">
+<span class="material-symbols-outlined text-base">lock_reset</span>
+<span>Issue Password Reset</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-sm py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface transition-all font-label-lg text-label-lg" onclick="triggerToast('Direct notification composer dispatched.')" type="button">
+<span class="material-symbols-outlined text-base">send_and_archive</span>
+<span>Send Notice</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-sm py-2.5 rounded-lg bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-all font-label-lg text-label-lg font-semibold" onclick="toggleEmergencyBreaker()" type="button">
+<span class="material-symbols-outlined text-base">gavel</span>
+<span>Suspend Account</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Primary Asymmetric Workspace Canvas -->
+<div class="px-space-xl pb-space-2xl grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- LEFT COLUMN: Plan Configuration & Feature Flags (5 cols) -->
+<div class="lg:col-span-5 flex flex-col gap-space-lg">
+<!-- Card: Commercial Tier & Subscription Assignment -->
+<div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="p-2 rounded-lg bg-primary-container text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-lg">credit_card</span>
+</span>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Commercial Plan Setup</h2>
+<p class="font-body-sm text-body-sm text-outline">Tier entitlement &amp; recurring invoicing</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">Gateway Synced</span>
+</div>
+<!-- Current Tier Card -->
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col gap-space-xs">
+<div class="flex items-baseline justify-between">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Trader Pro Tier (Annual Cycle)</span>
+<span class="font-data-metric-md text-data-metric-md text-primary font-bold">INR 6,999<span class="font-body-sm text-body-sm text-outline font-normal">/yr</span></span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant">
+<span>Next Auto-Renewal: <strong class="text-on-surface">22 Nov 2027</strong></span>
+<span class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm">verified_user</span> RZP_SUB_9814402
+            </span>
+</div>
+</div>
+<!-- Manual Override Form -->
+<form class="flex flex-col gap-space-md pt-space-xs" onsubmit="event.preventDefault(); triggerToast('Manual plan override persisted with root audit trail.');">
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Target Subscription Tier</label>
+<div class="relative">
+<select class="w-full h-11 px-3 bg-surface text-on-surface rounded-lg font-body-md text-body-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary shadow-sm cursor-pointer">
+<option value="starter">Free Starter (1 Broker Book, 50 trades/mo)</option>
+<option selected="" value="pro">Trader Pro (10 Broker Books, Unlimited)</option>
+<option value="funded">Funded Desk Enterprise (Multi-Account Risk Engine)</option>
+<option value="vip">Institutional VIP Privileged License</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 text-outline pointer-events-none">arrow_drop_down</span>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Override Expiry</label>
+<input class="h-11 px-3 bg-surface text-on-surface rounded-lg font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" type="date" value="2027-11-22"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Invoicing Override</label>
+<select class="h-11 px-3 bg-surface text-on-surface rounded-lg font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary shadow-sm">
+<option>Complimentary (INR 0)</option>
+<option selected="">Retain Standard RZP Invoicing</option>
+<option>Custom Enterprise PO</option>
+</select>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Reason for Administrative Override</label>
+<input class="h-11 px-3 bg-surface text-on-surface rounded-lg font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" type="text" value="VIP Partner / Community Ambassador"/>
+</div>
+<button class="mt-space-xs flex items-center justify-center gap-space-xs py-3 px-space-md rounded-lg bg-primary hover:bg-primary-container text-on-primary transition-all font-label-lg text-label-lg font-semibold shadow-md" type="submit">
+<span class="material-symbols-outlined text-base">save_as</span>
+<span>Save Plan Override</span>
+</button>
+</form>
+</div>
+<!-- Card: Feature Locks & Granular Permissions -->
+<div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="p-2 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-lg">tune</span>
+</span>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Feature Flags &amp; Permissions</h2>
+<p class="font-body-sm text-body-sm text-outline">Granular switchboard for subscriber capability</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-surface-container-highest text-secondary font-label-sm text-label-sm font-semibold">Engine V2</span>
+</div>
+<div class="flex flex-col gap-space-sm divide-y-0">
+<!-- Flag 1 -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-xl">candlestick_chart</span>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">TradingView Pro Overlays</span>
+<span class="font-body-sm text-body-sm text-outline">Realtime multi-timeframe technical canvas</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" onchange="triggerToast('TradingView Pro entitlement updated')" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Flag 2 -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-xl">menu_book</span>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Max Multi-Broker Books</span>
+<span class="font-body-sm text-body-sm text-outline">Currently configured quota allocation</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs bg-surface px-space-xs py-1 rounded-lg shadow-sm">
+<button class="w-6 h-6 flex items-center justify-center text-outline hover:text-on-surface font-bold text-sm" onclick="adjustBooks(-1)" type="button">-</button>
+<span class="font-data-metric-md text-data-metric-md text-on-surface px-1" id="booksCount">10</span>
+<button class="w-6 h-6 flex items-center justify-center text-primary font-bold text-sm" onclick="adjustBooks(1)" type="button">+</button>
+</div>
+</div>
+<!-- Flag 3 -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-xl">screenshot_monitor</span>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Automated Chart Capture</span>
+<span class="font-body-sm text-body-sm text-outline">Auto-snaps M5/H1 chart at order fill timestamp</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" onchange="triggerToast('Automated screenshot pipeline adjusted')" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Flag 4 -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-tertiary text-xl">psychology</span>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">AI Behavioral Habit Scanner</span>
+<span class="font-body-sm text-body-sm text-outline">Detects revenge trades, over-leverage patterns</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" onchange="triggerToast('AI habit telemetry state toggled')" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Flag 5: Circuit Breaker -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container" id="breakerContainer">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-outline text-xl" id="breakerIcon">power_settings_new</span>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Emergency Trading Halt</span>
+<span class="font-body-sm text-body-sm text-outline" id="breakerStatusText">Normal: Trading &amp; execution APIs fully unrestricted</span>
+</div>
+</div>
+<button class="px-space-sm py-1.5 rounded-lg bg-surface text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-all font-label-sm text-label-sm font-semibold shadow-sm" id="breakerBtn" onclick="toggleEmergencyBreaker()" type="button">
+              Engage Circuit Breaker
+            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: Performance, Broker Books, Audit Log (7 cols) -->
+<div class="lg:col-span-7 flex flex-col gap-space-lg">
+<!-- Right Card 1: Trading & Synchronization Performance -->
+<div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="p-2 rounded-lg bg-tertiary-container text-on-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-lg">insights</span>
+</span>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Trading &amp; Sync Performance</h2>
+<p class="font-body-sm text-body-sm text-outline">Telemetry from synced brokerage accounts (FY26)</p>
+</div>
+</div>
+<span class="flex items-center gap-1.5 px-space-xs py-1 rounded bg-surface-container font-label-sm text-label-sm text-primary font-bold">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span> Live Heartbeat
+          </span>
+</div>
+<!-- Metric KPI Tiles Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-sm">
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Logged Trades</span>
+<span class="font-data-metric-lg text-data-metric-lg text-on-surface font-bold mt-1">24</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">15 Win / 9 Loss</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Win Ratio</span>
+<span class="font-data-metric-lg text-data-metric-lg text-primary font-bold mt-1">62.5%</span>
+<span class="font-body-sm text-body-sm text-primary">Profit Factor: 1.84</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Net Realized P&amp;L</span>
+<span class="font-data-metric-lg text-data-metric-lg text-primary font-bold mt-1">+₹28,450</span>
+<span class="font-body-sm text-body-sm text-outline">Gross: ₹34,200</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">API Sync Health</span>
+<span class="font-data-metric-lg text-data-metric-lg text-secondary font-bold mt-1">99.8%</span>
+<span class="font-body-sm text-body-sm text-outline">0 Disconnections</span>
+</div>
+</div>
+<!-- Inline SVG Performance Equity Trajectory Curve -->
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col gap-space-xs">
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline">
+<span>Cumulative Account Equity Trajectory (INR)</span>
+<span class="font-medium text-primary font-label-md text-label-md">+28.4% Return vs Benchmark</span>
+</div>
+<div class="w-full h-32 relative pt-2">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 500 100">
+<!-- Gradient Fill Definition -->
+<defs>
+<lineargradient id="equityGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#00855d" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#00855d" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<!-- Subtle horizontal grid lines -->
+<line stroke="#d3e4fe" stroke-dasharray="3 3" stroke-width="1" x1="0" x2="500" y1="20" y2="20"></line>
+<line stroke="#d3e4fe" stroke-dasharray="3 3" stroke-width="1" x1="0" x2="500" y1="55" y2="55"></line>
+<line stroke="#d3e4fe" stroke-dasharray="3 3" stroke-width="1" x1="0" x2="500" y1="90" y2="90"></line>
+<!-- Area Fill -->
+<polygon fill="url(#equityGrad)" points="0,95 25,88 60,82 95,85 130,70 170,74 210,58 250,60 290,42 340,48 390,32 440,25 500,12 500,100 0,100"></polygon>
+<!-- Trajectory Line -->
+<polyline fill="none" points="0,95 25,88 60,82 95,85 130,70 170,74 210,58 250,60 290,42 340,48 390,32 440,25 500,12" stroke="#00855d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></polyline>
+<!-- Peak indicator point -->
+<circle class="animate-pulse" cx="500" cy="12" fill="#006948" r="4"></circle>
+</svg>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline pt-1">
+<span>Jan 01 (Base ₹1.5L)</span>
+<span>Jan 15 (Mid-Month Scalp)</span>
+<span>Feb Current (Peak ₹1,78,450)</span>
+</div>
+</div>
+</div>
+<!-- Right Card 2: Registered Broker Books -->
+<div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="p-2 rounded-lg bg-surface-container-high text-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-lg">account_balance</span>
+</span>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Registered Broker Books</h2>
+<p class="font-body-sm text-body-sm text-outline">Connected sub-ledgers &amp; broker OAuth instances</p>
+</div>
+</div>
+<button class="flex items-center gap-1 px-space-xs py-1 rounded bg-surface text-secondary hover:bg-surface-container transition-colors font-label-sm text-label-sm font-semibold shadow-sm" onclick="triggerToast('Broker credential re-sync signal issued.')" type="button">
+<span class="material-symbols-outlined text-sm">refresh</span> Re-verify Tokens
+          </button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<!-- Book 1: Zerodha Kite -->
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between gap-space-md">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest text-secondary flex items-center justify-center font-bold text-base">
+                  ZK
+                </div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Zerodha Kite Connect</span>
+<span class="font-body-sm text-body-sm text-outline">Client ID: ZK9914 • FO + EQ</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">Active</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-body-sm font-body-sm">
+<div>
+<span class="text-outline block text-label-sm font-label-sm">Allocated Capital</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">INR 1,00,000</span>
+</div>
+<div class="text-right">
+<span class="text-outline block text-label-sm font-label-sm">Recorded Trades</span>
+<span class="font-headline-sm text-headline-sm text-primary font-semibold">18 Orders</span>
+</div>
+</div>
+</div>
+<!-- Book 2: Groww Equities -->
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between gap-space-md">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest text-primary flex items-center justify-center font-bold text-base">
+                  GW
+                </div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Groww Equities</span>
+<span class="font-body-sm text-body-sm text-outline">Client ID: GW-5412 • Delivery</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">Active</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-body-sm font-body-sm">
+<div>
+<span class="text-outline block text-label-sm font-label-sm">Allocated Capital</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">INR 50,000</span>
+</div>
+<div class="text-right">
+<span class="text-outline block text-label-sm font-label-sm">Recorded Trades</span>
+<span class="font-headline-sm text-headline-sm text-primary font-semibold">6 Orders</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Card 3: Administrative Audit Log -->
+<div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="p-2 rounded-lg bg-surface-container-high text-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-lg">history_toggle_off</span>
+</span>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Administrative Audit Log</h2>
+<p class="font-body-sm text-body-sm text-outline">Immutable event sequence logged across platform nodes</p>
+</div>
+</div>
+<button class="font-label-md text-label-md text-secondary hover:underline" onclick="triggerToast('Downloading full SHA-256 verified ledger...')" type="button">
+            Export Cryptographic Log
+          </button>
+</div>
+<div class="flex flex-col gap-space-md relative pl-6 before:content-[''] before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-surface-container-high">
+<!-- Event 1 -->
+<div class="relative flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+<span class="absolute -left-6 top-1.5 w-2.5 h-2.5 rounded-full bg-secondary ring-4 ring-surface-container-lowest"></span>
+<div>
+<p class="font-body-md text-body-md text-on-surface font-semibold">ITR-3 Comprehensive Tax Pack Exported</p>
+<p class="font-body-sm text-body-sm text-outline">Generated 42-page Schedule 112A capital gains report with broker timestamp checksum.</p>
+</div>
+<span class="font-label-sm text-label-sm text-outline whitespace-nowrap bg-surface-container px-2 py-0.5 rounded">2h ago</span>
+</div>
+<!-- Event 2 -->
+<div class="relative flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+<span class="absolute -left-6 top-1.5 w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-surface-container-lowest"></span>
+<div>
+<p class="font-body-md text-body-md text-on-surface font-semibold">Trade Executed &amp; Webhook Ingested</p>
+<p class="font-body-sm text-body-sm text-outline">BANKNIFTY 47500 CE 200 Qty Scalp logged via Zerodha Kite Connect WebSocket.</p>
+</div>
+<span class="font-label-sm text-label-sm text-outline whitespace-nowrap bg-surface-container px-2 py-0.5 rounded">4h ago</span>
+</div>
+<!-- Event 3 -->
+<div class="relative flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+<span class="absolute -left-6 top-1.5 w-2.5 h-2.5 rounded-full bg-primary-container ring-4 ring-surface-container-lowest"></span>
+<div>
+<p class="font-body-md text-body-md text-on-surface font-semibold">Commercial Subscription Upgrade: Trader Pro</p>
+<p class="font-body-sm text-body-sm text-outline">Processed through Razorpay Gateway (Sub Token rzp_live_9381kda2). 365 Days active entitlement.</p>
+</div>
+<span class="font-label-sm text-label-sm text-outline whitespace-nowrap bg-surface-container px-2 py-0.5 rounded">Jan 2026</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function triggerToast(message) {
+    const toast = document.getElementById('toastNotification');
+    const toastMsg = document.getElementById('toastMsg');
+    if (!toast || !toastMsg) return;
+    toastMsg.innerText = message;
+    toast.classList.remove('hidden');
+    setTimeout(() => {
+      toast.classList.add('hidden');
+    }, 3200);
+  }
+
+  function adjustBooks(delta) {
+    const el = document.getElementById('booksCount');
+    if (!el) return;
+    let val = parseInt(el.innerText, 10) || 10;
+    val = Math.max(1, Math.min(50, val + delta));
+    el.innerText = val;
+    triggerToast(`Maximum ledger book limit changed to ${val} books.`);
+  }
+
+  let breakerEngaged = false;
+  function toggleEmergencyBreaker() {
+    breakerEngaged = !breakerEngaged;
+    const container = document.getElementById('breakerContainer');
+    const icon = document.getElementById('breakerIcon');
+    const text = document.getElementById('breakerStatusText');
+    const btn = document.getElementById('breakerBtn');
+
+    if (breakerEngaged) {
+      container.classList.replace('bg-surface-container', 'bg-error-container');
+      icon.classList.replace('text-outline', 'text-error');
+      text.classList.replace('text-outline', 'text-on-error-container');
+      text.innerText = 'HALTED: Emergency breaker engaged. Trading & API sync paused.';
+      btn.innerText = 'Lift Trading Halt';
+      btn.classList.replace('bg-surface', 'bg-error');
+      btn.classList.add('text-on-error');
+      triggerToast('CRITICAL: Trading halt enforced for subscriber TD-USR-8842.');
+    } else {
+      container.classList.replace('bg-error-container', 'bg-surface-container');
+      icon.classList.replace('text-error', 'text-outline');
+      text.classList.replace('text-on-error-container', 'text-outline');
+      text.innerText = 'Normal: Trading & execution APIs fully unrestricted';
+      btn.innerText = 'Engage Circuit Breaker';
+      btn.classList.replace('bg-error', 'bg-surface');
+      btn.classList.remove('text-on-error');
+      triggerToast('Trading halt cleared. Normal operations restored.');
+    }
+  }
+</script></main></div></body></html>

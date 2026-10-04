@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-container-high": "#dce9ff", "on-secondary": "#ffffff", "tertiary-container": "#00873a", "on-tertiary-fixed": "#002109", "on-primary-fixed": "#002114", "primary-fixed": "#85f8c4", "surface-container": "#e5eeff", "tertiary": "#006b2c", "secondary": "#0051d5", "inverse-on-surface": "#eaf1ff", "surface-container-low": "#eff4ff", "primary-fixed-dim": "#68dba9", "error-container": "#ffdad6", "on-tertiary-container": "#f7fff2", "on-tertiary": "#ffffff", "tertiary-fixed": "#7ffc97", "on-secondary-container": "#fefcff", "on-error": "#ffffff", "on-primary-fixed-variant": "#005137", "surface-bright": "#f8f9ff", "surface": "#f8f9ff", "outline-variant": "#bccac0", "primary-container": "#00855d", "surface-dim": "#cbdbf5", "surface-container-lowest": "#ffffff", "on-secondary-fixed": "#00174b", "on-primary-container": "#f5fff7", "on-tertiary-fixed-variant": "#005320", "outline": "#6d7a72", "secondary-fixed": "#dbe1ff", "tertiary-fixed-dim": "#62df7d", "error": "#ba1a1a", "on-background": "#0b1c30", "inverse-surface": "#213145", "surface-tint": "#006c4a", "surface-container-highest": "#d3e4fe", "on-surface": "#0b1c30", "on-surface-variant": "#3d4a42", "on-primary": "#ffffff", "background": "#f8f9ff", "surface-variant": "#d3e4fe", "on-secondary-fixed-variant": "#003ea8", "primary": "#006948", "inverse-primary": "#68dba9", "on-error-container": "#93000a", "secondary-container": "#316bf3", "secondary-fixed-dim": "#b4c5ff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-md": "1rem", "space-xl": "2rem", "margin-mobile": "1rem", "space-2xl": "2.5rem", "margin": "2rem", "space-2xs": "0.25rem", "space-lg": "1.5rem", "space-sm": "0.75rem", "gutter": "1.5rem", "gutter-mobile": "0.75rem", "space-xs": "0.5rem" }, "fontFamily": { "headline-sm": ["Plus Jakarta Sans"], "label-sm": ["Inter"], "label-lg": ["Inter"], "body-lg": ["Inter"], "data-metric-lg": ["Plus Jakarta Sans"], "data-table": ["Inter"], "body-md": ["Inter"], "label-md": ["Inter"], "body-sm": ["Inter"], "headline-lg": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "data-metric-md": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"] }, "fontSize": { "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "data-metric-lg": ["28px", { "lineHeight": "34px", "fontWeight": "700" }], "data-table": ["13px", { "lineHeight": "18px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }], "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }], "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "data-metric-md": ["18px", { "lineHeight": "24px", "fontWeight": "700" }], "headline-xl-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-60 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between py-space-md"><div class="flex flex-col gap-space-md"><div class="px-space-md flex items-center gap-space-xs"><img alt="TradeDairy Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wn_h_-FaSNF4RxHDn7zZ-ktPVTloO1p8Ydu_BSqnLYt9FavAM6qcyl7VPV4e84eaTYHd-ai1_0uCYzO6OLrs3iqxRTuRlH-eUF-NDNk2K3CVazHanXfAFMBdHtzd-996lEcXjUWhUsJ8VHMe4x5C_JobZ2S6ogsniv8W-BBNvc-GPNl7ZtT_nQiBSfrxs3IxUA9-8MQpXuqZel567pgjS4R3FLGLIrn8ffGUgpizrHvV7m9kmQP3FA8ko"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface leading-none tracking-tight">TradeDairy</span><span class="font-label-sm text-label-sm text-on-surface-variant leading-tight">Journal &amp; Analytics</span></div></div><div class="px-space-md"><a class="flex items-center justify-center gap-space-xs w-full py-2.5 px-space-md rounded-lg bg-primary text-on-primary font-label-lg text-label-lg shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-all text-center" data-path="add-trade" href="#"><span>+ Add Trade</span></a></div><nav class="flex flex-col gap-1 px-space-xs" data-active-classes="bg-surface-container-high text-primary font-bold"><a class="flex items-center px-space-md py-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="dashboard" href="#">Dashboard</a><a class="flex items-center px-space-md py-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="trades" href="#">Trades</a><a class="flex items-center px-space-md py-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="journal" href="#">Journal</a><a class="flex items-center px-space-md py-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="calendar" href="#">Calendar</a><a class="flex items-center px-space-md py-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="analytics" href="#">Analytics</a><a class="flex items-center px-space-md py-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="accounts" href="#">Accounts</a><a class="flex items-center px-space-md py-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="settings" href="#">Settings</a></nav></div><div class="px-space-md"><div class="p-space-sm rounded-xl bg-surface-container-low flex flex-col gap-space-2xs"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider">Pro Plan</span><span class="material-symbols-outlined text-primary text-[16px]">verified</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Unlimited trades &amp; deep insights active</p></div></div></aside><div class="pl-60"><header class="fixed top-0 left-60 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-space-lg flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md flex-1 max-w-lg"><div class="relative w-full"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span><input class="w-full h-10 pl-9 pr-space-md rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest transition-colors" placeholder="Search trades, instruments, setups..." type="text"/></div></div><div class="flex items-center gap-space-md"><div class="hidden sm:flex items-center gap-space-2xs px-space-sm py-1.5 rounded-lg bg-surface-container-low text-on-surface"><span class="material-symbols-outlined text-[16px] text-outline">event</span><span class="font-label-md text-label-md">Sun, 04 Oct 2026</span></div><button aria-label="Notifications" class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span></button><div class="flex items-center gap-space-xs pl-space-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDE1QclnM-SpbowLq4dk9JMiWIBURwgrfnza9o1NTBFR0ALgbSMFiBp_h8PDfmcHo3wwscOKZny8SB7TJqhvG_eM8c9S_3n3xf135LfJkL-M3vnsVWQagS9EpaOTYjR_wyGZu4e7se3-TL9_3auHPReo69kjJuOuWULvaJgnnhegVKj6U936JjTiraoXBCif--luKyhf2U_XHWnZiJ-u0BYKTSOh_oc-2zHvKwdhnLau7YYW4Jc9lJb"/><div class="hidden md:flex flex-col"><span class="font-label-md text-label-md text-on-surface leading-tight">Vinkal Prajapati</span><span class="font-label-sm text-label-sm text-primary leading-none">Pro Trader</span></div></div></div></header><main class="w-full pt-16 bg-background min-h-screen px-space-lg py-space-lg max-w-[1440px] mx-auto"><div class="flex flex-col w-full gap-space-lg">
+<!-- Breadcrumbs & Context Header -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-xs text-outline font-label-sm text-label-sm">
+<span class="hover:text-primary cursor-pointer transition-colors">Settings</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="hover:text-primary cursor-pointer transition-colors">Trading Accounts</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface-variant font-medium">Zerodha F&amp;O (#ZK9914)</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-semibold">Charge Rules Engine</span>
+</div>
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md mt-space-2xs">
+<div>
+<div class="flex items-center gap-space-xs">
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Broker Charge Rules &amp; Regulatory Engine</h1>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold uppercase">v2.4 Live</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+          Versioned multi-segment calculation rules for Brokerage, STT, Exchange Turnover, SEBI, GST, and Stamp Duty.
+        </p>
+</div>
+<!-- Header Mode Switcher & Primary Action -->
+<div class="flex items-center gap-space-sm flex-wrap">
+<div class="p-1 rounded-lg bg-surface-container flex items-center shadow-sm">
+<button class="px-space-sm py-1.5 rounded-md font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-sm font-semibold transition-all" id="mode-preset">
+            Use Broker Preset
+          </button>
+<button class="px-space-sm py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" id="mode-custom">
+            Custom Overrides Mode
+          </button>
+</div>
+<button class="flex items-center gap-space-xs px-space-md py-2 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg shadow-sm hover:bg-primary-container transition-all">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span>Save Rule Modifications</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Verification Status Banner -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm shadow-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-surface-container-lowest text-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[20px]">policy</span>
+</div>
+<div>
+<p class="font-label-lg text-label-lg text-on-surface">
+          TradeDairy Official Preset: <span class="font-bold text-primary">Zerodha NSE / BSE (v2.4)</span>
+</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Cross-verified against FY 2026-27 SEBI Gazette notifications, NSE Circular Ref. No. 49/2026, and Central GST mandates.
+        </p>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-primary font-label-sm text-label-sm font-semibold whitespace-nowrap pl-space-md sm:pl-0">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+      Contract Note Exact Match
+    </div>
+</div>
+<!-- Version Architecture & Date-Aware Metadata -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-stretch">
+<!-- Active Version & Version Selector -->
+<div class="lg:col-span-7 bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between gap-space-md">
+<div>
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Engine Architecture</span>
+<span class="text-tertiary font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">lock_open</span> Editable Configuration
+          </span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mt-1">Rule Lifecycle &amp; Version Anchoring</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+          Each executed trade permanently anchors to the rule version active on the exact timestamp of its execution, preventing retrospective audit disruption.
+        </p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-sm pt-space-xs">
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Active Version</span>
+<span class="font-headline-sm text-headline-sm text-on-surface mt-0.5">v2.4 Active</span>
+<span class="font-label-sm text-label-sm text-primary font-medium mt-1">FY 2026-27 Compliant</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Effective Range</span>
+<span class="font-headline-sm text-headline-sm text-on-surface mt-0.5">01 Apr 2026</span>
+<span class="font-label-sm text-label-sm text-outline font-normal mt-1">Until Indefinite / Live</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-outline">Switch Version Snapshot</span>
+<div class="relative mt-1">
+<select class="w-full bg-surface-container-lowest font-label-md text-label-md text-on-surface rounded-md py-1.5 px-2 focus:outline-none focus:bg-surface-container-high transition-colors cursor-pointer pr-6">
+<option selected="">v2.4 (01 Apr 2026 - Present)</option>
+<option>v2.3 (01 Oct 2024 - 31 Mar 2026)</option>
+<option>v2.2 (FY 2023-24 Historical)</option>
+</select>
+</div>
+<span class="font-label-sm text-label-sm text-secondary font-medium mt-1">Audit past formulas</span>
+</div>
+</div>
+</div>
+<!-- Date-Aware Guarantee Callout -->
+<div class="lg:col-span-5 bg-surface-container-high p-space-lg rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-start gap-space-sm">
+<div class="p-2.5 rounded-lg bg-surface-container-lowest text-primary shadow-sm">
+<span class="material-symbols-outlined text-[24px]">history_toggle_off</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-primary uppercase font-bold tracking-wider">Date-Aware Guarantee</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mt-0.5">Historical Immutability</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 leading-relaxed">
+            TradeDairy guarantees historical data integrity: modifying current calculation rules will <strong>never alter past settled ledger records</strong>. Past trades maintain the statutory STT and GST rates established on their contract execution dates.
+          </p>
+</div>
+</div>
+<div class="flex items-center gap-space-xs mt-space-md pt-space-sm font-label-sm text-label-sm text-on-surface">
+<span class="material-symbols-outlined text-primary text-[18px]">rule</span>
+<span>Automatic time-travel recalculations for ledger re-imports</span>
+</div>
+</div>
+</div>
+<!-- Segment Selector Tabs -->
+<div class="flex items-center justify-between overflow-x-auto pb-1">
+<div class="flex items-center gap-space-2xs p-1 rounded-xl bg-surface-container">
+<button class="px-space-md py-2 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-all whitespace-nowrap">
+        Equity Intraday
+      </button>
+<button class="px-space-md py-2 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-all whitespace-nowrap">
+        Equity Delivery
+      </button>
+<button class="px-space-md py-2 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-all whitespace-nowrap">
+        Futures (Index &amp; Stock)
+      </button>
+<button class="px-space-md py-2 rounded-lg font-label-lg text-label-lg bg-surface-container-lowest text-primary shadow-sm font-bold whitespace-nowrap flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+        Options (Active)
+      </button>
+<button class="px-space-md py-2 rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-all whitespace-nowrap">
+        Commodity / MCX
+      </button>
+</div>
+<span class="hidden md:inline font-label-sm text-label-sm text-outline">Showing Zerodha FO-OPT profile rules</span>
+</div>
+<!-- Main Multi-Segment Rules Matrix Table & Simulator -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-lg items-start">
+<!-- Rules Matrix Card (8 cols) -->
+<div class="xl:col-span-8 bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="p-space-lg flex items-center justify-between">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Segment Regulatory Rules: F&amp;O Options</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Detailed fee basis, calculation formula logic, and transaction application direction.</p>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low font-label-sm text-label-sm text-on-surface font-medium">7 Active Fee Components</span>
+</div>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left font-data-table text-data-table">
+<thead>
+<tr class="bg-surface-container-low text-outline font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-space-sm px-space-md font-semibold">Fee Component</th>
+<th class="py-space-sm px-space-md font-semibold">Calculation Model</th>
+<th class="py-space-sm px-space-md font-semibold">Application Side</th>
+<th class="py-space-sm px-space-md font-semibold">Configured Value / Logic</th>
+<th class="py-space-sm px-space-md font-semibold text-right">Action</th>
+</tr>
+</thead>
+<tbody class="text-on-surface">
+<!-- 1. Brokerage -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-md bg-surface-container-high text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">account_balance_wallet</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg font-bold">1. Brokerage</span>
+<span class="font-body-sm text-body-sm text-outline">Flat fee discount broker tier</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-label-sm text-label-sm text-on-surface-variant font-mono">percentage_with_cap</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">BOTH (Buy &amp; Sell)</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">₹20.00 <span class="font-label-sm text-label-sm text-outline font-normal">flat cap</span></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Min(0.03%, ₹20) per executed order</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right">
+<button class="p-1 rounded-md text-outline hover:text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</td>
+</tr>
+<!-- 2. STT / CTT -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-md bg-surface-container-high text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">account_balance</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg font-bold">2. STT / CTT</span>
+<span class="font-body-sm text-body-sm text-outline">Securities Transaction Tax</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-label-sm text-label-sm text-on-surface-variant font-mono">percentage_of_premium</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">SELL only</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">0.0625% <span class="font-label-sm text-label-sm text-outline font-normal">on Sell Premium</span></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">0.125% on exercised contracts</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right">
+<button class="p-1 rounded-md text-outline hover:text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</td>
+</tr>
+<!-- 3. Exchange Txn Charge -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-md bg-surface-container-high text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">swap_horiz</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg font-bold">3. Exchange Turnover</span>
+<span class="font-body-sm text-body-sm text-outline">NSE / BSE Infrastructure fee</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-label-sm text-label-sm text-on-surface-variant font-mono">percentage_of_turnover</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">BOTH</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">0.05% <span class="font-label-sm text-label-sm text-outline font-normal">(NSE Options Premium)</span></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">BSE Options: 0.0495% of premium</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right">
+<button class="p-1 rounded-md text-outline hover:text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</td>
+</tr>
+<!-- 4. SEBI Turnover Fee -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-md bg-surface-container-high text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">gavel</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg font-bold">4. SEBI Charges</span>
+<span class="font-body-sm text-body-sm text-outline">Market Regulator statutory</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-label-sm text-label-sm text-on-surface-variant font-mono">percentage_of_turnover</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">BOTH</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">₹10 / crore <span class="font-label-sm text-label-sm text-outline font-normal">(0.0001%)</span></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Applicable on gross premium turnover</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right">
+<button class="p-1 rounded-md text-outline hover:text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</td>
+</tr>
+<!-- 5. GST -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-md bg-surface-container-high text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">receipt_long</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg font-bold">5. GST</span>
+<span class="font-body-sm text-body-sm text-outline">Goods &amp; Services Tax (18%)</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-label-sm text-label-sm text-on-surface-variant font-mono">service_taxable_base</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">BOTH</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">18.0% <span class="font-label-sm text-label-sm text-outline font-normal">on Service Components</span></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Base: Brokerage + Exch Txn + SEBI</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right">
+<button class="p-1 rounded-md text-outline hover:text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</td>
+</tr>
+<!-- 6. Stamp Duty -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-md bg-surface-container-high text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">approval</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg font-bold">6. Stamp Duty</span>
+<span class="font-body-sm text-body-sm text-outline">Indian Stamp Act 2020</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-label-sm text-label-sm text-on-surface-variant font-mono">percentage_of_turnover</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed-dim text-on-primary-fixed font-label-sm text-label-sm font-bold">BUY only</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">0.003% <span class="font-label-sm text-label-sm text-outline font-normal">(₹300 / crore)</span></span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Calculated exclusively on buy premium</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right">
+<button class="p-1 rounded-md text-outline hover:text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</td>
+</tr>
+<!-- 7. Depository (DP) Charges -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-md bg-surface-container text-outline flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">inventory_2</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">7. DP Charges</span>
+<span class="font-body-sm text-body-sm text-outline">CDSL / NSDL debit fee</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-label-sm text-label-sm text-outline font-mono">flat_per_scrip</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-outline font-label-sm text-label-sm font-medium">SELL (Delivery Only)</span>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-outline">₹13.50 + GST <span class="font-label-sm text-label-sm text-outline font-normal">flat</span></span>
+<span class="font-body-sm text-body-sm text-outline">Excluded for Derivative F&amp;O segments</span>
+</div>
+</td>
+<td class="py-3 px-space-md text-right">
+<span class="font-label-sm text-label-sm text-outline italic">N/A in F&amp;O</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Quick Context Bar below table -->
+<div class="p-space-md bg-surface-container-low flex flex-col md:flex-row items-start md:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs font-body-sm text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-tertiary">check_circle</span>
+<span>GST Configuration: Exempts Turnover and STT; binds only to Brokerage + Exch + SEBI.</span>
+</div>
+<button class="font-label-md text-label-md text-primary font-bold hover:underline flex items-center gap-1">
+<span>Export Rule AST (.JSON)</span>
+<span class="material-symbols-outlined text-[16px]">download</span>
+</button>
+</div>
+</div>
+<!-- Interactive Formula Sandbox / Live Tester (4 cols) -->
+<div class="xl:col-span-4 flex flex-col gap-space-md">
+<!-- Interactive Sandbox Card -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[22px]">calculate</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Formula Sandbox</h3>
+</div>
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold bg-surface-container-high px-2 py-0.5 rounded-full">Live Math</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Simulate transactions against the active Zerodha v2.4 rule to preview exact contract note deductions.
+        </p>
+<!-- Sandbox Input Controls -->
+<div class="flex flex-col gap-space-sm pt-space-2xs">
+<div>
+<label class="font-label-sm text-label-sm text-outline font-semibold mb-1 block">Total Premium Turnover (₹)</label>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 font-label-md text-label-md text-outline">₹</span>
+<input class="w-full bg-surface-container-low text-on-surface font-headline-sm text-headline-sm pl-8 pr-space-sm py-2 rounded-lg focus:outline-none focus:bg-surface-container-high transition-colors" id="sim-turnover" type="number" value="12775"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<div>
+<label class="font-label-sm text-label-sm text-outline font-semibold mb-1 block">Executed Orders</label>
+<input class="w-full bg-surface-container-low text-on-surface font-headline-sm text-headline-sm px-space-sm py-2 rounded-lg focus:outline-none focus:bg-surface-container-high transition-colors" id="sim-orders" max="100" min="1" type="number" value="2"/>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-outline font-semibold mb-1 block">Segment</label>
+<div class="w-full bg-surface-container-low text-on-surface font-label-md text-label-md px-space-sm py-2.5 rounded-lg font-bold">
+                Options (F&amp;O)
+              </div>
+</div>
+</div>
+</div>
+<!-- Simulation Math Breakdown -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col gap-space-xs mt-space-2xs">
+<div class="flex items-center justify-between pb-space-2xs">
+<span class="font-label-sm text-label-sm uppercase font-bold text-outline">Cost Breakdown</span>
+<button class="font-label-sm text-label-sm text-primary font-bold hover:underline flex items-center gap-0.5" id="toggle-explain">
+<span>Why this charge?</span>
+<span class="material-symbols-outlined text-[14px]">help</span>
+</button>
+</div>
+<div class="flex justify-between items-center py-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Brokerage (2 orders × ₹20)</span>
+<span class="font-data-table text-data-table font-semibold text-on-surface" id="out-brokerage">₹40.00</span>
+</div>
+<div class="flex justify-between items-center py-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant">STT (0.0625% on Sell leg)</span>
+<span class="font-data-table text-data-table font-semibold text-on-surface" id="out-stt">₹4.22</span>
+</div>
+<div class="flex justify-between items-center py-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Exchange Txn Fee (0.05%)</span>
+<span class="font-data-table text-data-table font-semibold text-on-surface" id="out-exch">₹6.39</span>
+</div>
+<div class="flex justify-between items-center py-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant">SEBI Turnover Fee (₹10/cr)</span>
+<span class="font-data-table text-data-table font-semibold text-on-surface" id="out-sebi">₹0.13</span>
+</div>
+<div class="flex justify-between items-center py-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant">GST (18% on ₹46.52)</span>
+<span class="font-data-table text-data-table font-semibold text-on-surface" id="out-gst">₹8.37</span>
+</div>
+<div class="flex justify-between items-center py-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Stamp Duty (0.003% on Buy)</span>
+<span class="font-data-table text-data-table font-semibold text-on-surface" id="out-stamp">₹0.18</span>
+</div>
+<!-- Total Highlight Box -->
+<div class="mt-space-xs pt-space-xs bg-surface-container-high -mx-space-md -mb-space-md p-space-md rounded-b-xl flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline font-semibold">Total Estimated Regulatory &amp; Brokerage</span>
+<span class="font-label-sm text-label-sm text-primary">Exact Zerodha Settlement Target</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-data-metric-lg text-data-metric-lg text-error font-bold tracking-tight" id="out-total">₹59.29</span>
+</div>
+</div>
+</div>
+<!-- Explanation Modal / Inline Drawer -->
+<div class="hidden p-space-sm rounded-lg bg-surface-container font-body-sm text-body-sm text-on-surface leading-snug" id="math-explainer">
+<div class="flex items-center justify-between font-label-md text-label-md text-primary font-bold mb-1">
+<span>Mathematical Audit Trail</span>
+<span class="cursor-pointer text-outline hover:text-on-surface" id="close-explainer">×</span>
+</div>
+<ul class="flex flex-col gap-1 text-on-surface-variant text-[12px]">
+<li>• <strong>Brokerage:</strong> Min(0.03% × ₹6,387.50, ₹20) = ₹20.00 × 2 orders = ₹40.00.</li>
+<li>• <strong>GST:</strong> 18% × (₹40.00 Brokerage + ₹6.39 Exchange + ₹0.13 SEBI) = 18% × ₹46.52 = ₹8.37.</li>
+<li>• <strong>STT &amp; Stamp Duty:</strong> Calculated on premium half-split (₹6,387.50 each).</li>
+</ul>
+</div>
+<button class="w-full py-2.5 rounded-lg bg-surface-container text-on-surface font-label-lg text-label-lg font-semibold hover:bg-surface-container-high transition-colors flex items-center justify-center gap-space-xs" id="btn-recompute">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+<span>Recalculate Verification Test</span>
+</button>
+</div>
+<!-- Legal Statutory Disclaimer -->
+<div class="p-space-md rounded-xl bg-surface-container-low shadow-sm flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-outline text-[20px] shrink-0 mt-0.5">verified_user</span>
+<div class="flex flex-col gap-1">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Regulatory Disclaimer</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Estimated regulatory and statutory charges. Your broker's official digital contract note is the final legal record for settled fees. TradeDairy syncs contract notes daily via API to reconcile penny deviations.
+          </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Micro-interactions Script -->
+<script>
+    (function initChargeEngine() {
+      const modePreset = document.getElementById('mode-preset');
+      const modeCustom = document.getElementById('mode-custom');
+      const turnoverInput = document.getElementById('sim-turnover');
+      const ordersInput = document.getElementById('sim-orders');
+      const recomputeBtn = document.getElementById('btn-recompute');
+      
+      const outBrokerage = document.getElementById('out-brokerage');
+      const outStt = document.getElementById('out-stt');
+      const outExch = document.getElementById('out-exch');
+      const outSebi = document.getElementById('out-sebi');
+      const outGst = document.getElementById('out-gst');
+      const outStamp = document.getElementById('out-stamp');
+      const outTotal = document.getElementById('out-total');
+
+      const explainer = document.getElementById('math-explainer');
+      const toggleExplain = document.getElementById('toggle-explain');
+      const closeExplainer = document.getElementById('close-explainer');
+
+      // Preset vs Custom Mode toggle
+      if (modePreset && modeCustom) {
+        modePreset.addEventListener('click', () => {
+          modePreset.className = "px-space-sm py-1.5 rounded-md font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-sm font-semibold transition-all";
+          modeCustom.className = "px-space-sm py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all";
+        });
+        modeCustom.addEventListener('click', () => {
+          modeCustom.className = "px-space-sm py-1.5 rounded-md font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-sm font-semibold transition-all";
+          modePreset.className = "px-space-sm py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all";
+        });
+      }
+
+      // Explain Drawer toggle
+      if (toggleExplain && explainer && closeExplainer) {
+        toggleExplain.addEventListener('click', () => {
+          explainer.classList.toggle('hidden');
+        });
+        closeExplainer.addEventListener('click', () => {
+          explainer.classList.add('hidden');
+        });
+      }
+
+      // Live Simulator Math
+      function calculateSimulation() {
+        const turnover = parseFloat(turnoverInput.value) || 0;
+        const orders = parseInt(ordersInput.value, 10) || 1;
+
+        // Half buy, half sell representation for realistic turnover
+        const halfTurnover = turnover / 2;
+
+        // 1. Brokerage: min(0.03%, 20) * orders
+        const brokerage = Math.min((turnover * 0.0003), (20 * orders));
+        
+        // 2. STT: 0.0625% on sell side
+        const stt = halfTurnover * 0.000625;
+
+        // 3. Exchange Txn: 0.05% of total turnover
+        const exch = turnover * 0.0005;
+
+        // 4. SEBI: ₹10 per crore (0.000001 * 10 = 0.00001)
+        const sebi = (turnover / 10000000) * 10;
+
+        // 5. GST: 18% on (Brokerage + Exchange + SEBI)
+        const taxableBase = brokerage + exch + sebi;
+        const gst = taxableBase * 0.18;
+
+        // 6. Stamp Duty: 0.003% on buy side
+        const stamp = halfTurnover * 0.00003;
+
+        const total = brokerage + stt + exch + sebi + gst + stamp;
+
+        outBrokerage.textContent = `₹${brokerage.toFixed(2)}`;
+        outStt.textContent = `₹${stt.toFixed(2)}`;
+        outExch.textContent = `₹${exch.toFixed(2)}`;
+        outSebi.textContent = `₹${sebi.toFixed(2)}`;
+        outGst.textContent = `₹${gst.toFixed(2)}`;
+        outStamp.textContent = `₹${stamp.toFixed(2)}`;
+        outTotal.textContent = `₹${total.toFixed(2)}`;
+      }
+
+      if (turnoverInput && ordersInput) {
+        turnoverInput.addEventListener('input', calculateSimulation);
+        ordersInput.addEventListener('input', calculateSimulation);
+      }
+      if (recomputeBtn) {
+        recomputeBtn.addEventListener('click', calculateSimulation);
+      }
+    })();
+  </script>
+</div></main></div></body></html>
