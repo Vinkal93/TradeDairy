@@ -39,7 +39,7 @@ interface TradeContextType {
   getTradeById: (id: string) => Trade | undefined;
 
   // Account Actions
-  addAccount: (account: Omit<TradingAccount, 'id'>) => void;
+  addAccount: (account: Omit<TradingAccount, 'id'>) => TradingAccount;
   updateAccount: (id: string, updated: Partial<TradingAccount>) => void;
   deleteAccount: (id: string) => void;
 
@@ -327,12 +327,13 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   // Account CRUD Operations
-  const addAccount = (accountData: Omit<TradingAccount, 'id'>) => {
+  const addAccount = (accountData: Omit<TradingAccount, 'id'>): TradingAccount => {
     const newAcc: TradingAccount = {
       ...accountData,
       id: `acc_${Date.now()}`,
     };
     setAccounts(prev => [...prev, newAcc]);
+    return newAcc;
   };
 
   const updateAccount = (id: string, updated: Partial<TradingAccount>) => {
