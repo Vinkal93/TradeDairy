@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useTrades } from '../../context/TradeContext';
 import { UserProfile } from '../../types';
 import { fieldClass } from '../../components/common/ChargeEditor';
 import { ConfirmModal } from '../../components/common/ConfirmModal';
+import { QrScannerModal } from '../../components/common/QrScannerModal';
 
 export default function SettingsPage() {
   const {
@@ -15,10 +16,14 @@ export default function SettingsPage() {
     trades,
     journals,
     eraseAllData,
+    resetDemoData,
     exportTradesCSV,
+    deviceSessions,
+    revokeSession,
+    logoutAllOtherSessions,
   } = useTrades();
 
-  const [tab, setTab] = useState<'profile' | 'risk' | 'data'>('profile');
+  const [tab, setTab] = useState<'profile' | 'risk' | 'sessions' | 'data'>('profile');
   const [name, setName] = useState(user.fullName === 'Trader' ? '' : user.fullName);
   const [alias, setAlias] = useState(user.tradingAlias || '');
   const [currency, setCurrency] = useState(user.baseCurrency);
@@ -28,6 +33,8 @@ export default function SettingsPage() {
   const [risk, setRisk] = useState(user.defaultRiskPerTrade || 0);
   const [notice, setNotice] = useState('');
   const [eraseModalOpen, setEraseModalOpen] = useState(false);
+  const [resetModalOpen, setResetModalOpen] = useState(false);
+  const [scanModalOpen, setScanModalOpen] = useState(false);
 
   const download = (content: string, filename: string, type: string) => {
     const url = URL.createObjectURL(new Blob([content], { type }));
@@ -67,39 +74,52 @@ export default function SettingsPage() {
     }
   };
 
-return (
+  const handleResetConfirm = () => {
+    try {
+      resetDemoData();
+      setResetModalOpen(false);
+      setNotice('Demo data restored successfully.');
+    } catch {
+      setNotice('Could not reset demo data.');
+      setResetModalOpen(false);
+    }
+  };
+
+  return (
     <div className="space-y-4 max-w-4xl mx-auto">
       {/* Title */}
       <div>
-        <h1 className="page-title text-on-surface">Settings & Preferences</h1>
+        <h1 className="page-title text-on-surface">Settings &amp; Ecosystem</h1>
         <p className="text-xs sm:text-[13px] text-on-surface-variant mt-0.5">
-          Configure trader persona, risk limits, broker charges, and data backups.
+          Manage your account profile, risk rules, active login sessions, and data backups.
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="grid grid-cols-3 gap-2" role="tablist" aria-label="Settings sections">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2" role="tablist" aria-label="Settings sections">
         {[
-          ['profile', 'Profile & Persona'],
-          ['risk', 'Risk Shield Limits'],
-          ['data', 'Data & Backups'],
-        ].map(([id, label]) => (
+          ['profile', 'Profile & Persona', 'person'],
+          ['risk', 'Risk Shield Limits', 'shield'],
+          ['sessions', 'Device Sessions', 'devices'],
+          ['data', 'Data & Backups', 'storage'],
+        ].map(([id, label, icon]) => (
           <button
             key={id}
             type="button"
             role="tab"
             aria-selected={tab === id}
             onClick={() => {
-              setTab(id as 'profile' | 'risk' | 'data');
+              setTab(id as 'profile' | 'risk' | 'sessions' | 'data');
               setNotice('');
             }}
-            className={`rounded-lg py-2 px-3 text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
+            className={`rounded-lg py-2 px-2.5 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
               tab === id
-                ? 'bg-primary/10 text-primary border border-primary/20'
+                ? 'bg-primary/10 text-primary border border-primary/20 shadow-xs'
                 : 'bg-white border border-surface-container text-on-surface-variant hover:bg-surface-container-low'
             }`}
           >
-            {label}
+            <span className="material-symbols-outlined text-[16px]">{icon}</span>
+            <span className="truncate">{label}</span>
           </button>
         ))}
       </div>
@@ -111,119 +131,74 @@ return (
         </div>
       )}
 
-      {tab !== 'data' ? (
+      {/* TAB 1: PROFILE */}
+      {tab === 'profile' && (
         <form className="card space-y-4" onSubmit={save}>
-          {tab === 'profile' ? (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <label className="field-label">
-                  Your Full Name
-                  <input
-                    className={fieldClass}
-                    required
-                    value={name}
-                    placeholder="e.g. Vinkal Prajapati"
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </label>
-                <label className="field-label">
-                  Trading Alias (Optional)
-                  <input
-                    className={fieldClass}
-                    value={alias}
-                    placeholder="e.g. ScalpMaster"
-                    onChange={(e) => setAlias(e.target.value)}
-                  />
-                </label>
-                <label className="field-label">
-                  Base Currency
-                  <select
-                    className={fieldClass}
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value as UserProfile['baseCurrency'])}
-                  >
-                    {['INR', 'USD', 'EUR', 'GBP'].map((c) => (
-                      <option key={c}>{c}</option>
-                    ))}
-                  </select>
-                </label>
-                <label className="field-label">
-                  Experience Level
-                  <select
-                    className={fieldClass}
-                    value={experience}
-                    onChange={(e) => setExperience(e.target.value as UserProfile['experience'])}
-                  >
-                    <option value="beginner">Beginner (&lt; 1 Year)</option>
-                    <option value="intermediate">Intermediate (1 - 3 Years)</option>
-                    <option value="advanced">Advanced (3+ Years)</option>
-                  </select>
-                </label>
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <label className="field-label">
+              Your Full Name
+              <input
+                className={fieldClass}
+                required
+                value={name}
+                placeholder="e.g. Vinkal Prajapati"
+                onChange={(e) => setName(e.target.value)}
+              />
+            </label>
+            <label className="field-label">
+              Trading Alias (Optional)
+              <input
+                className={fieldClass}
+                value={alias}
+                placeholder="e.g. ScalpMaster"
+                onChange={(e) => setAlias(e.target.value)}
+              />
+            </label>
+            <label className="field-label">
+              Base Currency
+              <select
+                className={fieldClass}
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value as UserProfile['baseCurrency'])}
+              >
+                {['INR', 'USD', 'EUR', 'GBP'].map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
+              </select>
+            </label>
+            <label className="field-label">
+              Experience Level
+              <select
+                className={fieldClass}
+                value={experience}
+                onChange={(e) => setExperience(e.target.value as UserProfile['experience'])}
+              >
+                <option value="beginner">Beginner (&lt; 1 Year)</option>
+                <option value="intermediate">Intermediate (1 - 3 Years)</option>
+                <option value="advanced">Advanced (3+ Years)</option>
+              </select>
+            </label>
+          </div>
 
-              <div className="p-2.5 rounded-lg bg-surface-container-low/70 border border-surface-container text-xs text-on-surface-variant flex items-center justify-between">
-                <span>
-                  {user.email ? `Signed-in Email: ${user.email}` : 'Local Browser Workspace'}
-                </span>
-                <Link href="/login" className="text-primary font-bold hover:underline">
-                  {user.isLoggedIn ? 'Account Status' : 'Sign in / Switch'}
-                </Link>
-              </div>
+          <div className="p-2.5 rounded-lg bg-surface-container-low/70 border border-surface-container text-xs text-on-surface-variant flex items-center justify-between">
+            <span>
+              {user.email ? `Signed-in Email: ${user.email}` : 'Local Browser Workspace'}
+            </span>
+            <Link href="/login" className="text-primary font-bold hover:underline">
+              {user.isLoggedIn ? 'Account Status' : 'Sign in / Switch'}
+            </Link>
+          </div>
 
-              <div className="flex flex-wrap gap-2.5 pt-1">
-                <Link href="/accounts" className="btn-secondary text-xs py-1.5 px-3">
-                  <span className="material-symbols-outlined text-[15px]">account_balance</span>
-                  <span>Manage Trading Accounts</span>
-                </Link>
-                <Link href="/settings/charges" className="btn-secondary text-xs py-1.5 px-3">
-                  <span className="material-symbols-outlined text-[15px]">calculate</span>
-                  <span>Broker Charges Rules</span>
-                </Link>
-              </div>
-            </>
-          ) : (
-            <>
-              <p className="text-xs text-on-surface-variant">
-                Set strict risk parameters to protect capital. Setting 0 disables the limit.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <label className="field-label">
-                  Daily Maximum Loss ({currency})
-                  <input
-                    className={fieldClass}
-                    type="number"
-                    min="0"
-                    step="100"
-                    value={loss}
-                    onChange={(e) => setLoss(Number(e.target.value))}
-                  />
-                </label>
-                <label className="field-label">
-                  Max Trades Per Day
-                  <input
-                    className={fieldClass}
-                    type="number"
-                    min="0"
-                    step="1"
-                    value={limit}
-                    onChange={(e) => setLimit(Number(e.target.value))}
-                  />
-                </label>
-                <label className="field-label">
-                  Default Risk Per Trade (%)
-                  <input
-                    className={fieldClass}
-                    type="number"
-                    min="0"
-                    max="100"
-                    step="0.1"
-                    value={risk}
-                    onChange={(e) => setRisk(Number(e.target.value))}
-                  />
-                </label>
-              </div>
-            </>
-          )}
+          <div className="flex flex-wrap gap-2.5 pt-1">
+            <Link href="/accounts" className="btn-secondary text-xs py-1.5 px-3">
+              <span className="material-symbols-outlined text-[15px]">account_balance</span>
+              <span>Manage Trading Accounts</span>
+            </Link>
+            <Link href="/settings/charges" className="btn-secondary text-xs py-1.5 px-3">
+              <span className="material-symbols-outlined text-[15px]">calculate</span>
+              <span>Broker Charges Rules</span>
+            </Link>
+          </div>
 
           <div className="pt-2 border-t border-surface-container/60">
             <button type="submit" className="btn-primary text-xs py-2 px-4">
@@ -232,9 +207,168 @@ return (
             </button>
           </div>
         </form>
-      ) : (
+      )}
+
+      {/* TAB 2: RISK LIMITS */}
+      {tab === 'risk' && (
+        <form className="card space-y-4" onSubmit={save}>
+          <p className="text-xs text-on-surface-variant">
+            Set strict risk parameters to protect capital. Setting 0 disables the limit.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <label className="field-label">
+              Daily Maximum Loss ({currency})
+              <input
+                className={fieldClass}
+                type="number"
+                min="0"
+                step="100"
+                value={loss}
+                onChange={(e) => setLoss(Number(e.target.value))}
+              />
+            </label>
+            <label className="field-label">
+              Max Trades Per Day
+              <input
+                className={fieldClass}
+                type="number"
+                min="0"
+                step="1"
+                value={limit}
+                onChange={(e) => setLimit(Number(e.target.value))}
+              />
+            </label>
+            <label className="field-label">
+              Default Risk Per Trade (%)
+              <input
+                className={fieldClass}
+                type="number"
+                min="0"
+                max="100"
+                step="0.1"
+                value={risk}
+                onChange={(e) => setRisk(Number(e.target.value))}
+              />
+            </label>
+          </div>
+
+          <div className="pt-2 border-t border-surface-container/60">
+            <button type="submit" className="btn-primary text-xs py-2 px-4">
+              <span className="material-symbols-outlined text-[16px]">save</span>
+              <span>Save Risk Limits</span>
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* TAB 3: ACTIVE DEVICE SESSIONS & QR LINKING */}
+      {tab === 'sessions' && (
         <div className="space-y-3.5">
-          {/* Export section */}
+          <section className="card space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-surface-container/60">
+              <div>
+                <h2 className="section-title flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-primary text-[18px]">devices</span>
+                  <span>Active Login Sessions</span>
+                </h2>
+                <p className="text-xs text-on-surface-variant mt-0.5">
+                  Devices currently signed into your TradeDairy account with real-time sync.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setScanModalOpen(true)}
+                  className="btn-primary text-xs py-1.5 px-3 flex items-center gap-1.5"
+                >
+                  <span className="material-symbols-outlined text-[16px]">qr_code_scanner</span>
+                  <span>Scan to Authorize PC</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    logoutAllOtherSessions();
+                    setNotice('All other device sessions have been revoked.');
+                  }}
+                  className="btn-secondary text-xs py-1.5 px-3 text-error border-error/30 hover:bg-error-container/20"
+                >
+                  Log Out Other Devices
+                </button>
+              </div>
+            </div>
+
+            {/* Sessions List */}
+            <div className="divide-y divide-surface-container/60">
+              {deviceSessions.map((s) => (
+                <div key={s.id} className="py-3 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                        s.isCurrent ? 'bg-primary/10 text-primary' : 'bg-surface-container text-outline'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-[20px]">
+                        {s.deviceType === 'mobile'
+                          ? 'smartphone'
+                          : s.deviceType === 'tablet'
+                          ? 'tablet'
+                          : 'computer'}
+                      </span>
+                    </div>
+
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs sm:text-sm font-bold text-on-surface truncate">
+                          {s.deviceName}
+                        </span>
+                        {s.isCurrent && (
+                          <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-primary/10 text-primary">
+                            This Device • Active Now
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-outline mt-0.5">
+                        {s.location} • IP: {s.ip} • Last active: {s.lastActive}
+                      </p>
+                    </div>
+                  </div>
+
+                  {!s.isCurrent && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        revokeSession(s.id);
+                        setNotice(`Session for ${s.deviceName} revoked.`);
+                      }}
+                      className="btn-secondary text-xs py-1 px-2.5 h-7 text-error hover:bg-error-container/30 border-error/30"
+                    >
+                      Revoke
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Cross-Device Sync Info */}
+          <div className="p-3.5 rounded-xl bg-surface-container-low/70 border border-surface-container/60 space-y-1.5">
+            <h3 className="text-xs font-bold text-on-surface flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-primary text-[16px]">sync</span>
+              <span>Real-Time Device Ecosystem Active</span>
+            </h3>
+            <p className="text-[11px] text-on-surface-variant leading-relaxed">
+              When you record a trade or write a journal entry on any device, it is synchronized
+              instantly across all your signed-in browsers and phones without needing a manual refresh.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 4: DATA & BACKUPS */}
+      {tab === 'data' && (
+        <div className="space-y-3.5">
           <section className="card space-y-3">
             <h2 className="section-title flex items-center gap-1.5">
               <span className="material-symbols-outlined text-primary text-[18px]">download</span>
@@ -243,7 +377,8 @@ return (
             <p className="text-xs text-on-surface-variant">
               {trades.length} trades recorded • {accounts.length} demat accounts •{' '}
               {Object.keys(journals).length} daily journal reflections. Data is stored safely on your
-              device.
+              device and mapped to account{' '}
+              <strong className="text-on-surface">{user.email || 'Local Trader'}</strong>.
             </p>
             <div className="flex flex-wrap gap-2.5">
               <button
@@ -297,8 +432,8 @@ return (
               <span>Danger Zone (Erase Data)</span>
             </h2>
             <p className="text-xs text-on-surface-variant">
-              Permanently erase all trade logs and daily reflections from this browser, or reset to
-              sample demo trades. Make sure to download a backup above first.
+              Permanently erase all trade logs and daily reflections for this user from this browser,
+              or reset to sample demo trades. Make sure to download a backup above first.
             </p>
 
             <div className="flex flex-wrap gap-2.5 pt-1">
@@ -311,7 +446,14 @@ return (
                 <span>Delete All Trades &amp; Journals</span>
               </button>
 
-              
+              <button
+                type="button"
+                className="btn-secondary text-on-surface hover:bg-surface-container-low text-xs py-1.5 px-3"
+                onClick={() => setResetModalOpen(true)}
+              >
+                <span className="material-symbols-outlined text-[16px]">restart_alt</span>
+                <span>Reset to Sample Trades</span>
+              </button>
             </div>
           </section>
         </div>
@@ -329,7 +471,7 @@ return (
               <strong className="text-on-surface">
                 {Object.keys(journals).length} daily journals
               </strong>{' '}
-              from this device?
+              for <strong className="text-on-surface">{user.email || 'this profile'}</strong>?
             </p>
             <p className="mt-2 text-xs text-error font-medium">
               This action cannot be undone. Make sure you have exported a JSON backup first.
@@ -343,7 +485,25 @@ return (
       />
 
       {/* Custom Reset Confirmation Modal */}
-      
+      <ConfirmModal
+        isOpen={resetModalOpen}
+        title="Reset to Sample Demo Trades"
+        message={
+          <div>
+            <p>
+              This will replace any current local data with sample verified trades, Zerodha/Groww
+              demat accounts, and journal entries.
+            </p>
+          </div>
+        }
+        confirmText="Reset to Demo"
+        confirmVariant="primary"
+        onConfirm={handleResetConfirm}
+        onClose={() => setResetModalOpen(false)}
+      />
+
+      {/* Qr Scanner Modal for Phone to PC Auth */}
+      <QrScannerModal isOpen={scanModalOpen} onClose={() => setScanModalOpen(false)} />
     </div>
   );
 }

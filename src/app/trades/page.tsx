@@ -102,12 +102,13 @@ function TradeLog() {
   };
 
   return (
-    <div className="space-y-3.5 sm:space-y-4">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5">
+      <div className="card flex flex-wrap items-center justify-between gap-5">
         <div>
-          <h1 className="page-title text-on-surface">Recorded Trades</h1>
-          <p className="text-xs sm:text-[13px] text-on-surface-variant mt-0.5">
+          <p className="text-xs font-semibold tracking-wider text-primary mb-3">TRADING LEDGER</p>
+          <h1 className="page-title text-on-surface">Trade Log &amp; History</h1>
+          <p className="text-sm text-on-surface-variant mt-3">
             Search, filter, review contract notes, or export your execution journal.
           </p>
         </div>
@@ -134,7 +135,7 @@ function TradeLog() {
       <TradeFilters />
 
       {/* Filter & Search Bar */}
-      <section className="card space-y-3 py-3 px-3.5">
+      <section className="card space-y-5">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
           <label className="field-label">
             Search
@@ -199,6 +200,7 @@ function TradeLog() {
       </section>
 
       {/* Trade Cards Grid */}
+      {!!displayed.length && <div className="hidden lg:block card !p-0 overflow-hidden"><div className="overflow-x-auto"><table className="w-full text-sm text-left min-w-[900px]"><thead className="bg-surface-container-low text-on-surface-variant text-xs uppercase tracking-wide"><tr>{['Date & time','Instrument','Side','Qty','Entry','Exit','Net P&L','ROI','Setup','Actions'].map(label => <th className="px-5 py-5 font-medium" key={label}>{label}</th>)}</tr></thead><tbody className="divide-y divide-surface-container">{displayed.map(t => { const currency = accounts.find(a => a.id === t.accountId)?.currency || user.baseCurrency; return <tr key={t.id} className="hover:bg-surface-container-low/30"><td className="px-5 py-5 whitespace-nowrap"><p className="font-medium">{formatDate(t.date)}</p><p className="text-xs text-outline mt-1">{t.entryTime}</p></td><td className="px-5 py-5"><Link className="font-semibold hover:text-primary" href={`/trades/${t.id}`}>{t.instrument}</Link><p className="text-xs text-outline mt-1">{t.assetClass} · {t.accountName}</p></td><td className="px-5 py-5"><span className={`rounded-full px-2 py-1 text-xs ${t.side === 'BUY' ? 'bg-primary/10 text-primary' : 'bg-error/10 text-error'}`}>{t.side}</span></td><td className="px-5 py-5">{t.quantity}</td><td className="px-5 py-5 whitespace-nowrap">{formatCurrency(t.entryPrice,currency)}</td><td className="px-5 py-5 whitespace-nowrap">{t.exitPrice ? formatCurrency(t.exitPrice,currency) : '—'}</td><td className={`px-5 py-5 whitespace-nowrap font-semibold ${t.netPnl < 0 ? 'text-error' : 'text-primary'}`}>{t.status === 'OPEN' ? 'Open' : formatCurrency(t.netPnl,currency,true)}</td><td className="px-5 py-5">{t.status === 'CLOSED' ? `${t.roi}%` : '—'}</td><td className="px-5 py-5">{t.setup || '—'}</td><td className="px-5 py-5"><div className="flex gap-3"><Link href={`/trades/${t.id}`} aria-label={`View ${t.instrument}`}><span className="material-symbols-outlined text-xl">visibility</span></Link><Link href={`/add-trade?edit=${encodeURIComponent(t.id)}`} aria-label={`Edit ${t.instrument}`}><span className="material-symbols-outlined text-xl">edit</span></Link><button type="button" onClick={() => setTradeToDelete(t)} aria-label={`Delete ${t.instrument}`}><span className="material-symbols-outlined text-xl text-outline">delete</span></button></div></td></tr>;})}</tbody></table></div></div>}
       {!displayed.length ? (
         <div className="card text-center py-10 space-y-2.5">
           <span className="material-symbols-outlined text-[36px] text-outline/50">search_off</span>
@@ -211,7 +213,7 @@ function TradeLog() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5 sm:gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:hidden gap-4">
           {displayed.map((t) => {
             const acc = accounts.find((a) => a.id === t.accountId);
             const currency = acc?.currency || user.baseCurrency;

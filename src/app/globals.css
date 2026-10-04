@@ -4,27 +4,27 @@
 
 @layer base {
   html {
-    font-size: 13.5px;
+    font-size: 16px;
     -webkit-text-size-adjust: 100%;
   }
   @media (min-width: 1024px) {
     html {
-      font-size: 13.75px;
+      font-size: 16px;
     }
   }
   @media (min-width: 1440px) {
     html {
-      font-size: 14px;
+      font-size: 16px;
     }
   }
   @media (min-width: 1920px) {
     html {
-      font-size: 14.5px;
+      font-size: 16px;
     }
   }
   @media (max-width: 639px) {
     html {
-      font-size: 14px;
+      font-size: 15px;
     }
   }
 
@@ -55,29 +55,39 @@
 
 @layer components {
   .card {
-    @apply bg-white rounded-xl border border-surface-container/80 p-3 sm:p-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)];
+    @apply bg-white rounded-2xl border border-surface-container/80 p-5 sm:p-6 lg:p-7 shadow-[0_2px_5px_rgba(24,39,75,0.03)];
   }
   .page-title {
-    font-size: clamp(1.15rem, 0.95rem + 0.8vw, 1.55rem);
+    font-size: clamp(1.5rem, 1.1rem + 1.1vw, 2.25rem);
     line-height: 1.25;
     font-weight: 700;
     letter-spacing: -.025em;
   }
   .section-title {
-    @apply text-sm sm:text-base font-semibold text-on-surface tracking-tight;
+    @apply text-base sm:text-lg font-semibold text-on-surface tracking-tight;
   }
   .field-label {
     @apply flex flex-col gap-1.5 text-xs font-medium text-on-surface-variant;
   }
   .btn-primary {
     @apply rounded-lg bg-primary text-white px-3.5 py-2 text-xs sm:text-sm font-semibold hover:bg-primary-hover active:scale-[0.99] transition-all shadow-sm inline-flex items-center justify-center gap-1.5 cursor-pointer;
-    min-height: 38px;
+    min-height: 46px;
   }
   .btn-secondary {
     @apply rounded-lg border border-surface-container bg-white px-3.5 py-2 text-xs sm:text-sm font-medium text-on-surface hover:bg-surface-container-low active:scale-[0.99] transition-all inline-flex items-center justify-center gap-1.5 cursor-pointer;
-    min-height: 38px;
+    min-height: 46px;
   }
 }
+
+.dashboard-hero { padding: clamp(1.25rem, 2.5vw, 2.25rem); background: linear-gradient(115deg, #fff 65%, #f4f8f7); }
+.dashboard-metric { min-height: 190px; }
+.comfortable-compact .dashboard-hero { padding: 1.5rem; }
+.comfortable-compact .dashboard-metric { min-height: 175px; }
+.metric-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: .875rem; color: #52635b; }
+.metric-heading h2 { text-transform: uppercase; letter-spacing: .045em; font-weight: 500; }
+.metric-value { font-size: clamp(2rem, 2.8vw, 2.75rem); font-weight: 650; letter-spacing: -.035em; line-height: 1.15; margin-top: 20px; font-variant-numeric: tabular-nums; }
+.metric-footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; font-size: .8125rem; color: #617168; }
+@media (max-width: 639px) { .dashboard-metric { min-height: 170px; } .metric-footer { flex-wrap: wrap; } }
 
 @media (max-width: 639px) {
   .btn-primary, .btn-secondary { min-height: 44px; }

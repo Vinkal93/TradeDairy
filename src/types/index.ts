@@ -111,6 +111,20 @@ export interface UserProfile {
   isLoggedIn: boolean;
   isOnboarded: boolean;
   plan: 'Free' | 'Pro';
+  activeSessions?: DeviceSession[];
+}
+
+export interface DeviceSession {
+  id: string;
+  deviceName: string;
+  browser: string;
+  os: string;
+  deviceType: 'desktop' | 'mobile' | 'tablet';
+  ip: string;
+  location: string;
+  isCurrent: boolean;
+  lastActive: string;
+  createdAt: string;
 }
 
 export interface AnalyticsSummary {

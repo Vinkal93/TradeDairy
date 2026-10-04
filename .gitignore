@@ -10,6 +10,8 @@
 /.next/
 /.next-verify/
 /.next-mobile/
+/.next-final/
+/.next-design/
 /out/
 
 # production
@@ -18,6 +20,7 @@
 # misc
 .DS_Store
 *.pem
+/artifacts/
 
 # debug
 npm-debug.log*

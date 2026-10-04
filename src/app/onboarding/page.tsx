@@ -14,7 +14,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1), [name, setName] = useState(user.fullName === 'Trader' ? '' : user.fullName);
   const [currency, setCurrency] = useState(user.baseCurrency), [experience, setExperience] = useState(user.experience);
   const [error, setError] = useState('');
-  const finish = () => { try { updateUser({ isOnboarded: true }); router.push('/'); } catch { setError('Could not save setup. Enable browser storage and retry.'); } };
+  const finish = () => { try { updateUser({ isOnboarded: true, isLoggedIn: true }); router.push('/'); } catch { setError('Could not save setup. Enable browser storage and retry.'); } };
   return <div className="min-h-dvh bg-background px-4 py-6"><header className="max-w-2xl mx-auto flex items-center justify-between gap-3"><BrandLogo /><Link href="/login" className="text-sm text-primary">Sign in</Link></header>
     <main className="max-w-2xl mx-auto mt-10 space-y-5"><div><p className="text-sm text-primary mb-2">Step {step} of 2</p><h1 className="page-title">{step === 1 ? 'Make this journal yours' : 'Add your trading account'}</h1><p className="text-sm text-on-surface-variant mt-2">{step === 1 ? 'Start with your name and currency. You can change these anytime.' : 'Set your broker and brokerage. Login details are optional.'}</p></div>
       {error && <p role="alert" className="text-error text-sm">{error}</p>}

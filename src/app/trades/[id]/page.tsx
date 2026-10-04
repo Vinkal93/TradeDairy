@@ -197,7 +197,7 @@ export default function TradeDetailsPage() {
                 ['Exchange Turnover Charges', t.chargeBreakdown.exchange],
                 ['SEBI Turnover Charges', t.chargeBreakdown.sebi],
                 ['Stamp Duty', t.chargeBreakdown.stamp],
-                ['GST (18%)', t.chargeBreakdown.gst],
+                ['GST', t.chargeBreakdown.gst],
                 ['DP Charges (Delivery)', t.chargeBreakdown.dp],
                 ['Other / Misc Fees', t.chargeBreakdown.other],
               ].map(([label, value]) => (
