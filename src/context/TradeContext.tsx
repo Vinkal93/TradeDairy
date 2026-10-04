@@ -8,7 +8,7 @@ import {
   UserProfile,
   AnalyticsSummary,
 } from '../types';
-import { INITIAL_USER, INITIAL_ACCOUNTS, INITIAL_TRADES, INITIAL_JOURNAL } from '../lib/seedData';
+import { INITIAL_USER as DEMO_USER, INITIAL_ACCOUNTS as DEMO_ACCOUNTS, INITIAL_TRADES as DEMO_TRADES, INITIAL_JOURNAL as DEMO_JOURNAL } from '../lib/seedData';
 import { onFirebaseAuthStateChange, logoutFirebase } from '../lib/firebase';
 import { matchesTimeframe } from '../lib/dates';
 import { csvCell, parseCSV } from '../lib/csv';
@@ -56,6 +56,7 @@ interface TradeContextType {
   
   // Loading state
   isLoaded: boolean;
+  storageError: string;
 
   // Import/Export
   exportTradesCSV: () => string;
@@ -71,16 +72,26 @@ const STORAGE_KEYS = {
   JOURNALS: 'tradedairy_journals',
 };
 
+const EMPTY_USER: UserProfile = {
+  id: 'local-user', fullName: 'Trader', email: '', tradingAlias: '', experience: 'beginner',
+  primaryMarket: 'Indian Markets (NSE / BSE)', baseCurrency: 'INR', activeStyles: [],
+  dailyMaxLoss: 0, dailyMaxTrades: 0, defaultRiskPerTrade: 0, avatar: '',
+  isLoggedIn: false, isOnboarded: false, plan: 'Free',
+};
+
 export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserProfile>(INITIAL_USER);
-  const [accounts, setAccounts] = useState<TradingAccount[]>(INITIAL_ACCOUNTS);
-  const [trades, setTrades] = useState<Trade[]>(INITIAL_TRADES);
-  const [journals, setJournals] = useState<Record<string, DailyJournal>>({
-    [INITIAL_JOURNAL.date]: INITIAL_JOURNAL,
-  });
+  const [user, setUser] = useState<UserProfile>(EMPTY_USER);
+  const [accounts, setAccounts] = useState<TradingAccount[]>([]);
+  const [trades, setTrades] = useState<Trade[]>([]);
+  const [journals, setJournals] = useState<Record<string, DailyJournal>>({});
   const [selectedTimeframe, setTimeframe] = useState<TimeframeFilter>('All Time');
   const [selectedAccount, setSelectedAccount] = useState<string>('ALL');
   const [isLoaded, setIsLoaded] = useState(false);
+  const [storageError, setStorageError] = useState('');
+  const persist = (key: string, value: unknown) => {
+    try { localStorage.setItem(key, JSON.stringify(value)); }
+    catch (error) { setStorageError('Your changes could not be saved. Browser storage may be full or disabled. Export a backup before closing this tab.'); throw error; }
+  };
 
   // Load state from localStorage on initial client mount
   useEffect(() => {
@@ -90,12 +101,27 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const storedTrades = localStorage.getItem(STORAGE_KEYS.TRADES);
       const storedJournals = localStorage.getItem(STORAGE_KEYS.JOURNALS);
 
-      if (storedUser) setUser(JSON.parse(storedUser));
-      if (storedAccounts) setAccounts(JSON.parse(storedAccounts));
-      if (storedTrades) setTrades(JSON.parse(storedTrades));
-      if (storedJournals) setJournals(JSON.parse(storedJournals));
+      const loadedUser = storedUser ? JSON.parse(storedUser) : EMPTY_USER;
+      const loadedAccounts: TradingAccount[] = storedAccounts ? JSON.parse(storedAccounts) : [];
+      const loadedTrades: Trade[] = storedTrades ? JSON.parse(storedTrades) : [];
+      const loadedJournals: Record<string, DailyJournal> = storedJournals ? JSON.parse(storedJournals) : {};
+      if (!Array.isArray(loadedAccounts) || !Array.isArray(loadedTrades) || !loadedUser || !loadedJournals || Array.isArray(loadedJournals)) throw new Error('Invalid saved workspace');
+      localStorage.setItem('tradedairy_storage_probe', '1'); localStorage.removeItem('tradedairy_storage_probe');
+      // Only unchanged sample records are removed. Edited records and their accounts survive.
+      if (!localStorage.getItem('tradedairy_real_data_v1')) {
+        const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+        const realTrades = loadedTrades.filter(t => !DEMO_TRADES.some(d => same(t, d)));
+        const usedAccounts = new Set(realTrades.map(t => t.accountId));
+        const realAccounts = loadedAccounts.filter(a => usedAccounts.has(a.id) || !DEMO_ACCOUNTS.some(d => same(a, d)));
+        if (same(loadedJournals[DEMO_JOURNAL.date], DEMO_JOURNAL)) delete loadedJournals[DEMO_JOURNAL.date];
+        persist(STORAGE_KEYS.TRADES, realTrades); persist(STORAGE_KEYS.ACCOUNTS, realAccounts); persist(STORAGE_KEYS.JOURNALS, loadedJournals);
+        setTrades(realTrades); setAccounts(realAccounts); localStorage.setItem('tradedairy_real_data_v1', '1');
+      } else { setAccounts(loadedAccounts); setTrades(loadedTrades); }
+      setUser(loadedUser.id === DEMO_USER.id && !loadedUser.isLoggedIn ? EMPTY_USER : { ...EMPTY_USER, ...loadedUser });
+      setJournals(loadedJournals);
     } catch (err) {
       console.error('Failed to load TradeDairy data from localStorage', err);
+      setStorageError('Saved workspace could not be loaded. Stored data has not been overwritten. Check browser storage before making changes.');
     } finally {
       setIsLoaded(true);
     }
@@ -119,7 +145,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Save changes to localStorage
   useEffect(() => {
-    if (!isLoaded) return;
+    if (!isLoaded || storageError) return;
     try {
       localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
       localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
@@ -127,6 +153,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       localStorage.setItem(STORAGE_KEYS.JOURNALS, JSON.stringify(journals));
     } catch (err) {
       console.error('Failed to save TradeDairy data to localStorage', err);
+      setStorageError('Browser storage is full or disabled. Export a backup before closing this tab.');
     }
   }, [user, accounts, trades, journals, isLoaded]);
 
@@ -166,13 +193,13 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       netRealizedPnl += pnl;
       totalCharges += t.charges || 0;
 
-      if (t.grossPnl > 0) {
+      if (pnl > 0) {
         winningTrades++;
-        totalGrossProfit += t.grossPnl;
+        totalGrossProfit += pnl;
         if (pnl > largestWin) largestWin = pnl;
-      } else if (t.grossPnl < 0) {
+      } else if (pnl < 0) {
         losingTrades++;
-        totalGrossLoss += t.grossPnl;
+        totalGrossLoss += pnl;
         if (pnl < largestLoss) largestLoss = pnl;
       } else {
         breakevenTrades++;
@@ -188,7 +215,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     const winRate = totalTrades > 0 ? (winningTrades / totalTrades) * 100 : 0;
     const absGrossLoss = Math.abs(totalGrossLoss);
-    const profitFactor = absGrossLoss > 0 ? totalGrossProfit / absGrossLoss : totalGrossProfit > 0 ? 2.5 : 0;
+    const profitFactor = absGrossLoss > 0 ? totalGrossProfit / absGrossLoss : totalGrossProfit > 0 ? Infinity : 0;
     const avgWin = winningTrades > 0 ? totalGrossProfit / winningTrades : 0;
     const avgLoss = losingTrades > 0 ? absGrossLoss / losingTrades : 0;
     const lossRate = totalTrades > 0 ? (losingTrades / totalTrades) * 100 : 0;
@@ -215,6 +242,10 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (bestDay.pnl === -Infinity) bestDay = { date: 'None', pnl: 0, tradesCount: 0 };
     if (worstDay.pnl === Infinity) worstDay = { date: 'None', pnl: 0, tradesCount: 0 };
 
+    let equity = 0, peak = 0, maxDrawdown = 0;
+    [...closedTrades].sort((a, b) => `${a.date} ${a.exitTime || a.entryTime}`.localeCompare(`${b.date} ${b.exitTime || b.entryTime}`)).forEach(t => {
+      equity += t.netPnl; peak = Math.max(peak, equity); maxDrawdown = Math.max(maxDrawdown, peak - equity);
+    });
     return {
       totalTrades,
       winningTrades,
@@ -230,7 +261,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       avgLoss: Math.round(avgLoss),
       largestWin,
       largestLoss,
-      maxDrawdown: Math.abs(worstDay.pnl),
+      maxDrawdown,
       expectancy: Math.round(expectancy),
       bestDay,
       worstDay,
@@ -244,7 +275,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const intradayEquityCurve = useMemo(() => {
     let runningCumulative = 0;
     // Sort chronological
-    const sorted = [...filteredTrades].sort((a, b) => {
+    const sorted = filteredTrades.filter(t => t.status === 'CLOSED').sort((a, b) => {
       const dateCompare = a.date.localeCompare(b.date);
       if (dateCompare !== 0) return dateCompare;
       return (a.entryTime || '').localeCompare(b.entryTime || '');
@@ -264,6 +295,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const setupStats = useMemo(() => {
     const map: Record<string, { count: number; wins: number; pnl: number }> = {};
     filteredTrades.forEach(t => {
+      if (t.status !== 'CLOSED') return;
       const s = t.setup || 'General';
       if (!map[s]) map[s] = { count: 0, wins: 0, pnl: 0 };
       map[s].count++;
@@ -310,15 +342,18 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       createdAt: new Date().toISOString(),
     };
 
+    persist(STORAGE_KEYS.TRADES, [newTrade, ...trades]);
     setTrades(prev => [newTrade, ...prev]);
     return newTrade;
   };
 
   const updateTrade = (id: string, updated: Partial<Trade>) => {
+    persist(STORAGE_KEYS.TRADES, trades.map(t => t.id === id ? { ...t, ...updated } : t));
     setTrades(prev => prev.map(t => (t.id === id ? { ...t, ...updated } : t)));
   };
 
   const deleteTrade = (id: string) => {
+    persist(STORAGE_KEYS.TRADES, trades.filter(t => t.id !== id));
     setTrades(prev => prev.filter(t => t.id !== id));
   };
 
@@ -330,17 +365,21 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const addAccount = (accountData: Omit<TradingAccount, 'id'>): TradingAccount => {
     const newAcc: TradingAccount = {
       ...accountData,
-      id: `acc_${Date.now()}`,
+      id: `acc_${crypto.randomUUID()}`,
     };
+    persist(STORAGE_KEYS.ACCOUNTS, [...accounts, newAcc]);
     setAccounts(prev => [...prev, newAcc]);
     return newAcc;
   };
 
   const updateAccount = (id: string, updated: Partial<TradingAccount>) => {
+    persist(STORAGE_KEYS.ACCOUNTS, accounts.map(a => a.id === id ? { ...a, ...updated } : a));
     setAccounts(prev => prev.map(a => (a.id === id ? { ...a, ...updated } : a)));
   };
 
   const deleteAccount = (id: string) => {
+    if (trades.some(t => t.accountId === id)) throw new Error('Archive accounts with trades to preserve history.');
+    persist(STORAGE_KEYS.ACCOUNTS, accounts.filter(a => a.id !== id));
     setAccounts(prev => prev.filter(a => a.id !== id));
     setSelectedAccount(prev => prev === id ? 'ALL' : prev);
   };
@@ -351,6 +390,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const saveJournal = (journal: DailyJournal) => {
+    persist(STORAGE_KEYS.JOURNALS, { ...journals, [journal.date]: journal });
     setJournals(prev => ({
       ...prev,
       [journal.date]: journal,
@@ -359,6 +399,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // User & Auth Operations
   const updateUser = (profile: Partial<UserProfile>) => {
+    persist(STORAGE_KEYS.USER, { ...user, ...profile });
     setUser(prev => ({ ...prev, ...profile }));
   };
 
@@ -385,13 +426,10 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const resetDemoData = () => {
-    setUser({ ...INITIAL_USER, isLoggedIn: true, isOnboarded: true });
-    setAccounts(INITIAL_ACCOUNTS);
-    setTrades(INITIAL_TRADES);
-    setJournals({ [INITIAL_JOURNAL.date]: INITIAL_JOURNAL });
+    setTrades([]); setJournals({});
     setTimeframe('All Time');
     setSelectedAccount('ALL');
-    Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
+    persist(STORAGE_KEYS.TRADES, []); persist(STORAGE_KEYS.JOURNALS, {});
   };
 
   const eraseAllData = () => {
@@ -517,6 +555,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
 
       if (newTradesList.length > 0) {
+        persist(STORAGE_KEYS.TRADES, [...newTradesList, ...trades]);
         setTrades(prev => [...newTradesList, ...prev]);
       }
       return importedCount;
@@ -557,6 +596,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         resetDemoData,
         eraseAllData,
         isLoaded,
+        storageError,
         exportTradesCSV,
         importTradesCSV,
       }}

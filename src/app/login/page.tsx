@@ -62,8 +62,9 @@ export default function LoginPage() {
         msg = 'An account with this email already exists. Please switch to Sign In.';
       } else if (err.code === 'auth/weak-password') {
         msg = 'Password should be at least 6 characters.';
-      } else if (err.code === 'auth/network-request-failed') {
-        msg = 'Unable to connect. Please retry, or choose Demo Login to explore offline.';
+      } else if (err.code === 'auth/unauthorized-domain') {
+        const currentDomain = typeof window !== 'undefined' ? window.location.hostname : 'your domain';
+        msg = `Domain "${currentDomain}" is not in Firebase Authorized Domains. Add it in Firebase Console > Authentication > Settings > Authorized domains.`;
       }
       setError(msg);
     } finally {
@@ -80,7 +81,12 @@ export default function LoginPage() {
       router.push('/');
     } catch (err: any) {
       console.warn('Google sign-in error:', err);
-      if (err.code !== 'auth/popup-closed-by-user') {
+      if (err.code === 'auth/unauthorized-domain') {
+        const currentDomain = typeof window !== 'undefined' ? window.location.hostname : 'your-app.vercel.app';
+        setError(
+          `Domain "${currentDomain}" is not authorized for Google Sign-In. Please add "${currentDomain}" to Firebase Console -> Authentication -> Settings -> Authorized domains. You can also use 1-Click Demo Login or Email/Password below!`
+        );
+      } else if (err.code !== 'auth/popup-closed-by-user') {
         setError(err.message || 'Google sign-in cancelled or not enabled.');
       }
     } finally {
