@@ -11,6 +11,7 @@ import { searchInstruments } from '../../lib/instruments';
 import { AccountForm } from '../../components/common/AccountForm';
 import { Modal } from '../../components/common/Modal';
 import { fieldClass } from '../../components/common/ChargeEditor';
+import { InstrumentSearch } from '../../components/common/InstrumentSearch';
 
 export default function AddTradePage() {
   return <Suspense fallback={<p role="status">Loading trade form…</p>}><TradeForm /></Suspense>;
@@ -88,7 +89,19 @@ function TradeForm() {
           <label className="field-label">Trading account *<select className={fieldClass} required value={accountId} onChange={e => { if (e.target.value === '__new') setAccountOpen(true); else setAccountId(e.target.value); }}><option value="">Select an account</option>{accounts.filter(a => a.isActive).map(a => <option key={a.id} value={a.id}>{a.accountName} · {a.broker}</option>)}<option value="__new">+ Add new account</option></select></label>
           {account && <p className="text-xs text-on-surface-variant">₹{config.brokeragePerOrder} per order · {config.exchange} · <Link href="/settings/charges" className="text-primary underline">Edit charges</Link></p>}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <label className="field-label">Instrument *<input className={fieldClass} value={instrument} list="instruments" required placeholder="NIFTY 25000 CE or RELIANCE" onChange={e => setInstrument(e.target.value)} autoComplete="off" /><datalist id="instruments">{suggestions.map(i => <option value={i.symbol} key={i.symbol}>{i.name}</option>)}</datalist></label>
+            <div className="field-label">
+              <span>Instrument *</span>
+              <InstrumentSearch
+                value={instrument}
+                currentSide={side}
+                onSideChange={(newSide) => setSide(newSide)}
+                onChange={(inst, details) => {
+                  setInstrument(inst);
+                  if (details?.segment) setSegment(details.segment);
+                  if (details?.side) setSide(details.side);
+                }}
+              />
+            </div>
             <label className="field-label">Trade date *<input className={fieldClass} type="date" required max={localDate()} value={date} onChange={e => setDate(e.target.value)} /></label>
             <label className="field-label">Segment<select className={fieldClass} value={segment} onChange={e => setSegment(e.target.value as ChargeSegment)}>{Object.entries(CHARGE_LABELS).map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label>
             {segment === 'manual' && <label className="field-label">Market<select className={fieldClass} value={manualAsset} onChange={e => setManualAsset(e.target.value as AssetClass)}>{['Crypto', 'Forex', 'Commodities'].map(a => <option key={a}>{a}</option>)}</select></label>}

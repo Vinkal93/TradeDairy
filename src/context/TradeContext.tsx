@@ -179,6 +179,62 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } catch {}
   }, []);
 
+  // Cross-device Cloud Synchronization
+  const fetchCloudSync = useCallback(async (email?: string) => {
+    if (!email || !email.trim()) return;
+    try {
+      const res = await fetch(`/api/user/sync?email=${encodeURIComponent(email.trim().toLowerCase())}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.exists) {
+        if (Array.isArray(data.trades) && data.trades.length > 0) {
+          setTrades(data.trades);
+          localStorage.setItem(getUserKey(STORAGE_KEYS.TRADES, email), JSON.stringify(data.trades));
+        }
+        if (Array.isArray(data.accounts) && data.accounts.length > 0) {
+          setAccounts(data.accounts);
+          localStorage.setItem(getUserKey(STORAGE_KEYS.ACCOUNTS, email), JSON.stringify(data.accounts));
+        }
+        if (data.journals && typeof data.journals === 'object' && Object.keys(data.journals).length > 0) {
+          setJournals(data.journals);
+          localStorage.setItem(getUserKey(STORAGE_KEYS.JOURNALS, email), JSON.stringify(data.journals));
+        }
+      }
+    } catch (err) {
+      console.warn('Cloud sync fetch offline fallback', err);
+    }
+  }, []);
+
+  const pushCloudSync = useCallback(
+    async (
+      email: string,
+      payload: {
+        user?: Partial<UserProfile>;
+        accounts?: TradingAccount[];
+        trades?: Trade[];
+        journals?: Record<string, DailyJournal>;
+      }
+    ) => {
+      if (!email || !email.trim()) return;
+      try {
+        await fetch('/api/user/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: email.trim().toLowerCase(),
+            user: payload.user || user,
+            accounts: payload.accounts || accounts,
+            trades: payload.trades || trades,
+            journals: payload.journals || journals,
+          }),
+        });
+      } catch (err) {
+        console.warn('Cloud sync push offline fallback', err);
+      }
+    },
+    [user, accounts, trades, journals]
+  );
+
   const persist = useCallback(
     (key: string, value: unknown) => {
       try {
@@ -187,6 +243,13 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         // Also save to user-specific scoped key if user is logged in
         if (user.email) {
           localStorage.setItem(getUserKey(key, user.email), JSON.stringify(value));
+          // Push update to cross-device cloud
+          const updatePayload: Record<string, unknown> = {};
+          if (key === STORAGE_KEYS.TRADES) updatePayload.trades = value;
+          if (key === STORAGE_KEYS.ACCOUNTS) updatePayload.accounts = value;
+          if (key === STORAGE_KEYS.JOURNALS) updatePayload.journals = value;
+          if (key === STORAGE_KEYS.USER) updatePayload.user = value;
+          pushCloudSync(user.email, updatePayload);
         }
         broadcastSync('PERSIST_CHANGE');
       } catch (error) {
@@ -196,12 +259,15 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         throw error;
       }
     },
-    [user.email, broadcastSync]
+    [user.email, broadcastSync, pushCloudSync]
   );
 
   // Load user-scoped dataset
   const loadScopedData = useCallback((userEmail?: string) => {
     try {
+      if (userEmail) {
+        fetchCloudSync(userEmail);
+      }
       const uKey = getUserKey(STORAGE_KEYS.USER, userEmail);
       const aKey = getUserKey(STORAGE_KEYS.ACCOUNTS, userEmail);
       const tKey = getUserKey(STORAGE_KEYS.TRADES, userEmail);
