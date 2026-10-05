@@ -43,10 +43,11 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   // Unauthenticated users cannot access protected trader routes -> redirect to /login
   useEffect(() => {
     if (!isLoaded || isAuthOrOnboarding) return;
+    if (pathname === '/') return;
     if (!user.isLoggedIn) {
       router.replace('/login');
     }
-  }, [isLoaded, user.isLoggedIn, isAuthOrOnboarding, router]);
+  }, [isLoaded, user.isLoggedIn, isAuthOrOnboarding, pathname, router]);
 
   useEffect(() => { setMobileMenuOpen(false); }, [pathname]);
   useEffect(() => {
@@ -79,6 +80,9 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
   // Prevent rendering protected UI if unauthenticated or still loading
   if (!isLoaded || !user.isLoggedIn) {
+    if (pathname === '/') {
+      return <>{children}</>;
+    }
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <LoadingWorkspace isReady={false} />

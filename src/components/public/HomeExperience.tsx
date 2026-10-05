@@ -1,28 +1,39 @@
 'use client';
-import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/navigation';
 
-const WorkspaceHome = dynamic(() => import('./WorkspaceHome'), {
-  loading: () => <p className="p-8 text-sm text-outline">Loading your dashboard…</p>,
-});
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useTrades, getCookie } from '../../context/TradeContext';
+import DashboardPage from '../../app/dashboard-view';
 
 export function HomeExperience({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [workspace, setWorkspace] = useState(false);
+  const { user, isLoaded } = useTrades();
 
   useEffect(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem('tradedairy_user') || '{}');
-      if (stored.isLoggedIn === true) {
-        if (stored.isOnboarded === true) {
-          setWorkspace(true);
-        } else {
-          router.replace('/onboarding');
-        }
-      }
-    } catch {}
-  }, [router]);
+    if (!isLoaded) return;
+    if (user.isLoggedIn && !user.isOnboarded) {
+      router.replace('/onboarding');
+    }
+  }, [isLoaded, user.isLoggedIn, user.isOnboarded, router]);
 
-  return workspace ? <WorkspaceHome /> : <>{children}</>;
+  // If user is authenticated and onboarded, display Dashboard directly
+  if (user.isLoggedIn && user.isOnboarded) {
+    return <DashboardPage />;
+  }
+
+  // If still loading but user has logged-in auth cookies, don't flash landing page
+  if (!isLoaded && typeof window !== 'undefined') {
+    const cookieEmail = getCookie('td_auth_email');
+    if (cookieEmail) {
+      return (
+        <div className="py-24 text-center text-outline">
+          <div className="inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-3"></div>
+          <p className="text-sm font-medium">Loading your trading dashboard…</p>
+        </div>
+      );
+    }
+  }
+
+  // Not logged in -> show LandingPage (children)
+  return <>{children}</>;
 }
