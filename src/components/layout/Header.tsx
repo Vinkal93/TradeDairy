@@ -7,6 +7,8 @@ import { useTrades } from '../../context/TradeContext';
 import { BrandLogo } from '../common/BrandLogo';
 import { QrScannerModal } from '../common/QrScannerModal';
 import { MarketTicker } from '../common/MarketTicker';
+import { EnvironmentBadge } from '../common/EnvironmentBadge';
+import { ChangelogModal } from '../common/ChangelogModal';
 
 export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void }) {
   const router = useRouter();
@@ -17,6 +19,7 @@ export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void
   const [isCompact, setIsCompact] = useState(false);
   const [scanModalOpen, setScanModalOpen] = useState(false);
   const [scanInitialMode, setScanInitialMode] = useState<'scan' | 'show-qr'>('show-qr');
+  const [changelogModalOpen, setChangelogModalOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -135,6 +138,9 @@ export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void
               </span>
             </div>
           )}
+
+          {/* Preview / Development Environment Badge (Strictly hidden on Production) */}
+          <EnvironmentBadge onOpenChangelog={() => setChangelogModalOpen(true)} />
 
           {/* Active Devices button on PC mode */}
           <button
@@ -258,6 +264,18 @@ export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void
                   <span>Broker Charges Rules</span>
                 </Link>
 
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    setChangelogModalOpen(true);
+                  }}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs sm:text-sm rounded-lg hover:bg-surface-container-low text-on-surface text-left cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[18px] text-outline">update</span>
+                  <span>Release Notes &amp; Changelog</span>
+                </button>
+
                 <div className="border-t border-surface-container my-1"></div>
 
                 <button
@@ -287,6 +305,12 @@ export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void
         isOpen={scanModalOpen}
         onClose={() => setScanModalOpen(false)}
         initialMode={scanInitialMode}
+      />
+
+      {/* What's New & Environment Comparison Modal */}
+      <ChangelogModal
+        isOpen={changelogModalOpen}
+        onClose={() => setChangelogModalOpen(false)}
       />
     </>
   );
