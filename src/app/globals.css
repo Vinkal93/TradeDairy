@@ -124,3 +124,13 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(109, 122, 114, 0.45);
 }
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+

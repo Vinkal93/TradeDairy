@@ -190,16 +190,66 @@ export function RecordTradeModal() {
     }
   }, [instrument, detectIndex, lotSizes]);
 
-  // Keyboard accessibility: ESC key to close
+  // Backdrop mousedown tracker to prevent accidental dismiss on text selection/drag
+  const backdropMouseDownRef = useRef(false);
+
+  // Keyboard accessibility: ESC key to close + Focus Trap for Tab navigation
   useEffect(() => {
     if (!isRecordTradeModalOpen) return;
+
+    // Prevent body scrolling while modal is open
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    // Focus initial input smoothly
+    const timer = setTimeout(() => {
+      if (dialogRef.current) {
+        const firstInput = dialogRef.current.querySelector<HTMLElement>(
+          'select, input:not([type="hidden"]), button'
+        );
+        firstInput?.focus();
+      }
+    }, 50);
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !accountOpen && !lotConfigModalOpen) {
-        closeRecordTradeModal();
+      if (e.key === 'Escape') {
+        if (!accountOpen && !lotConfigModalOpen) {
+          e.stopPropagation();
+          closeRecordTradeModal();
+        }
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        // Sub-modals have their own focus traps
+        if (accountOpen || lotConfigModalOpen) return;
+
+        if (!dialogRef.current) return;
+        const focusableElements = dialogRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]):not([tabindex="-1"]), input:not([disabled]):not([tabindex="-1"]), select:not([disabled]):not([tabindex="-1"]), textarea:not([disabled]):not([tabindex="-1"]), [tabindex="0"]'
+        );
+        const visible = Array.from(focusableElements).filter((el) => el.getClientRects().length > 0);
+        if (!visible.length) return;
+
+        const first = visible[0];
+        const last = visible[visible.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     };
+
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      clearTimeout(timer);
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isRecordTradeModalOpen, accountOpen, lotConfigModalOpen, closeRecordTradeModal]);
 
   const account = accounts.find((a) => a.id === accountId);
@@ -332,10 +382,14 @@ export function RecordTradeModal() {
   return (
     <div
       className="fixed inset-0 z-[120] bg-black/60 backdrop-blur-sm p-2 sm:p-4 md:p-6 flex items-center justify-center animate-in fade-in duration-150 overflow-y-auto"
+      onMouseDown={(e) => {
+        backdropMouseDownRef.current = e.target === e.currentTarget;
+      }}
       onClick={(e) => {
-        if (e.target === e.currentTarget && !accountOpen && !lotConfigModalOpen) {
+        if (backdropMouseDownRef.current && e.target === e.currentTarget && !accountOpen && !lotConfigModalOpen) {
           closeRecordTradeModal();
         }
+        backdropMouseDownRef.current = false;
       }}
     >
       <div
@@ -383,6 +437,7 @@ export function RecordTradeModal() {
 
             <button
               type="button"
+              tabIndex={-1}
               aria-label="Close dialog"
               onClick={closeRecordTradeModal}
               className="w-9 h-9 rounded-xl border border-surface-container text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors flex items-center justify-center text-sm font-bold cursor-pointer"
@@ -416,6 +471,7 @@ export function RecordTradeModal() {
               </span>
               <button
                 type="button"
+                tabIndex={-1}
                 onClick={() => setAccountOpen(true)}
                 className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 hover:underline cursor-pointer"
               >
@@ -649,13 +705,14 @@ export function RecordTradeModal() {
                         {[1, 2, 5].map((count) => (
                           <button
                             type="button"
+                            tabIndex={-1}
                             key={count}
                             onClick={() => {
                               const newLots = String((Number(lotsCount) || 0) + count);
                               setLotsCount(newLots);
                               setQuantity(String(Number(newLots) * activeLotSize));
                             }}
-                            className="px-2 py-2 text-xs font-bold rounded-lg bg-white hover:bg-surface-container border border-surface-container text-on-surface"
+                            className="px-2 py-2 text-xs font-bold rounded-lg bg-white hover:bg-surface-container border border-surface-container text-on-surface cursor-pointer"
                           >
                             +{count}
                           </button>

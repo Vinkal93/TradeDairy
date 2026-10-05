@@ -162,7 +162,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
       {/* Main Content Area */}
       <div className="md:pl-60 flex-1 flex flex-col pb-16 md:pb-6">
-        <main className="w-full pt-24 lg:pt-28 bg-background min-h-screen px-4 sm:px-6 lg:px-8 xl:px-10 pb-8 max-w-[1680px] mx-auto">
+        <main className="w-full pt-28 lg:pt-32 bg-background min-h-screen px-4 sm:px-6 lg:px-8 xl:px-10 pb-8 max-w-[1680px] mx-auto">
           {storageError && <p role="alert" className="rounded-xl bg-error-container text-error p-3 mb-4 text-sm">{storageError}</p>}
           {children}
         </main>

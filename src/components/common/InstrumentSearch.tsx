@@ -147,6 +147,18 @@ export function InstrumentSearch({
           value={query}
           required={required}
           onFocus={() => setIsOpen(true)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              if (isOpen) {
+                e.stopPropagation();
+                e.preventDefault();
+                setIsOpen(false);
+              }
+            } else if (e.key === 'Tab') {
+              // Immediately close dropdown so Tab key cleanly advances to the next form input
+              setIsOpen(false);
+            }
+          }}
           onChange={(e) => {
             setQuery(e.target.value);
             setIsOpen(true);
@@ -161,6 +173,7 @@ export function InstrumentSearch({
         <div className="absolute right-2 flex items-center gap-1">
           <button
             type="button"
+            tabIndex={-1}
             onClick={() => handleSideToggle(side === 'BUY' ? 'SELL' : 'BUY')}
             className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-colors cursor-pointer ${
               side === 'BUY'
@@ -174,6 +187,7 @@ export function InstrumentSearch({
           {query && (
             <button
               type="button"
+              tabIndex={-1}
               onClick={() => {
                 setQuery('');
                 onChange('');
@@ -201,6 +215,7 @@ export function InstrumentSearch({
             <div className="flex rounded-lg bg-surface-container p-0.5 text-[11px] font-bold">
               <button
                 type="button"
+                tabIndex={-1}
                 onClick={() => handleSideToggle('BUY')}
                 className={`px-2.5 py-0.5 rounded-md transition-colors ${
                   side === 'BUY'
@@ -212,6 +227,7 @@ export function InstrumentSearch({
               </button>
               <button
                 type="button"
+                tabIndex={-1}
                 onClick={() => handleSideToggle('SELL')}
                 className={`px-2.5 py-0.5 rounded-md transition-colors ${
                   side === 'SELL'
@@ -240,6 +256,7 @@ export function InstrumentSearch({
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
+                  tabIndex={-1}
                   onClick={() =>
                     handleSelectOption(parsedData.baseSymbol, parsedData.strike!, 'CE', side)
                   }
@@ -256,6 +273,7 @@ export function InstrumentSearch({
 
                 <button
                   type="button"
+                  tabIndex={-1}
                   onClick={() =>
                     handleSelectOption(parsedData.baseSymbol, parsedData.strike!, 'PE', side)
                   }
@@ -293,6 +311,7 @@ export function InstrumentSearch({
                     <div className="flex items-center gap-1.5">
                       <button
                         type="button"
+                        tabIndex={-1}
                         onClick={() =>
                           handleSelectOption(parsedData.baseSymbol, strike, 'CE', side)
                         }
@@ -303,6 +322,7 @@ export function InstrumentSearch({
 
                       <button
                         type="button"
+                        tabIndex={-1}
                         onClick={() =>
                           handleSelectOption(parsedData.baseSymbol, strike, 'PE', side)
                         }
@@ -327,6 +347,7 @@ export function InstrumentSearch({
               <button
                 key={item.symbol}
                 type="button"
+                tabIndex={-1}
                 onClick={() => handleSelectStock(item)}
                 className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-surface-container-low text-left text-xs transition-colors cursor-pointer group"
               >

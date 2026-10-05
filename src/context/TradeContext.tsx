@@ -130,6 +130,27 @@ function getUserKey(baseKey: string, email?: string): string {
   return `${baseKey}_${clean}`;
 }
 
+// Cookie Helpers for Instant Cross-Device Session & Preferences Cache
+export function setCookie(name: string, value: string, days = 365) {
+  if (typeof document === 'undefined') return;
+  try {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+  } catch {}
+}
+
+export function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  try {
+    const matches = document.cookie.match(
+      new RegExp('(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)')
+    );
+    return matches ? decodeURIComponent(matches[1]) : null;
+  } catch {
+    return null;
+  }
+}
+
 // Helper: Detect current device info
 function detectDevice(): DeviceSession {
   const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : 'Desktop';
@@ -216,10 +237,21 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } catch {}
   }, []);
 
+  // State refs to eliminate stale closure bugs during realtime polling and push
+  const userRef = useRef(user);
+  const tradesRef = useRef(trades);
+  const accountsRef = useRef(accounts);
+  const journalsRef = useRef(journals);
+
+  useEffect(() => { userRef.current = user; }, [user]);
+  useEffect(() => { tradesRef.current = trades; }, [trades]);
+  useEffect(() => { accountsRef.current = accounts; }, [accounts]);
+  useEffect(() => { journalsRef.current = journals; }, [journals]);
+
   // Cross-device Cloud Synchronization
   const fetchCloudSync = useCallback(async (email?: string, uid?: string) => {
-    const targetEmail = (email || '').trim().toLowerCase();
-    const targetUid = (uid || '').trim();
+    const targetEmail = (email || userRef.current.email || '').trim().toLowerCase();
+    const targetUid = (uid || userRef.current.uid || '').trim();
     if (!targetEmail && !targetUid) return;
     try {
       setCloudSyncStatus('syncing');
@@ -254,9 +286,14 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               ...data.user,
               uid: data.uid || data.user.uid || prev.uid || targetUid,
               isLoggedIn: true,
-              isOnboarded: Boolean(data.user.isOnboarded),
+              isOnboarded: Boolean(data.user.isOnboarded ?? prev.isOnboarded ?? true),
               onboardingStep: typeof data.user.onboardingStep === 'number' ? data.user.onboardingStep : prev.onboardingStep,
             }));
+            if (storageEmail) {
+              setCookie('td_auth_email', storageEmail);
+              if (data.uid || targetUid) setCookie('td_auth_uid', data.uid || targetUid);
+              setCookie('td_user_onboarded', '1');
+            }
           }
         }
         setLastCloudSync(new Date().toLocaleTimeString());
@@ -281,8 +318,8 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       },
       uid?: string
     ) => {
-      const cleanEmail = email ? email.trim().toLowerCase() : '';
-      const targetUid = uid || payload.user?.uid || user.uid;
+      const cleanEmail = (email || userRef.current.email || '').trim().toLowerCase();
+      const targetUid = (uid || payload.user?.uid || userRef.current.uid || '').trim();
       if (!cleanEmail && !targetUid) return;
       try {
         setCloudSyncStatus('syncing');
@@ -292,10 +329,10 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           body: JSON.stringify({
             email: cleanEmail,
             uid: targetUid,
-            user: { ...(payload.user || user), ...(targetUid ? { uid: targetUid } : {}) },
-            accounts: payload.accounts || accounts,
-            trades: payload.trades || trades,
-            journals: payload.journals || journals,
+            user: { ...(payload.user || userRef.current), ...(targetUid ? { uid: targetUid } : {}) },
+            accounts: payload.accounts || accountsRef.current,
+            trades: payload.trades || tradesRef.current,
+            journals: payload.journals || journalsRef.current,
           }),
         });
         if (res.ok) {
@@ -303,6 +340,10 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           lastSyncTimestampRef.current = resData.updatedAt;
           setLastCloudSync(new Date().toLocaleTimeString());
           setCloudSyncStatus('synced');
+          if (cleanEmail) {
+            setCookie('td_auth_email', cleanEmail);
+            if (targetUid) setCookie('td_auth_uid', targetUid);
+          }
         } else {
           setCloudSyncStatus('offline');
         }
@@ -311,7 +352,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setCloudSyncStatus('offline');
       }
     },
-    [user, accounts, trades, journals]
+    []
   );
 
   const persist = useCallback(
@@ -320,15 +361,16 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         // Save to global key
         localStorage.setItem(key, JSON.stringify(value));
         // Also save to user-specific scoped key if user is logged in
-        if (user.email) {
-          localStorage.setItem(getUserKey(key, user.email), JSON.stringify(value));
+        const currentEmail = userRef.current.email;
+        if (currentEmail) {
+          localStorage.setItem(getUserKey(key, currentEmail), JSON.stringify(value));
           // Push update to cross-device cloud
           const updatePayload: Record<string, unknown> = {};
           if (key === STORAGE_KEYS.TRADES) updatePayload.trades = value;
           if (key === STORAGE_KEYS.ACCOUNTS) updatePayload.accounts = value;
           if (key === STORAGE_KEYS.JOURNALS) updatePayload.journals = value;
           if (key === STORAGE_KEYS.USER) updatePayload.user = value;
-          pushCloudSync(user.email, updatePayload);
+          pushCloudSync(currentEmail, updatePayload);
         }
         broadcastSync('PERSIST_CHANGE');
       } catch (error) {
@@ -344,14 +386,18 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Load user-scoped dataset
   const loadScopedData = useCallback((userEmail?: string) => {
     try {
-      if (userEmail) {
-        fetchCloudSync(userEmail);
+      const cookieEmail = getCookie('td_auth_email');
+      const cookieUid = getCookie('td_auth_uid');
+      const effectiveEmail = (userEmail || cookieEmail || '').trim().toLowerCase();
+
+      if (effectiveEmail) {
+        fetchCloudSync(effectiveEmail, cookieUid || undefined);
       }
-      const uKey = getUserKey(STORAGE_KEYS.USER, userEmail);
-      const aKey = getUserKey(STORAGE_KEYS.ACCOUNTS, userEmail);
-      const tKey = getUserKey(STORAGE_KEYS.TRADES, userEmail);
-      const jKey = getUserKey(STORAGE_KEYS.JOURNALS, userEmail);
-      const sKey = getUserKey(STORAGE_KEYS.SESSIONS, userEmail);
+      const uKey = getUserKey(STORAGE_KEYS.USER, effectiveEmail || undefined);
+      const aKey = getUserKey(STORAGE_KEYS.ACCOUNTS, effectiveEmail || undefined);
+      const tKey = getUserKey(STORAGE_KEYS.TRADES, effectiveEmail || undefined);
+      const jKey = getUserKey(STORAGE_KEYS.JOURNALS, effectiveEmail || undefined);
+      const sKey = getUserKey(STORAGE_KEYS.SESSIONS, effectiveEmail || undefined);
 
       const storedUser = localStorage.getItem(uKey) || localStorage.getItem(STORAGE_KEYS.USER);
       const storedAccounts = localStorage.getItem(aKey) || localStorage.getItem(STORAGE_KEYS.ACCOUNTS);
@@ -363,6 +409,29 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const loadedAccounts: TradingAccount[] = storedAccounts ? JSON.parse(storedAccounts) : [];
       const loadedTrades: Trade[] = storedTrades ? JSON.parse(storedTrades) : [];
       const loadedJournals: Record<string, DailyJournal> = storedJournals ? JSON.parse(storedJournals) : {};
+
+      // Restore user preferences from cookie cache
+      const cookiePrefs = getCookie('td_user_prefs');
+      if (cookiePrefs) {
+        try {
+          const parsedPrefs = JSON.parse(cookiePrefs);
+          if (parsedPrefs.selectedTimeframe) setTimeframe(parsedPrefs.selectedTimeframe);
+          if (parsedPrefs.selectedAccount) setSelectedAccount(parsedPrefs.selectedAccount);
+          if (parsedPrefs.indexLotSizes) {
+            loadedUser.indexLotSizes = { ...DEFAULT_INDEX_LOT_SIZES, ...parsedPrefs.indexLotSizes };
+          }
+        } catch {}
+      }
+
+      if (effectiveEmail && (!loadedUser.email || loadedUser.email.toLowerCase() === effectiveEmail)) {
+        loadedUser.email = effectiveEmail;
+        if (cookieUid && !loadedUser.uid) loadedUser.uid = cookieUid;
+        loadedUser.isLoggedIn = true;
+        const onboardedCookie = getCookie('td_user_onboarded');
+        if (onboardedCookie === '1') {
+          loadedUser.isOnboarded = true;
+        }
+      }
 
       // Device sessions
       const current = detectDevice();
@@ -513,7 +582,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     const pollTimer = setInterval(() => {
       fetchCloudSync(user.email);
-    }, 10000);
+    }, 2500);
 
     return () => {
       window.removeEventListener('focus', onFocus);
@@ -522,7 +591,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
   }, [isLoaded, user.isLoggedIn, user.email, fetchCloudSync]);
 
-  // Save changes to localStorage
+  // Save changes to localStorage and cookies for instant cache persistence
   useEffect(() => {
     if (!isLoaded || storageError) return;
     try {
@@ -535,12 +604,24 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         localStorage.setItem(getUserKey(STORAGE_KEYS.ACCOUNTS, user.email), JSON.stringify(accounts));
         localStorage.setItem(getUserKey(STORAGE_KEYS.TRADES, user.email), JSON.stringify(trades));
         localStorage.setItem(getUserKey(STORAGE_KEYS.JOURNALS, user.email), JSON.stringify(journals));
+        setCookie('td_auth_email', user.email);
+        if (user.uid) setCookie('td_auth_uid', user.uid);
+        if (user.fullName) setCookie('td_user_name', user.fullName);
+        setCookie('td_user_onboarded', user.isOnboarded ? '1' : '0');
+        setCookie(
+          'td_user_prefs',
+          JSON.stringify({
+            selectedTimeframe,
+            selectedAccount,
+            indexLotSizes: user.indexLotSizes,
+          })
+        );
       }
     } catch (err) {
       console.error('Failed to save TradeDairy data to localStorage', err);
       setStorageError('Browser storage is full or disabled. Export a backup before closing this tab.');
     }
-  }, [user, accounts, trades, journals, isLoaded, storageError]);
+  }, [user, accounts, trades, journals, isLoaded, storageError, selectedTimeframe, selectedAccount]);
 
   // Filter Trades by Account and Timeframe
   const filteredTrades = useMemo(() => {
@@ -951,6 +1032,10 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (typeof window !== 'undefined') {
         sessionStorage.clear();
       }
+      setCookie('td_auth_email', '', -1);
+      setCookie('td_auth_uid', '', -1);
+      setCookie('td_user_name', '', -1);
+      setCookie('td_user_onboarded', '', -1);
     } catch {}
     broadcastSync('PERSIST_CHANGE');
   };

@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTrades } from '../../context/TradeContext';
 import { BrandLogo } from '../common/BrandLogo';
 import { QrScannerModal } from '../common/QrScannerModal';
+import { MarketTicker } from '../common/MarketTicker';
 
 export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void }) {
   const router = useRouter();
@@ -257,6 +258,11 @@ export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void
           </div>
         </div>
       </header>
+
+      {/* Live Market Ticker Patti (NIFTY, BANKNIFTY, Bluechip Stocks) */}
+      <div className="fixed top-[68px] left-0 md:left-60 right-0 z-30 shadow-xs">
+        <MarketTicker />
+      </div>
 
       {/* QR Scanner Modal for Phone Users */}
       <QrScannerModal isOpen={scanModalOpen} onClose={() => setScanModalOpen(false)} />
