@@ -38,15 +38,16 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     pathname === '/onboarding' ||
     (pathname === '/su' || pathname?.startsWith('/su/'));
 
-  // Global Route Guard: Enforce Onboarding -> Login -> Dashboard flow
+  // Global Route Guard:
+  // 1. Unauthenticated users cannot access protected trader routes -> redirect to /login
+  // 2. Authenticated users who haven't completed onboarding -> redirect to /onboarding
+  // 3. Authenticated & onboarded users -> full access to dashboard and trader routes
   useEffect(() => {
     if (!isLoaded || isAuthOrOnboarding) return;
     if (!user.isLoggedIn) {
-      if (!user.isOnboarded) {
-        router.replace('/onboarding');
-      } else {
-        router.replace('/login');
-      }
+      router.replace('/login');
+    } else if (!user.isOnboarded) {
+      router.replace('/onboarding');
     }
   }, [isLoaded, user.isLoggedIn, user.isOnboarded, isAuthOrOnboarding, router]);
 

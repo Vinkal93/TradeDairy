@@ -57,7 +57,11 @@ interface TradeContextType {
 
   // Profile & Auth Actions
   updateUser: (profile: Partial<UserProfile>) => void;
-  login: (name: string, email: string) => Promise<void>;
+  login: (
+    name: string,
+    email: string,
+    photoURL?: string
+  ) => Promise<{ isOnboarded: boolean; onboardingStep?: number }>;
   logout: () => Promise<void>;
   updateIndexLotSize: (indexSymbol: string, lotSize: number) => void;
   resetDemoData: () => void;
@@ -102,8 +106,11 @@ const EMPTY_USER: UserProfile = {
   dailyMaxTrades: 0,
   defaultRiskPerTrade: 0,
   avatar: '',
+  profilePhoto: '',
   isLoggedIn: false,
   isOnboarded: false,
+  onboardingStep: 1,
+  discoverySource: '',
   plan: 'Free',
   indexLotSizes: DEFAULT_INDEX_LOT_SIZES,
 };
@@ -218,7 +225,8 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               ...prev,
               ...data.user,
               isLoggedIn: true,
-              isOnboarded: true,
+              isOnboarded: Boolean(data.user.isOnboarded),
+              onboardingStep: typeof data.user.onboardingStep === 'number' ? data.user.onboardingStep : prev.onboardingStep,
             }));
           }
         }
@@ -397,24 +405,37 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Sync with Firebase Auth state
   useEffect(() => {
-    const unsubscribe = onFirebaseAuthStateChange((firebaseUser) => {
-      if (firebaseUser) {
-        const email = firebaseUser.email || '';
-        setUser((prev) => ({
-          ...prev,
-          fullName:
-            firebaseUser.displayName ||
-            prev.fullName ||
-            email.split('@')[0] ||
-            'Active Trader',
-          email,
-          avatar: firebaseUser.photoURL || prev.avatar,
-          isLoggedIn: true,
-          isOnboarded: true,
-        }));
-        // Load this user's data
-        loadScopedData(email);
-        fetchCloudSync(email);
+    const unsubscribe = onFirebaseAuthStateChange(async (firebaseUser) => {
+      if (firebaseUser && firebaseUser.email) {
+        const cleanEmail = firebaseUser.email.trim().toLowerCase();
+        setUser((prev) => {
+          if (prev.isLoggedIn && prev.email.toLowerCase() === cleanEmail) {
+            return prev;
+          }
+          return {
+            ...prev,
+            email: cleanEmail,
+            fullName:
+              firebaseUser.displayName ||
+              prev.fullName ||
+              cleanEmail.split('@')[0] ||
+              'Active Trader',
+            avatar: firebaseUser.photoURL || prev.avatar || '',
+            profilePhoto: firebaseUser.photoURL || prev.profilePhoto || '',
+            isLoggedIn: true,
+          };
+        });
+        // Load this user's data and sync cloud
+        loadScopedData(cleanEmail);
+        fetchCloudSync(cleanEmail);
+      } else {
+        // Firebase user signed out - reset state if was logged in with email
+        setUser((prev) => {
+          if (prev.isLoggedIn && prev.email) {
+            return { ...EMPTY_USER, isLoggedIn: false, isOnboarded: false };
+          }
+          return prev;
+        });
       }
     });
     return () => unsubscribe();
@@ -740,16 +761,73 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setUser((prev) => ({ ...prev, ...profile }));
   };
 
-  const login = async (name: string, email: string): Promise<void> => {
+  const login = async (
+    name: string,
+    email: string,
+    photoURL?: string
+  ): Promise<{ isOnboarded: boolean; onboardingStep?: number }> => {
     const cleanEmail = email.trim().toLowerCase();
+
+    // 1. Fetch cloud sync first to retrieve existing user record, trades, accounts
+    let cloudRecord: any = null;
+    try {
+      const res = await fetch(`/api/user/sync?email=${encodeURIComponent(cleanEmail)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.exists) {
+          cloudRecord = data;
+        }
+      }
+    } catch (e) {
+      console.warn('Cloud sync fetch error during login', e);
+    }
+
+    const cloudUser = cloudRecord?.user || {};
+    const hasCompletedOnboarding = Boolean(cloudUser.isOnboarded);
+    const existingStep = typeof cloudUser.onboardingStep === 'number' ? cloudUser.onboardingStep : 1;
+
+    // Load cloud trades, accounts, journals if existing user
+    if (cloudRecord) {
+      if (Array.isArray(cloudRecord.trades)) {
+        setTrades(cloudRecord.trades);
+        try {
+          localStorage.setItem(getUserKey(STORAGE_KEYS.TRADES, cleanEmail), JSON.stringify(cloudRecord.trades));
+        } catch {}
+      }
+      if (Array.isArray(cloudRecord.accounts)) {
+        setAccounts(cloudRecord.accounts);
+        try {
+          localStorage.setItem(getUserKey(STORAGE_KEYS.ACCOUNTS, cleanEmail), JSON.stringify(cloudRecord.accounts));
+        } catch {}
+      }
+      if (cloudRecord.journals && typeof cloudRecord.journals === 'object') {
+        setJournals(cloudRecord.journals);
+        try {
+          localStorage.setItem(getUserKey(STORAGE_KEYS.JOURNALS, cleanEmail), JSON.stringify(cloudRecord.journals));
+        } catch {}
+      }
+    } else {
+      // Check local scoped data
+      loadScopedData(cleanEmail);
+    }
+
+    const resolvedPhoto = photoURL || cloudUser.profilePhoto || cloudUser.avatar || '';
     const updatedUser: UserProfile = {
-      ...user,
-      fullName: name || user.fullName || 'Active Trader',
+      ...EMPTY_USER,
+      ...cloudUser,
+      fullName: cloudUser.fullName || name || cleanEmail.split('@')[0] || 'Trader',
       email: cleanEmail,
+      avatar: resolvedPhoto,
+      profilePhoto: resolvedPhoto,
       isLoggedIn: true,
-      isOnboarded: true,
+      isOnboarded: hasCompletedOnboarding,
+      onboardingStep: existingStep,
+      discoverySource: cloudUser.discoverySource || '',
+      indexLotSizes: cloudUser.indexLotSizes || DEFAULT_INDEX_LOT_SIZES,
     };
+
     setUser(updatedUser);
+
     try {
       localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
       localStorage.setItem(getUserKey(STORAGE_KEYS.USER, cleanEmail), JSON.stringify(updatedUser));
@@ -759,10 +837,9 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const currentDevice = detectDevice();
     setDeviceSessions((prev) => [currentDevice, ...prev.filter((s) => !s.isCurrent)]);
 
-    // Await cloud sync so all trades and accounts from other devices are loaded BEFORE returning!
-    await fetchCloudSync(cleanEmail);
-    loadScopedData(cleanEmail);
     broadcastSync('PERSIST_CHANGE');
+
+    return { isOnboarded: hasCompletedOnboarding, onboardingStep: existingStep };
   };
 
   const updateIndexLotSize = (indexSymbol: string, lotSize: number) => {
@@ -775,13 +852,13 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     updateUser({ indexLotSizes: updated });
   };
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     try {
       await logoutFirebase();
     } catch (e) {
       console.error('Firebase signout error', e);
     }
-    const emptyUser = { ...EMPTY_USER, isLoggedIn: false, isOnboarded: false };
+    const emptyUser = { ...EMPTY_USER, isLoggedIn: false, isOnboarded: false, onboardingStep: 1 };
     setUser(emptyUser);
     setTrades([]);
     setAccounts([]);
@@ -792,6 +869,7 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       localStorage.removeItem(STORAGE_KEYS.ACCOUNTS);
       localStorage.removeItem(STORAGE_KEYS.JOURNALS);
       localStorage.removeItem('tradedairy_super_admin_session');
+      localStorage.removeItem('tradedairy_real_data_v1');
     } catch {}
     broadcastSync('PERSIST_CHANGE');
   };

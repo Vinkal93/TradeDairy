@@ -10,7 +10,14 @@ import { localDate } from '../lib/dates';
 export default function DashboardPage() {
   const router = useRouter();
   const { user, isLoaded, accounts, filteredTrades, journals, analytics, selectedTimeframe, setTimeframe, selectedAccount, setSelectedAccount } = useTrades();
-  useEffect(() => { if (isLoaded && !user.isLoggedIn) router.replace(user.isOnboarded ? '/login' : '/onboarding'); }, [isLoaded, user.isLoggedIn, user.isOnboarded, router]);
+  useEffect(() => {
+    if (!isLoaded) return;
+    if (!user.isLoggedIn) {
+      router.replace('/login');
+    } else if (!user.isOnboarded) {
+      router.replace('/onboarding');
+    }
+  }, [isLoaded, user.isLoggedIn, user.isOnboarded, router]);
   if (!isLoaded || !user.isLoggedIn) return <div className="py-24 text-center text-outline">Loading your dashboard…</div>;
   const currencies = new Set(filteredTrades.map(t => accounts.find(a => a.id === t.accountId)?.currency || user.baseCurrency));
   const mixed = currencies.size > 1;

@@ -108,8 +108,11 @@ export interface UserProfile {
   dailyMaxTrades: number;
   defaultRiskPerTrade: number;
   avatar: string;
+  profilePhoto?: string;
   isLoggedIn: boolean;
   isOnboarded: boolean;
+  onboardingStep?: number;
+  discoverySource?: string;
   plan: 'Free' | 'Pro';
   activeSessions?: DeviceSession[];
   indexLotSizes?: Record<string, number>;

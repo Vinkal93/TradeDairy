@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     apple: '/icon.svg',
   },
   verification: {
-    google: process.env.GOOGLE_SITE_VERIFICATION,
+    google: process.env.GOOGLE_SITE_VERIFICATION || 'RSS_mFgtOnROdFLhHMZRhLTnJn3aXXqdHWp-6eFOIf8',
     other: process.env.BING_SITE_VERIFICATION
       ? { 'msvalidate.01': process.env.BING_SITE_VERIFICATION }
       : undefined,
@@ -33,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        <meta name="google-site-verification" content="RSS_mFgtOnROdFLhHMZRhLTnJn3aXXqdHWp-6eFOIf8" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
