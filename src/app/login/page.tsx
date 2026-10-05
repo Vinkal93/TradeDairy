@@ -76,7 +76,12 @@ function LoginForm() {
   }, [user.isLoggedIn, user.isOnboarded, router]);
 
   // Handle post-login navigation based on onboarding status
-  const handleAuthSuccess = async (displayName: string, userEmail: string, photoURL?: string) => {
+  const handleAuthSuccess = async (
+    displayName: string,
+    userEmail: string,
+    photoURL?: string,
+    uid?: string
+  ) => {
     setLoading(true);
     setLoadingMessage('Loading your cloud workspace…');
     setSuccessMessage('Authentication successful! Loading your journal…');
@@ -91,7 +96,7 @@ function LoginForm() {
     } catch {}
 
     try {
-      const result = await login(displayName, userEmail, photoURL);
+      const result = await login(displayName, userEmail, photoURL, uid);
       if (result.isOnboarded) {
         setSuccessMessage('Welcome back! Entering Dashboard…');
         router.push('/');
@@ -118,7 +123,8 @@ function LoginForm() {
       await handleAuthSuccess(
         userCredential.displayName || 'Google Trader',
         userCredential.email || 'trader@google.com',
-        userCredential.photoURL || undefined
+        userCredential.photoURL || undefined,
+        userCredential.uid
       );
     } catch (err: any) {
       console.warn('Google sign-in error:', err);
@@ -155,7 +161,12 @@ function LoginForm() {
 
       try {
         const userCredential = await signupWithEmail(cleanEmail, password, cleanName);
-        await handleAuthSuccess(userCredential.displayName || cleanName, userCredential.email || cleanEmail);
+        await handleAuthSuccess(
+          userCredential.displayName || cleanName,
+          userCredential.email || cleanEmail,
+          userCredential.photoURL || undefined,
+          userCredential.uid
+        );
       } catch (signupErr: any) {
         // Direct Login Fallback: If user already exists, try signing in directly with the password!
         if (signupErr.code === 'auth/email-already-in-use') {
@@ -164,7 +175,9 @@ function LoginForm() {
             const loginCredential = await loginWithEmail(cleanEmail, password);
             await handleAuthSuccess(
               loginCredential.displayName || cleanName,
-              loginCredential.email || cleanEmail
+              loginCredential.email || cleanEmail,
+              loginCredential.photoURL || undefined,
+              loginCredential.uid
             );
             return;
           } catch {
@@ -192,7 +205,9 @@ function LoginForm() {
         const userCredential = await loginWithEmail(cleanEmail, password);
         await handleAuthSuccess(
           userCredential.displayName || cleanEmail.split('@')[0] || 'Active Trader',
-          userCredential.email || cleanEmail
+          userCredential.email || cleanEmail,
+          userCredential.photoURL || undefined,
+          userCredential.uid
         );
       } catch (loginErr: any) {
         setLoading(false);
@@ -267,7 +282,9 @@ function LoginForm() {
           clearInterval(pollIntervalRef.current!);
           await handleAuthSuccess(
             data.user.name || 'Mobile Trader',
-            data.user.email || 'trader@mobile.com'
+            data.user.email || 'trader@mobile.com',
+            data.user.photoURL || undefined,
+            data.user.uid || undefined
           );
         } else if (data.status === 'EXPIRED') {
           setQrStatus('EXPIRED');

@@ -247,6 +247,7 @@ export default function OnboardingPage() {
     const resolvedDiscovery = getResolvedDiscoveryString() || user.discoverySource || 'Direct';
 
     const finalProfile: Partial<UserProfile> = {
+      ...(user.uid ? { uid: user.uid } : {}),
       fullName: resolvedName,
       profilePhoto: resolvedPhoto,
       avatar: resolvedPhoto,
@@ -260,12 +261,13 @@ export default function OnboardingPage() {
 
     // 2. Push directly to user cloud sync API
     try {
-      if (user.email) {
+      if (user.email || user.uid) {
         await fetch('/api/user/sync', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            email: user.email.trim().toLowerCase(),
+            email: (user.email || '').trim().toLowerCase(),
+            uid: user.uid,
             user: finalProfile,
           }),
         });

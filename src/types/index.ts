@@ -97,6 +97,7 @@ export interface DailyJournal {
 
 export interface UserProfile {
   id: string;
+  uid?: string;
   fullName: string;
   email: string;
   tradingAlias: string;
