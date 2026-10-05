@@ -9,6 +9,8 @@ interface QrSession {
   user?: {
     fullName: string;
     email: string;
+    uid?: string;
+    avatar?: string;
     device?: string;
   };
 }
@@ -34,6 +36,20 @@ function cleanExpired() {
   }
 }
 
+function normalizePin(p: string): string {
+  return p.toUpperCase().replace(/[^A-Z0-9]/g, '');
+}
+
+function findSessionByPin(searchPin: string): QrSession | undefined {
+  const norm = normalizePin(searchPin);
+  const now = Date.now();
+  return Array.from(sessions.values()).find((s) => {
+    if (s.expiresAt <= now) return false;
+    const sNorm = normalizePin(s.pin);
+    return sNorm === norm || sNorm.endsWith(norm) || norm.endsWith(sNorm);
+  });
+}
+
 // 1. GET: Check status of a QR session
 export async function GET(request: NextRequest) {
   cleanExpired();
@@ -50,9 +66,7 @@ export async function GET(request: NextRequest) {
   if (token) {
     session = sessions.get(token);
   } else if (pin) {
-    session = Array.from(sessions.values()).find(
-      (s) => s.pin === pin.toUpperCase() && s.expiresAt > Date.now()
-    );
+    session = findSessionByPin(pin);
   }
 
   if (!session) {
@@ -69,7 +83,12 @@ export async function GET(request: NextRequest) {
       status: session.status,
       token: session.token,
       pin: session.pin,
-      user: session.user,
+      user: session.user
+        ? {
+            ...session.user,
+            name: session.user.fullName,
+          }
+        : undefined,
     },
     { status: 200 }
   );
@@ -128,9 +147,7 @@ export async function PUT(request: NextRequest) {
     if (token) {
       session = sessions.get(token);
     } else if (pin) {
-      session = Array.from(sessions.values()).find(
-        (s) => s.pin === pin.toUpperCase() && s.expiresAt > Date.now()
-      );
+      session = findSessionByPin(pin);
     }
 
     if (!session) {
@@ -148,11 +165,13 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Authorize session
+    // Authorize session with full user identity including UID
     session.status = 'AUTHORIZED';
     session.user = {
-      fullName: user.fullName || 'TradeDairy Trader',
+      fullName: user.fullName || user.name || 'TradeDairy Trader',
       email: user.email,
+      uid: user.uid,
+      avatar: user.avatar || user.profilePhoto,
       device: user.device || 'Mobile Authorized',
     };
 

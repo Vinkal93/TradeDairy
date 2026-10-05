@@ -78,6 +78,14 @@ export function RecordTradeModal() {
   const [customIndexName, setCustomIndexName] = useState('');
   const [customIndexLot, setCustomIndexLot] = useState<number>(25);
 
+  // Sync quantity automatically when lot size or lots count updates
+  useEffect(() => {
+    if (quantityMode === 'lots' && activeLotSize > 0) {
+      const count = Number(lotsCount) || 1;
+      setQuantity(String(count * activeLotSize));
+    }
+  }, [activeLotSize, quantityMode, lotsCount]);
+
   // Prices & Orders
   const [entry, setEntry] = useState('');
   const [exit, setExit] = useState('');
@@ -382,14 +390,9 @@ export function RecordTradeModal() {
   return (
     <div
       className="fixed inset-0 z-[120] bg-black/60 backdrop-blur-sm p-2 sm:p-4 md:p-6 flex items-center justify-center animate-in fade-in duration-150 overflow-y-auto"
-      onMouseDown={(e) => {
-        backdropMouseDownRef.current = e.target === e.currentTarget;
-      }}
       onClick={(e) => {
-        if (backdropMouseDownRef.current && e.target === e.currentTarget && !accountOpen && !lotConfigModalOpen) {
-          closeRecordTradeModal();
-        }
-        backdropMouseDownRef.current = false;
+        // Do NOT close on outside/backdrop click to avoid losing user progress
+        e.stopPropagation();
       }}
     >
       <div
@@ -418,23 +421,6 @@ export function RecordTradeModal() {
           </div>
 
           <div className="flex items-center gap-2">
-            {!existing && (
-              <div className="hidden sm:inline-flex p-0.5 rounded-lg bg-surface-container border border-surface-container-high text-xs">
-                {(['basic', 'quick'] as const).map((m) => (
-                  <button
-                    key={m}
-                    type="button"
-                    onClick={() => setMode(m)}
-                    className={`px-3 py-1 rounded-md font-medium transition-all cursor-pointer ${
-                      mode === m ? 'bg-white text-emerald-800 shadow-xs font-bold' : 'text-outline hover:text-on-surface'
-                    }`}
-                  >
-                    {m === 'basic' ? 'Full Entry' : 'Quick Log'}
-                  </button>
-                ))}
-              </div>
-            )}
-
             <button
               type="button"
               tabIndex={-1}
@@ -605,7 +591,7 @@ export function RecordTradeModal() {
               </span>
 
               {/* Lots vs Qty Toggle */}
-              <div className="inline-flex p-0.5 rounded-lg bg-surface-container border border-surface-container-high text-xs font-semibold">
+              <div className="inline-flex p-0.5 rounded-xl bg-surface-container border border-surface-container-high text-xs font-semibold">
                 <button
                   type="button"
                   onClick={() => {
@@ -617,24 +603,26 @@ export function RecordTradeModal() {
                     setLotsCount(String(calculatedLots));
                     setQuantity(String(calculatedLots * activeLotSize));
                   }}
-                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
                     quantityMode === 'lots'
                       ? 'bg-white text-emerald-800 shadow-xs font-bold'
                       : 'text-outline hover:text-on-surface'
                   }`}
                 >
-                  📦 Lots
+                  <span className="material-symbols-outlined text-[16px]">layers</span>
+                  <span>Lots</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setQuantityMode('qty')}
-                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
                     quantityMode === 'qty'
                       ? 'bg-white text-emerald-800 shadow-xs font-bold'
                       : 'text-outline hover:text-on-surface'
                   }`}
                 >
-                  🔢 Qty
+                  <span className="material-symbols-outlined text-[16px]">tag</span>
+                  <span>Total Qty</span>
                 </button>
               </div>
             </div>
@@ -648,24 +636,27 @@ export function RecordTradeModal() {
 
                 {quantityMode === 'lots' ? (
                   <div className="space-y-2">
-                    {/* Index Selector with ⚙️ Edit lot size */}
-                    <div className="flex items-center justify-between p-1.5 rounded-lg bg-white border border-surface-container text-[11px]">
-                      <select
-                        value={selectedIndex}
-                        onChange={(e) => {
-                          const newIdx = e.target.value;
-                          setSelectedIndex(newIdx);
-                          const newLotSize = lotSizes[newIdx] || 25;
-                          setQuantity(String((Number(lotsCount) || 1) * newLotSize));
-                        }}
-                        className="font-bold text-emerald-800 bg-transparent outline-none cursor-pointer text-xs"
-                      >
-                        {Object.keys(lotSizes).map((idx) => (
-                          <option key={idx} value={idx}>
-                            {idx} (1 Lot = {lotSizes[idx]})
-                          </option>
-                        ))}
-                      </select>
+                    {/* Index Selector with Edit lot size */}
+                    <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-surface-container text-xs shadow-2xs">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">data_exploration</span>
+                        <select
+                          value={selectedIndex}
+                          onChange={(e) => {
+                            const newIdx = e.target.value;
+                            setSelectedIndex(newIdx);
+                            const newLotSize = lotSizes[newIdx] || 25;
+                            setQuantity(String((Number(lotsCount) || 1) * newLotSize));
+                          }}
+                          className="font-bold text-slate-800 bg-transparent outline-none cursor-pointer text-xs"
+                        >
+                          {Object.keys(lotSizes).map((idx) => (
+                            <option key={idx} value={idx}>
+                              {idx} · 1 Lot = {lotSizes[idx]} units
+                            </option>
+                          ))}
+                        </select>
+                      </div>
 
                       <button
                         type="button"
@@ -674,9 +665,11 @@ export function RecordTradeModal() {
                           setCustomIndexLot(activeLotSize);
                           setLotConfigModalOpen(true);
                         }}
-                        className="text-emerald-700 hover:underline font-semibold cursor-pointer text-[10px]"
+                        title="Edit Lot Size for this Index"
+                        className="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-800 hover:underline font-bold cursor-pointer text-[11px] px-2 py-0.5 rounded-lg bg-emerald-50 border border-emerald-200/60 shrink-0"
                       >
-                        ⚙️ Edit
+                        <span className="material-symbols-outlined text-[13px]">tune</span>
+                        <span>Edit</span>
                       </button>
                     </div>
 
@@ -712,7 +705,7 @@ export function RecordTradeModal() {
                               setLotsCount(newLots);
                               setQuantity(String(Number(newLots) * activeLotSize));
                             }}
-                            className="px-2 py-2 text-xs font-bold rounded-lg bg-white hover:bg-surface-container border border-surface-container text-on-surface cursor-pointer"
+                            className="px-2.5 py-2 text-xs font-bold rounded-lg bg-white hover:bg-surface-container border border-surface-container text-on-surface cursor-pointer"
                           >
                             +{count}
                           </button>
@@ -720,9 +713,12 @@ export function RecordTradeModal() {
                       </div>
                     </div>
 
-                    <p className="text-[11px] text-emerald-700 font-semibold">
-                      = {quantity || 0} Total Units ({lotsCount || 0} Lots × {activeLotSize})
-                    </p>
+                    <div className="p-2 rounded-xl bg-emerald-50/70 border border-emerald-200/60 flex items-center justify-between text-[11px] font-semibold text-emerald-800">
+                      <span>Total Units:</span>
+                      <span className="font-bold font-mono">
+                        {quantity || 0} Units ({lotsCount || 0} Lots × {activeLotSize})
+                      </span>
+                    </div>
                   </div>
                 ) : (
                   <div>
@@ -743,7 +739,7 @@ export function RecordTradeModal() {
                       }}
                       placeholder="Units"
                     />
-                    <p className="text-[11px] text-outline mt-1">
+                    <p className="text-[11px] text-outline mt-1 font-medium">
                       ≈ {(Number(quantity) / activeLotSize).toFixed(1)} Lots ({selectedIndex}: 1 Lot = {activeLotSize})
                     </p>
                   </div>

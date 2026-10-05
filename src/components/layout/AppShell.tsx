@@ -18,11 +18,11 @@ const MOBILE_NAV_ITEMS = [
   { name: 'Dashboard', path: '/', icon: 'grid_view' },
   { name: 'Trades', path: '/trades', icon: 'receipt_long' },
   { name: 'Journal', path: '/journal', icon: 'edit_note' },
-  { name: 'Analytics', path: '/analytics', icon: 'monitoring' },
   { name: 'Calendar', path: '/calendar', icon: 'calendar_today' },
+  { name: 'Analytics', path: '/analytics', icon: 'monitoring' },
   { name: 'Accounts', path: '/accounts', icon: 'account_balance' },
-  { name: 'Settings', path: '/settings', icon: 'settings' },
   { name: 'Broker Charges', path: '/settings/charges', icon: 'calculate' },
+  { name: 'Settings', path: '/settings', icon: 'settings' },
 ];
 
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {

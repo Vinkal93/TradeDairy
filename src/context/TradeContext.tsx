@@ -433,25 +433,20 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }
       }
 
-      // Device sessions
+      // Device sessions: Real devices ONLY, strictly filter out any fake dummy sessions
       const current = detectDevice();
       let sessions: DeviceSession[] = storedSessions ? JSON.parse(storedSessions) : [];
-      if (!sessions.some((s) => s.isCurrent)) {
-        sessions = [
-          current,
-          {
-            id: 'sess_mobile_backup',
-            deviceName: 'iPhone 15 Pro (Safari Mobile)',
-            browser: 'Safari',
-            os: 'iOS 17',
-            deviceType: 'mobile',
-            ip: '103.21.244.12',
-            location: 'Mumbai, India',
-            isCurrent: false,
-            lastActive: '12 minutes ago',
-            createdAt: new Date(Date.now() - 3600000 * 48).toISOString(),
-          },
-        ];
+      sessions = sessions.filter(
+        (s) =>
+          s.id !== 'sess_mobile_backup' &&
+          !s.deviceName.includes('iPhone 15 Pro (Safari Mobile)') &&
+          s.ip !== '103.21.244.12'
+      );
+      const curIdx = sessions.findIndex((s) => s.id === current.id || s.isCurrent);
+      if (curIdx >= 0) {
+        sessions[curIdx] = { ...sessions[curIdx], ...current, isCurrent: true, lastActive: 'Active Now' };
+      } else {
+        sessions.unshift(current);
       }
       setDeviceSessions(sessions);
 

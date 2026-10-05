@@ -279,9 +279,9 @@ function LoginForm() {
           setQrStatus('AUTHORIZED');
           clearInterval(pollIntervalRef.current!);
           await handleAuthSuccess(
-            data.user.name || 'Mobile Trader',
+            data.user.fullName || data.user.name || 'Mobile Trader',
             data.user.email || 'trader@mobile.com',
-            data.user.photoURL || undefined,
+            data.user.avatar || data.user.photoURL || undefined,
             data.user.uid || undefined
           );
         } else if (data.status === 'EXPIRED') {

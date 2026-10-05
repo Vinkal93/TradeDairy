@@ -16,6 +16,7 @@ export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void
   const [search, setSearch] = useState('');
   const [isCompact, setIsCompact] = useState(false);
   const [scanModalOpen, setScanModalOpen] = useState(false);
+  const [scanInitialMode, setScanInitialMode] = useState<'scan' | 'show-qr'>('show-qr');
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -135,15 +136,32 @@ export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void
             </div>
           )}
 
-          {/* Scan to Log In PC Button (Phone to Desktop Auth) */}
+          {/* Active Devices button on PC mode */}
           <button
             type="button"
-            onClick={() => setScanModalOpen(true)}
-            title="Scan PC QR Code to Sign In on Desktop"
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-colors cursor-pointer"
+            onClick={() => {
+              setScanInitialMode('show-qr');
+              setScanModalOpen(true);
+            }}
+            title="Active Devices & Pairing QR Code"
+            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-surface-container-low hover:bg-surface-container border border-surface-container text-on-surface transition-colors cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[16px] text-primary">devices</span>
+            <span>Active Devices</span>
+          </button>
+
+          {/* Scan PC button on Mobile phone mode */}
+          <button
+            type="button"
+            onClick={() => {
+              setScanInitialMode('scan');
+              setScanModalOpen(true);
+            }}
+            title="Scan PC QR Code"
+            className="sm:hidden inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-colors cursor-pointer"
           >
             <span className="material-symbols-outlined text-[16px]">qr_code_scanner</span>
-            <span className="hidden sm:inline">Scan PC Login</span>
+            <span>Scan PC</span>
           </button>
 
           {/* Quick Density Toggle */}
@@ -264,8 +282,12 @@ export function Header({ onToggleMobileMenu }: { onToggleMobileMenu?: () => void
         <MarketTicker />
       </div>
 
-      {/* QR Scanner Modal for Phone Users */}
-      <QrScannerModal isOpen={scanModalOpen} onClose={() => setScanModalOpen(false)} />
+      {/* QR Scanner / Device Pairing Modal */}
+      <QrScannerModal
+        isOpen={scanModalOpen}
+        onClose={() => setScanModalOpen(false)}
+        initialMode={scanInitialMode}
+      />
     </>
   );
 }

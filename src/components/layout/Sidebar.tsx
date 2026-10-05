@@ -45,13 +45,13 @@ export function Sidebar() {
               key={path}
               href={path}
               aria-current={active ? 'page' : undefined}
-              className={`flex items-center gap-3 rounded-xl px-3 py-3 text-[15px] font-normal transition-colors ${
+              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-[14px] font-medium transition-all ${
                 active
-                  ? 'bg-primary/10 text-primary font-normal'
+                  ? 'bg-primary/10 text-primary font-bold border-l-4 border-primary pl-2.5 shadow-2xs'
                   : 'text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface'
               }`}
             >
-              <span className="material-symbols-outlined text-[23px]">{icon}</span>
+              <span className="material-symbols-outlined text-[22px]">{icon}</span>
               <span>{label}</span>
             </Link>
           );

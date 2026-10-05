@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useTrades } from '../../context/TradeContext';
 import { UserProfile } from '../../types';
 import { fieldClass } from '../../components/common/ChargeEditor';
@@ -9,6 +10,17 @@ import { ConfirmModal } from '../../components/common/ConfirmModal';
 import { QrScannerModal } from '../../components/common/QrScannerModal';
 
 export default function SettingsPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-xs text-outline">Loading settings…</div>}>
+      <SettingsContent />
+    </Suspense>
+  );
+}
+
+function SettingsContent() {
+  const searchParams = useSearchParams();
+  const requestedTab = searchParams.get('tab');
+
   const {
     user,
     updateUser,
@@ -23,7 +35,29 @@ export default function SettingsPage() {
     logoutAllOtherSessions,
   } = useTrades();
 
-  const [tab, setTab] = useState<'profile' | 'risk' | 'sessions' | 'data'>('profile');
+  const [tab, setTab] = useState<'profile' | 'risk' | 'sessions' | 'data'>(
+    requestedTab === 'sessions' || requestedTab === 'risk' || requestedTab === 'data'
+      ? requestedTab
+      : 'profile'
+  );
+
+  const [isMobile, setIsMobile] = useState(false);
+  const [scanMode, setScanMode] = useState<'scan' | 'show-qr'>('show-qr');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const mobile = window.innerWidth < 768 || /Mobi|Android|iPhone/i.test(navigator.userAgent);
+      setIsMobile(mobile);
+      setScanMode(mobile ? 'scan' : 'show-qr');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (requestedTab && ['profile', 'risk', 'sessions', 'data'].includes(requestedTab)) {
+      setTab(requestedTab as any);
+    }
+  }, [requestedTab]);
+
   const [name, setName] = useState(user.fullName === 'Trader' ? '' : user.fullName);
   const [alias, setAlias] = useState(user.tradingAlias || '');
   const [currency, setCurrency] = useState(user.baseCurrency);
@@ -279,11 +313,16 @@ export default function SettingsPage() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => setScanModalOpen(true)}
-                  className="btn-primary text-xs py-1.5 px-3 flex items-center gap-1.5"
+                  onClick={() => {
+                    setScanMode(isMobile ? 'scan' : 'show-qr');
+                    setScanModalOpen(true);
+                  }}
+                  className="btn-primary text-xs py-1.5 px-3 flex items-center gap-1.5 cursor-pointer"
                 >
-                  <span className="material-symbols-outlined text-[16px]">qr_code_scanner</span>
-                  <span>Scan to Authorize PC</span>
+                  <span className="material-symbols-outlined text-[16px]">
+                    {isMobile ? 'qr_code_scanner' : 'devices'}
+                  </span>
+                  <span>{isMobile ? 'Scan PC QR' : 'Pair Mobile Device / QR'}</span>
                 </button>
 
                 <button
@@ -503,7 +542,11 @@ export default function SettingsPage() {
       />
 
       {/* Qr Scanner Modal for Phone to PC Auth */}
-      <QrScannerModal isOpen={scanModalOpen} onClose={() => setScanModalOpen(false)} />
+      <QrScannerModal
+        isOpen={scanModalOpen}
+        onClose={() => setScanModalOpen(false)}
+        initialMode={scanMode}
+      />
     </div>
   );
 }
