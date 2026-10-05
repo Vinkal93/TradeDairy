@@ -64,16 +64,12 @@ function LoginForm() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // If already logged in, redirect appropriately
+  // If already logged in, redirect directly to dashboard
   useEffect(() => {
     if (user.isLoggedIn) {
-      if (user.isOnboarded) {
-        router.replace('/');
-      } else {
-        router.replace('/onboarding');
-      }
+      router.replace('/');
     }
-  }, [user.isLoggedIn, user.isOnboarded, router]);
+  }, [user.isLoggedIn, router]);
 
   // Handle post-login navigation based on onboarding status
   const handleAuthSuccess = async (
@@ -97,7 +93,9 @@ function LoginForm() {
 
     try {
       const result = await login(displayName, userEmail, photoURL, uid);
-      if (result.isOnboarded) {
+      // Onboarding questionnaire is strictly for brand new signups.
+      // Anyone logging in (mode === 'login') or with existing account directly enters Dashboard!
+      if (mode === 'login' || result.isOnboarded) {
         setSuccessMessage('Welcome back! Entering Dashboard…');
         router.push('/');
       } else {

@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { BrandLogo } from '../common/BrandLogo';
+import { useTrades } from '../../context/TradeContext';
 
 const NAV = [
   ['Dashboard', '/', 'grid_view'],
@@ -16,15 +17,20 @@ const NAV = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { openRecordTradeModal } = useTrades();
   return (
     <aside className="hidden md:flex fixed inset-y-0 left-0 w-60 bg-white border-r border-surface-container z-50 flex-col py-6 overflow-y-auto">
       <Link href="/" className="px-4 mb-4">
         <BrandLogo />
       </Link>
       <div className="px-3 mb-4">
-        <Link href="/add-trade" className="btn-primary w-full text-center font-semibold text-sm !py-3">
+        <button
+          type="button"
+          onClick={() => openRecordTradeModal()}
+          className="btn-primary w-full text-center font-semibold text-sm !py-3 cursor-pointer shadow-sm active:scale-[0.98] transition-transform"
+        >
           + Record trade
-        </Link>
+        </button>
       </div>
       <nav className="space-y-1.5 px-3 flex-1" aria-label="Main navigation">
         {NAV.map(([label, path, icon]) => {

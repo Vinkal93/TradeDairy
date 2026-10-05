@@ -236,4 +236,18 @@ test('E2E Auth & Sync: Stable UID, Multi-Device Sync, and Onboarding Persistence
       { method: 'DELETE' }
     ).catch(() => {});
   });
+
+  // 7. Returning user login never prompts onboarding questionnaire
+  await t.test('7. Returning user login never forces onboarding: isOnboarded remains true across sessions and devices', async () => {
+    // When returning user logs in (Device 1 or Device 2)
+    const res = await fetch(
+      `${BASE_URL}/api/user/sync?email=${encodeURIComponent(testEmail)}&uid=${encodeURIComponent(testUid)}`
+    );
+    assert.equal(res.status, 200);
+    const data = await res.json();
+    assert.equal(data.exists, true);
+    assert.equal(data.user.isOnboarded, true);
+    assert.equal(data.user.onboardingStep, 5);
+    // Verified: user will NOT be redirected to /onboarding on subsequent logins
+  });
 });

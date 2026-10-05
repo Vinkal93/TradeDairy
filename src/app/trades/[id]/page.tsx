@@ -11,7 +11,7 @@ import { ConfirmModal } from '../../../components/common/ConfirmModal';
 export default function TradeDetailsPage() {
   const params = useParams();
   const router = useRouter();
-  const { accounts, trades, getTradeById, deleteTrade, user } = useTrades();
+  const { accounts, trades, getTradeById, deleteTrade, user, openRecordTradeModal } = useTrades();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -110,13 +110,14 @@ export default function TradeDetailsPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Link
-            href={`/add-trade?edit=${encodeURIComponent(t.id)}`}
-            className="btn-primary text-xs py-1.5 px-3"
+          <button
+            type="button"
+            onClick={() => openRecordTradeModal(t.id)}
+            className="btn-primary text-xs py-1.5 px-3 cursor-pointer"
           >
             <span className="material-symbols-outlined text-[16px]">edit</span>
             <span>{t.status === 'OPEN' ? 'Add Exit / Edit' : 'Edit Trade'}</span>
-          </Link>
+          </button>
 
           <button
             type="button"

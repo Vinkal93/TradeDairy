@@ -32,6 +32,7 @@ function TradeLog() {
     setTimeframe,
     exportTradesCSV,
     importTradesCSV,
+    openRecordTradeModal,
   } = useTrades();
 
   const [search, setSearch] = useState(q);
@@ -112,10 +113,14 @@ function TradeLog() {
             Search, filter, review contract notes, or export your execution journal.
           </p>
         </div>
-        <Link className="btn-primary text-xs sm:text-sm font-semibold py-1.5 px-3" href="/add-trade">
+        <button
+          type="button"
+          onClick={() => openRecordTradeModal()}
+          className="btn-primary text-xs sm:text-sm font-semibold py-1.5 px-3 cursor-pointer"
+        >
           <span className="material-symbols-outlined text-[17px]">add_circle</span>
           <span>+ Record Trade</span>
-        </Link>
+        </button>
       </div>
 
       {notice && (
@@ -200,7 +205,7 @@ function TradeLog() {
       </section>
 
       {/* Trade Cards Grid */}
-      {!!displayed.length && <div className="hidden lg:block card !p-0 overflow-hidden"><div className="overflow-x-auto"><table className="w-full text-sm text-left min-w-[900px]"><thead className="bg-surface-container-low text-on-surface-variant text-xs uppercase tracking-wide"><tr>{['Date & time','Instrument','Side','Qty','Entry','Exit','Net P&L','ROI','Setup','Actions'].map(label => <th className="px-5 py-5 font-medium" key={label}>{label}</th>)}</tr></thead><tbody className="divide-y divide-surface-container">{displayed.map(t => { const currency = accounts.find(a => a.id === t.accountId)?.currency || user.baseCurrency; return <tr key={t.id} className="hover:bg-surface-container-low/30"><td className="px-5 py-5 whitespace-nowrap"><p className="font-medium">{formatDate(t.date)}</p><p className="text-xs text-outline mt-1">{t.entryTime}</p></td><td className="px-5 py-5"><Link className="font-semibold hover:text-primary" href={`/trades/${t.id}`}>{t.instrument}</Link><p className="text-xs text-outline mt-1">{t.assetClass} · {t.accountName}</p></td><td className="px-5 py-5"><span className={`rounded-full px-2 py-1 text-xs ${t.side === 'BUY' ? 'bg-primary/10 text-primary' : 'bg-error/10 text-error'}`}>{t.side}</span></td><td className="px-5 py-5">{t.quantity}</td><td className="px-5 py-5 whitespace-nowrap">{formatCurrency(t.entryPrice,currency)}</td><td className="px-5 py-5 whitespace-nowrap">{t.exitPrice ? formatCurrency(t.exitPrice,currency) : '—'}</td><td className={`px-5 py-5 whitespace-nowrap font-semibold ${t.netPnl < 0 ? 'text-error' : 'text-primary'}`}>{t.status === 'OPEN' ? 'Open' : formatCurrency(t.netPnl,currency,true)}</td><td className="px-5 py-5">{t.status === 'CLOSED' ? `${t.roi}%` : '—'}</td><td className="px-5 py-5">{t.setup || '—'}</td><td className="px-5 py-5"><div className="flex gap-3"><Link href={`/trades/${t.id}`} aria-label={`View ${t.instrument}`}><span className="material-symbols-outlined text-xl">visibility</span></Link><Link href={`/add-trade?edit=${encodeURIComponent(t.id)}`} aria-label={`Edit ${t.instrument}`}><span className="material-symbols-outlined text-xl">edit</span></Link><button type="button" onClick={() => setTradeToDelete(t)} aria-label={`Delete ${t.instrument}`}><span className="material-symbols-outlined text-xl text-outline">delete</span></button></div></td></tr>;})}</tbody></table></div></div>}
+      {!!displayed.length && <div className="hidden lg:block card !p-0 overflow-hidden"><div className="overflow-x-auto"><table className="w-full text-sm text-left min-w-[900px]"><thead className="bg-surface-container-low text-on-surface-variant text-xs uppercase tracking-wide"><tr>{['Date & time','Instrument','Side','Qty','Entry','Exit','Net P&L','ROI','Setup','Actions'].map(label => <th className="px-5 py-5 font-medium" key={label}>{label}</th>)}</tr></thead><tbody className="divide-y divide-surface-container">{displayed.map(t => { const currency = accounts.find(a => a.id === t.accountId)?.currency || user.baseCurrency; return <tr key={t.id} className="hover:bg-surface-container-low/30"><td className="px-5 py-5 whitespace-nowrap"><p className="font-medium">{formatDate(t.date)}</p><p className="text-xs text-outline mt-1">{t.entryTime}</p></td><td className="px-5 py-5"><Link className="font-semibold hover:text-primary" href={`/trades/${t.id}`}>{t.instrument}</Link><p className="text-xs text-outline mt-1">{t.assetClass} · {t.accountName}</p></td><td className="px-5 py-5"><span className={`rounded-full px-2 py-1 text-xs ${t.side === 'BUY' ? 'bg-primary/10 text-primary' : 'bg-error/10 text-error'}`}>{t.side}</span></td><td className="px-5 py-5">{t.quantity}</td><td className="px-5 py-5 whitespace-nowrap">{formatCurrency(t.entryPrice,currency)}</td><td className="px-5 py-5 whitespace-nowrap">{t.exitPrice ? formatCurrency(t.exitPrice,currency) : '—'}</td><td className={`px-5 py-5 whitespace-nowrap font-semibold ${t.netPnl < 0 ? 'text-error' : 'text-primary'}`}>{t.status === 'OPEN' ? 'Open' : formatCurrency(t.netPnl,currency,true)}</td><td className="px-5 py-5">{t.status === 'CLOSED' ? `${t.roi}%` : '—'}</td><td className="px-5 py-5">{t.setup || '—'}</td><td className="px-5 py-5"><div className="flex gap-3"><Link href={`/trades/${t.id}`} aria-label={`View ${t.instrument}`}><span className="material-symbols-outlined text-xl">visibility</span></Link><button type="button" onClick={() => openRecordTradeModal(t.id)} aria-label={`Edit ${t.instrument}`} className="hover:text-primary cursor-pointer"><span className="material-symbols-outlined text-xl">edit</span></button><button type="button" onClick={() => setTradeToDelete(t)} aria-label={`Delete ${t.instrument}`}><span className="material-symbols-outlined text-xl text-outline">delete</span></button></div></td></tr>;})}</tbody></table></div></div>}
       {!displayed.length ? (
         <div className="card text-center py-10 space-y-2.5">
           <span className="material-symbols-outlined text-[36px] text-outline/50">search_off</span>
@@ -208,9 +213,9 @@ function TradeLog() {
           <p className="text-xs text-outline">
             No trades match your search or filters. Clear filters or record a new trade.
           </p>
-          <Link href="/add-trade" className="btn-primary text-xs inline-flex mt-1">
+          <button type="button" onClick={() => openRecordTradeModal()} className="btn-primary text-xs inline-flex mt-1 cursor-pointer">
             + Record Trade
-          </Link>
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:hidden gap-4">
@@ -285,13 +290,14 @@ function TradeLog() {
                   </span>
 
                   <div className="flex items-center gap-1">
-                    <Link
-                      href={`/add-trade?edit=${encodeURIComponent(t.id)}`}
-                      className="p-1 rounded text-outline hover:text-primary hover:bg-surface-container transition-colors"
+                    <button
+                      type="button"
+                      onClick={() => openRecordTradeModal(t.id)}
+                      className="p-1 rounded text-outline hover:text-primary hover:bg-surface-container transition-colors cursor-pointer"
                       title="Edit Trade"
                     >
                       <span className="material-symbols-outlined text-[16px]">edit</span>
-                    </Link>
+                    </button>
 
                     <button
                       type="button"

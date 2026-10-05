@@ -68,6 +68,12 @@ interface TradeContextType {
   resetDemoData: () => void;
   eraseAllData: () => void;
 
+  // Record Trade Modal
+  isRecordTradeModalOpen: boolean;
+  recordTradeEditId: string | null;
+  openRecordTradeModal: (tradeId?: string) => void;
+  closeRecordTradeModal: () => void;
+
   // Device Sessions & Realtime Ecosystem
   deviceSessions: DeviceSession[];
   revokeSession: (sessionId: string) => void;
@@ -184,6 +190,20 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [cloudSyncStatus, setCloudSyncStatus] = useState<'synced' | 'syncing' | 'offline'>('synced');
   const [lastCloudSync, setLastCloudSync] = useState<string | null>(null);
   const lastSyncTimestampRef = useRef<string | null>(null);
+
+  // Record Trade Modal state (Pop box)
+  const [isRecordTradeModalOpen, setIsRecordTradeModalOpen] = useState(false);
+  const [recordTradeEditId, setRecordTradeEditId] = useState<string | null>(null);
+
+  const openRecordTradeModal = useCallback((tradeId?: string) => {
+    setRecordTradeEditId(tradeId || null);
+    setIsRecordTradeModalOpen(true);
+  }, []);
+
+  const closeRecordTradeModal = useCallback(() => {
+    setIsRecordTradeModalOpen(false);
+    setRecordTradeEditId(null);
+  }, []);
 
   // Realtime Broadcast Channel across browser tabs / devices
   const broadcastSync = useCallback((actionType: string) => {
@@ -422,22 +442,38 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (firebaseUser && firebaseUser.email) {
         const cleanEmail = firebaseUser.email.trim().toLowerCase();
         const userUid = firebaseUser.uid;
+
+        // Check local storage immediately so existing users NEVER have isOnboarded reset to false
+        let storedUserObj: Partial<UserProfile> | null = null;
+        try {
+          const uKey = getUserKey(STORAGE_KEYS.USER, cleanEmail);
+          const raw = localStorage.getItem(uKey) || localStorage.getItem(STORAGE_KEYS.USER);
+          if (raw) storedUserObj = JSON.parse(raw);
+        } catch {}
+
         setUser((prev) => {
           if (prev.isLoggedIn && prev.email.toLowerCase() === cleanEmail && prev.uid === userUid) {
             return prev;
           }
+          const isUserOnboarded =
+            storedUserObj?.isOnboarded !== undefined
+              ? Boolean(storedUserObj.isOnboarded)
+              : true;
           return {
             ...prev,
+            ...storedUserObj,
             uid: userUid,
             email: cleanEmail,
             fullName:
               firebaseUser.displayName ||
+              storedUserObj?.fullName ||
               prev.fullName ||
               cleanEmail.split('@')[0] ||
               'Active Trader',
-            avatar: firebaseUser.photoURL || prev.avatar || '',
-            profilePhoto: firebaseUser.photoURL || prev.profilePhoto || '',
+            avatar: firebaseUser.photoURL || storedUserObj?.avatar || prev.avatar || '',
+            profilePhoto: firebaseUser.photoURL || storedUserObj?.profilePhoto || prev.profilePhoto || '',
             isLoggedIn: true,
+            isOnboarded: isUserOnboarded,
           };
         });
         // Load this user's data and sync cloud
@@ -803,7 +839,20 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
 
     const cloudUser = cloudRecord?.user || {};
-    const hasCompletedOnboarding = Boolean(cloudUser.isOnboarded);
+    let storedUserObj: Partial<UserProfile> | null = null;
+    try {
+      const uKey = getUserKey(STORAGE_KEYS.USER, cleanEmail);
+      const raw = localStorage.getItem(uKey) || localStorage.getItem(STORAGE_KEYS.USER);
+      if (raw) storedUserObj = JSON.parse(raw);
+    } catch {}
+
+    const hasCompletedOnboarding = Boolean(
+      cloudUser.isOnboarded ||
+      cloudRecord?.exists ||
+      (cloudRecord?.trades && cloudRecord.trades.length > 0) ||
+      (cloudRecord?.accounts && cloudRecord.accounts.length > 0) ||
+      (storedUserObj && storedUserObj.isOnboarded)
+    );
     const existingStep = typeof cloudUser.onboardingStep === 'number' ? cloudUser.onboardingStep : 1;
     const finalUid = effectiveUid || cloudRecord?.uid || cloudUser.uid || '';
 
@@ -1102,6 +1151,10 @@ export const TradeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         updateIndexLotSize,
         resetDemoData,
         eraseAllData,
+        isRecordTradeModalOpen,
+        recordTradeEditId,
+        openRecordTradeModal,
+        closeRecordTradeModal,
         deviceSessions,
         revokeSession,
         logoutAllOtherSessions,

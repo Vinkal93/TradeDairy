@@ -8,6 +8,7 @@ import { Header } from './Header';
 import { BrandLogo } from '../common/BrandLogo';
 import { LoadingWorkspace } from '../common/LoadingWorkspace';
 import { useTrades } from '../../context/TradeContext';
+import { RecordTradeModal } from '../trades/RecordTradeModal';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -27,7 +28,7 @@ const MOBILE_NAV_ITEMS = [
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, isLoaded, storageError } = useTrades();
+  const { user, isLoaded, storageError, openRecordTradeModal } = useTrades();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
 
@@ -39,17 +40,13 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     (pathname === '/su' || pathname?.startsWith('/su/'));
 
   // Global Route Guard:
-  // 1. Unauthenticated users cannot access protected trader routes -> redirect to /login
-  // 2. Authenticated users who haven't completed onboarding -> redirect to /onboarding
-  // 3. Authenticated & onboarded users -> full access to dashboard and trader routes
+  // Unauthenticated users cannot access protected trader routes -> redirect to /login
   useEffect(() => {
     if (!isLoaded || isAuthOrOnboarding) return;
     if (!user.isLoggedIn) {
       router.replace('/login');
-    } else if (!user.isOnboarded) {
-      router.replace('/onboarding');
     }
-  }, [isLoaded, user.isLoggedIn, user.isOnboarded, isAuthOrOnboarding, router]);
+  }, [isLoaded, user.isLoggedIn, isAuthOrOnboarding, router]);
 
   useEffect(() => { setMobileMenuOpen(false); }, [pathname]);
   useEffect(() => {
@@ -120,14 +117,17 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
                 </button>
               </div>
 
-              <Link
-                href="/add-trade"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-center gap-space-xs w-full py-2.5 px-space-md rounded-lg bg-primary text-on-primary font-label-lg text-label-lg shadow-sm"
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openRecordTradeModal();
+                }}
+                className="flex items-center justify-center gap-space-xs w-full py-2.5 px-space-md rounded-lg bg-primary text-on-primary font-label-lg text-label-lg shadow-sm cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px]">add</span>
                 <span>Add Trade</span>
-              </Link>
+              </button>
 
               <nav className="flex flex-col gap-1">
                 {MOBILE_NAV_ITEMS.map((item) => {
@@ -190,14 +190,15 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           <span>Trades</span>
         </Link>
 
-        {/* Center Floating + Button */}
-        <Link
-          href="/add-trade"
-          className="flex items-center justify-center w-12 h-12 -mt-5 rounded-full bg-primary text-on-primary shadow-lg shadow-primary/30 active:scale-95 transition-transform"
-          title="Add New Trade"
+        {/* Center Floating + Button (Opens Record Trade Modal Dialog) */}
+        <button
+          type="button"
+          onClick={() => openRecordTradeModal()}
+          className="flex items-center justify-center w-12 h-12 -mt-5 rounded-full bg-primary text-on-primary shadow-lg shadow-primary/30 active:scale-95 transition-transform cursor-pointer"
+          title="Record New Trade"
         >
           <span className="material-symbols-outlined text-[24px]">add</span>
-        </Link>
+        </button>
 
         <Link
           href="/journal"
@@ -219,6 +220,9 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           <span>Analytics</span>
         </Link>
       </nav>
+
+      {/* Global Record Trade Modal Popup Box */}
+      <RecordTradeModal />
     </div>
   );
 };
